@@ -24,3 +24,8 @@ yarn-error.log*
 
 # other
 .DS_Store
+
+.idea/.gitignore
+.idea/ee-prac-team3-front.iml
+.idea/modules.xml
+.idea/vcs.xml
