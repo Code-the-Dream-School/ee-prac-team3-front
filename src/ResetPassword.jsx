@@ -1,0 +1,103 @@
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Link from '@mui/material/Link';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import {ThemeProvider} from '@mui/material/styles';
+import customColors, {defaultTheme} from "./styles";
+
+export const ResetPasswordPage = () => {
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log({
+            email: data.get('email'),
+        })
+    };
+
+    return (
+        <ThemeProvider theme={defaultTheme}>
+            <Grid container component="main" sx={{height: '100vh'}}>
+                <CssBaseline/>
+                <Grid
+                    item
+                    xs={false}
+                    sm={4}
+                    md={7}
+                    sx={{
+                        backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundColor: (t) =>
+                            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }}
+                />
+                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+                    <Box
+                        sx={{
+                            my: 8,
+                            mx: 4,
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }}
+                    >
+                        <Typography component="h1" variant="h5">
+                            Forgot password
+                        </Typography>
+                        <Box component="form" noValidate onSubmit={handleSubmit}
+                             sx={{
+                                 mt: 1,
+                                 display: 'flex',
+                                 flexDirection: 'column',
+                                 alignItems: 'center'
+                             }}
+                        >
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={[{
+                                    '&:hover': {backgroundColor: customColors.greyDark}
+                                },
+                                    {
+                                        mt: 3, mb: 2, backgroundColor: customColors.blackLight,
+                                    },
+                                ]}
+                            >
+                                Send reset link
+                            </Button>
+                            <Grid item sx={{width:"100%", display: "flex", flexDirection:"column", alignItems:"self-end"}}>
+                                <Link href="" variant="body2" color="primary.main">
+                                    {"Go to Sign in page"}
+                                </Link>
+                            </Grid>
+                            <Typography sx={{mt: 5}} variant="body2" color="text.secondary" align="center">
+                                {'Copyright © '}
+                                <Link color="inherit" href="">
+                                    JSQuiz
+                                </Link>{' '}
+                                {new Date().getFullYear()}
+                                {'.'}
+                            </Typography>
+                        </Box>
+                    </Box>
+                </Grid>
+            </Grid>
+        </ThemeProvider>
+    );
+}
