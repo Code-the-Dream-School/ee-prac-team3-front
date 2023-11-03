@@ -12,8 +12,9 @@ import {
     FormControlLabel
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import customColors from "../styles";
-import Copyright from "../components/Copyright";
+import customColors from "styles";
+import Copyright from "components/Copyright";
+import {RESET_PASSWORD, SIGNUP} from "App";
 
 export default function LoginPage() {
     const handleSubmit = (event) => {
@@ -99,12 +100,12 @@ export default function LoginPage() {
                             </Button>
                             <Grid container>
                                 <Grid item xs>
-                                    <Link href="#" variant="body2" color="primary.main">
+                                    <Link href={RESET_PASSWORD} variant="body2" color="primary.main">
                                         Forgot password?
                                     </Link>
                                 </Grid>
                                 <Grid item>
-                                    <Link href="#" variant="body2" color="primary.main">
+                                    <Link href={SIGNUP} variant="body2" color="primary.main">
                                         Don't have an account? Sign Up
                                     </Link>
                                 </Grid>

@@ -10,8 +10,9 @@ import {
     Typography
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import customColors from "../styles";
-import Copyright from "../components/Copyright";
+import customColors from "styles";
+import Copyright from "components/Copyright";
+import {LOGIN} from "../App";
 
 export default function SignUpPage() {
     const handleSubmit = (event) => {
@@ -120,7 +121,7 @@ export default function SignUpPage() {
                             </Button>
                             <Grid container justifyContent="flex-end">
                                 <Grid item>
-                                    <Link href="#" variant="body2">
+                                    <Link href={LOGIN} variant="body2">
                                         Already have an account? Sign in
                                     </Link>
                                 </Grid>
