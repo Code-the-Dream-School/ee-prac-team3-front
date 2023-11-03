@@ -18,8 +18,9 @@ import Copyright from "../components/Copyright";
 export default function LoginPage() {
     const handleSubmit = (event) => {
         event.preventDefault();
+        /*//debugging code for testing receiving data from the form, delete when adding functionality
         const data = new FormData(event.currentTarget);
-        /*console.log({
+        console.log({
             email: data.get('email'),
             password: data.get('password'),
         })*/
