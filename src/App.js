@@ -1,30 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { getAllData } from './util/index';
+import React from 'react';
+import {defaultTheme} from "./styles";
+import {CssBaseline, ThemeProvider} from "@mui/material";
+import SignUpPage from "./pages/SignUpPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
-const URL = 'http://localhost:8000/api/v1/';
+/*// URL for quick access to the server
+const URL = 'http://localhost:8000/api/v1/';*/
 
 function App() {
-
-const [message, setMessage] = useState(''); 
-
-  useEffect(() => {
-
-    (async () => {
-      const myData = await getAllData(URL)
-      setMessage(myData.data);
-    })();
-      
-    return () => {
-      console.log('unmounting');
-    }
-
-  }, []);
-
-  return (
-    <>
-      <h1>{message}</h1>
-    </>
-  );
+    return (
+        <ThemeProvider theme={defaultTheme}>
+                <CssBaseline/>
+                {/*<LoginPage/>*/}
+                {/*<SignUpPage/>*/}
+                <ResetPasswordPage/>
+        </ThemeProvider>
+    );
 }
 
 export default App;

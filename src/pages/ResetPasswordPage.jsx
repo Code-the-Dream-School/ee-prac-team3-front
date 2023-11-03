@@ -1,28 +1,29 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import {ThemeProvider} from '@mui/material/styles';
-import customColors, {defaultTheme} from "./styles";
+import {
+    Button,
+    TextField,
+    Link,
+    Paper,
+    Box,
+    Grid,
+    Typography
+} from '@mui/material';
+import customColors from "../styles";
+import Copyright from "../components/Copyright";
 
-export const ResetPasswordPage = () => {
+export default function ResetPasswordPage () {
     const handleSubmit = (event) => {
         event.preventDefault();
+        /*//debugging code for testing receiving data from the form, delete when adding functionality
         const data = new FormData(event.currentTarget);
         console.log({
             email: data.get('email'),
-        })
+        })*/
     };
 
     return (
-        <ThemeProvider theme={defaultTheme}>
+        <>
             <Grid container component="main" sx={{height: '100vh'}}>
-                <CssBaseline/>
                 <Grid
                     item
                     xs={false}
@@ -82,22 +83,15 @@ export const ResetPasswordPage = () => {
                                 Send reset link
                             </Button>
                             <Grid item sx={{width:"100%", display: "flex", flexDirection:"column", alignItems:"self-end"}}>
-                                <Link href="" variant="body2" color="primary.main">
+                                <Link href="src/pages/ResetPasswordPage" variant="body2" color="primary.main">
                                     {"Go to Sign in page"}
                                 </Link>
                             </Grid>
-                            <Typography sx={{mt: 5}} variant="body2" color="text.secondary" align="center">
-                                {'Copyright © '}
-                                <Link color="inherit" href="">
-                                    JSQuiz
-                                </Link>{' '}
-                                {new Date().getFullYear()}
-                                {'.'}
-                            </Typography>
+                            <Copyright/>
                         </Box>
                     </Box>
                 </Grid>
             </Grid>
-        </ThemeProvider>
+        </>
     );
 }
