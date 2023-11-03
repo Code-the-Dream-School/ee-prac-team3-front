@@ -83,7 +83,7 @@ export default function ResetPasswordPage () {
                                 Send reset link
                             </Button>
                             <Grid item sx={{width:"100%", display: "flex", flexDirection:"column", alignItems:"self-end"}}>
-                                <Link href="src/pages/ResetPasswordPage" variant="body2" color="primary.main">
+                                <Link href="#" variant="body2" color="primary.main">
                                     {"Go to Sign in page"}
                                 </Link>
                             </Grid>
