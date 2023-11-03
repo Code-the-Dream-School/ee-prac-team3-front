@@ -1,30 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { getAllData } from './util/index';
+import React from 'react';
+import LoginPage from "./pages/LoginPage";
+import {defaultTheme} from "./styles";
+import {CssBaseline, Grid, ThemeProvider} from "@mui/material";
 
 const URL = 'http://localhost:8000/api/v1/';
 
 function App() {
-
-const [message, setMessage] = useState(''); 
-
-  useEffect(() => {
-
-    (async () => {
-      const myData = await getAllData(URL)
-      setMessage(myData.data);
-    })();
-      
-    return () => {
-      console.log('unmounting');
-    }
-
-  }, []);
-
-  return (
-    <>
-      <h1>{message}</h1>
-    </>
-  );
+    return (
+        <ThemeProvider theme={defaultTheme}>
+            <Grid container component="main" sx={{height: '100vh'}}>
+                <CssBaseline/>
+                <LoginPage/>
+            </Grid>
+        </ThemeProvider>
+    );
 }
 
 export default App;
