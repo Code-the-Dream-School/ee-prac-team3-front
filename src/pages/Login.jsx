@@ -16,7 +16,7 @@ import customColors from "styles";
 import Copyright from "components/Copyright";
 import {RESET_PASSWORD, SIGNUP} from "App";
 
-export default function LoginPage() {
+export default function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
         /*//debugging code for testing receiving data from the form, delete when adding functionality

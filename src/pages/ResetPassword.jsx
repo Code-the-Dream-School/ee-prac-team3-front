@@ -12,7 +12,7 @@ import customColors from "styles";
 import Copyright from "components/Copyright";
 import {LOGIN} from "App";
 
-export default function ResetPasswordPage () {
+export default function ResetPassword () {
     const handleSubmit = (event) => {
         event.preventDefault();
         /*//debugging code for testing receiving data from the form, delete when adding functionality
