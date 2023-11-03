@@ -1,7 +1,6 @@
 import React from 'react';
 import {defaultTheme} from "./styles";
 import {CssBaseline, ThemeProvider} from "@mui/material";
-import SignUpPage from "./pages/SignUpPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 /*// URL for quick access to the server
