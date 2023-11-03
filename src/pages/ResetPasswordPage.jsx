@@ -8,8 +8,9 @@ import {
     Grid,
     Typography
 } from '@mui/material';
-import customColors from "../styles";
-import Copyright from "../components/Copyright";
+import customColors from "styles";
+import Copyright from "components/Copyright";
+import {LOGIN} from "App";
 
 export default function ResetPasswordPage () {
     const handleSubmit = (event) => {
@@ -83,7 +84,7 @@ export default function ResetPasswordPage () {
                                 Send reset link
                             </Button>
                             <Grid item sx={{width:"100%", display: "flex", flexDirection:"column", alignItems:"self-end"}}>
-                                <Link href="#" variant="body2" color="primary.main">
+                                <Link href={LOGIN} variant="body2" color="primary.main">
                                     {"Go to Sign in page"}
                                 </Link>
                             </Grid>
