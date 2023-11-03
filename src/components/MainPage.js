@@ -8,17 +8,13 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Labels from "./Labels";
 import { Chip } from "@mui/material";
 import Progress from "./Progress";
-import oldreactJsLogo from "../logoImages/reactjs.svg";
 import reactJsLogo from "../logoImages/react-logo.png";
 import jsLogo from "../logoImages/js.svg";
 import dataStructureLogo from "../logoImages/data-structure.png";
@@ -98,7 +94,6 @@ const userProgress = {
   ],
 };
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function MainPage() {
@@ -133,14 +128,6 @@ export default function MainPage() {
                     display: "flex",
                   }}
                 >
-                  {/* <CardMedia
-                    component="div"
-                    sx={{
-                      // 16:9
-                      pt: "56.25%",
-                    }}
-                    image="https://source.unsplash.com/random?wallpapers"
-                  /> */}
                   <CardContent sx={{ display: "flex" }}>
                     <Box direction="row" flexWrap="wrap" gap="5px">
                       <Labels labels={card.labels}></Labels>
@@ -189,18 +176,7 @@ export default function MainPage() {
                         </Typography>
                       </Box>
                     </Box>
-                    {/* <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
-                    </Typography> */}
                   </CardContent>
-                  {/* <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
-                  </CardActions> */}
                 </Card>
               </Grid>
             ))}

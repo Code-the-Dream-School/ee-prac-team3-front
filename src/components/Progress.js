@@ -1,6 +1,5 @@
 import React from "react";
 import { CircularProgress } from "@mui/material";
-// import customColors from "./MyComponents/styles";
 import customColors from "../customColors";
 
 const Progress = (props) => {
