@@ -2,12 +2,12 @@ import React from 'react';
 import {defaultTheme} from "styles";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import {Navigate, Route, Routes} from "react-router-dom";
-import HomePage from "pages/HomePage";
-import ErrorPage from "pages/ErrorPage";
-import LoginPage from "pages/LoginPage";
-import SignUpPage from "pages/SignUpPage";
-import ResetPasswordPage from "pages/ResetPasswordPage";
-import useAuth from "./auth/useAuth";
+import Home from "pages/Home";
+import Error from "pages/Error";
+import Login from "pages/Login";
+import SignUp from "pages/SignUp";
+import ResetPassword from "pages/ResetPassword";
+import useAuth from "auth/useAuth";
 
 const PATH = {
     /*
@@ -31,8 +31,7 @@ const PATH = {
 export const {HOME, LOGIN, SIGNUP, RESET_PASSWORD} = PATH;
 
 function App() {
-    // setAuth will be used for logout
-    const {auth, setAuth} = useAuth();
+    const {auth, } = useAuth();
     return (
         <>
         <ThemeProvider theme={defaultTheme}>
@@ -45,16 +44,16 @@ function App() {
                         auth.loggedIn ? (
                             <Navigate to="/"></Navigate>
                         ) : (
-                            <LoginPage/>
+                            <Login/>
                         )
                     }
                     />
                 {/* non-protected routes */}
                 <Route path={'/'} element={<Navigate to={HOME}/>}/>
-                <Route path={HOME} element={<HomePage/>}/>
-                <Route path={SIGNUP} element={<SignUpPage/>}/>
-                <Route path={RESET_PASSWORD} element={<ResetPasswordPage/>}/>
-                <Route path="/*" element={<ErrorPage/>}/>
+                <Route path={HOME} element={<Home/>}/>
+                <Route path={SIGNUP} element={<SignUp/>}/>
+                <Route path={RESET_PASSWORD} element={<ResetPassword/>}/>
+                <Route path="/*" element={<Error/>}/>
             </Routes>
         </ThemeProvider>
         </>

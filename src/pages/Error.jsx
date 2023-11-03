@@ -2,7 +2,7 @@ import React from 'react';
 import {HOME} from "App";
 import {Link} from "@mui/material";
 
-export default function ErrorPage() {
+export default function Error() {
     return (
         <div>
             Error 404 :(

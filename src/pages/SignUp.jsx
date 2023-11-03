@@ -12,9 +12,9 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import customColors from "styles";
 import Copyright from "components/Copyright";
-import {LOGIN} from "../App";
+import {LOGIN} from "App";
 
-export default function SignUpPage() {
+export default function SignUp() {
     const handleSubmit = (event) => {
         event.preventDefault();
         /*//debugging code for testing receiving data from the form, delete when adding functionality
