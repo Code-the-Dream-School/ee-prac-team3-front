@@ -29,3 +29,4 @@ yarn-error.log*
 .idea/ee-prac-team3-front.iml
 .idea/modules.xml
 .idea/vcs.xml
+.idea
