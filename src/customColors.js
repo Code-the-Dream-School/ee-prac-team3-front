@@ -13,11 +13,3 @@ const customColors = {
 };
 
 export default customColors;
-
-// const customColors = {
-//   backgroundLight: "#FAFAFA",
-//   greyDark: "#565656",
-//   greyMedium: "#8F8F8F",
-//   greyLight: "#E8E8E8",
-//   greenMedium: "#3BB98A",
-// };
