@@ -18,7 +18,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Labels from "./Labels";
 import { Chip } from "@mui/material";
 import Progress from "./Progress";
-import reactJsLogo from "../logoImages/reactjs.svg";
+import oldreactJsLogo from "../logoImages/reactjs.svg";
+import reactJsLogo from "../logoImages/react-logo.png";
 import jsLogo from "../logoImages/js.svg";
 import dataStructureLogo from "../logoImages/data-structure.png";
 
@@ -33,9 +34,9 @@ const quizCards = [
   },
   {
     id: "react-middle",
-    title: "React Middle",
+    title: "React Mid-Level",
     category: "react",
-    level: "middle",
+    level: "mid-level",
     labels: ["frontend"],
     image: reactJsLogo,
   },
@@ -57,9 +58,9 @@ const quizCards = [
   },
   {
     id: "js-middle",
-    title: "JS Middle",
+    title: "JS Mid-Level",
     category: "javaScript",
-    level: "middle",
+    level: "mid-level",
     labels: ["frontend", "backend"],
     image: jsLogo,
   },
@@ -118,7 +119,7 @@ export default function MainPage() {
               color="text.primary"
               gutterBottom
             >
-              CHOOSE THE QUIZ
+              CHOOSE A QUIZ
             </Typography>
           </Container>
         </Box>
@@ -128,9 +129,8 @@ export default function MainPage() {
               <Grid item key={card.id} xs={12} sm={6} md={4}>
                 <Card
                   sx={{
-                    // height: "100%",
+                    height: "100%",
                     display: "flex",
-                    // flexDirection: "column",
                   }}
                 >
                   {/* <CardMedia
@@ -141,19 +141,20 @@ export default function MainPage() {
                     }}
                     image="https://source.unsplash.com/random?wallpapers"
                   /> */}
-                  <CardContent sx={{ flexGrow: 1, display: "flex" }}>
+                  <CardContent sx={{ display: "flex" }}>
                     <Box direction="row" flexWrap="wrap" gap="5px">
                       <Labels labels={card.labels}></Labels>
                       <Chip size={"small"} label={card.level} />
-                      <Chip size={"small"} label={card.category} />
+                      <Chip size={"small"} label={card.category} />{" "}
+                      <Box marginTop="80px">
+                        <CardActions>
+                          <Button variant="outlined" size="small">
+                            Start Quiz
+                          </Button>
+                        </CardActions>
+                      </Box>
                     </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                      }}
-                    >
+                    <Box marginLeft="50px">
                       <Box
                         marginTop="25px"
                         sx={{

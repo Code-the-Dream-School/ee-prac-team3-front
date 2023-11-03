@@ -1,7 +1,7 @@
 import React from "react";
 import { Chip } from "@mui/material";
 
-const Tag = (props) => {
+const Labels = (props) => {
   const { labels } = props;
   return (
     <>
@@ -12,4 +12,4 @@ const Tag = (props) => {
   );
 };
 
-export default Tag;
+export default Labels;
