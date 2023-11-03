@@ -16,8 +16,9 @@ import Copyright from "../components/Copyright";
 export default function SignUpPage() {
     const handleSubmit = (event) => {
         event.preventDefault();
+        /*//debugging code for testing receiving data from the form, delete when adding functionality
         const data = new FormData(event.currentTarget);
-        /* console.log({
+         console.log({
              firstName: data.get('firstName'),
              lastName: data.get('lastName'),
              email: data.get('email'),
@@ -51,7 +52,7 @@ export default function SignUpPage() {
                         alignItems: 'center',
                     }}
                 >
-                    <Avatar sx={{m: 1, bgcolor: 'primary.main'}}>
+                    <Avatar sx={{m: 1, backgroundColor: 'primary.main'}}>
                         <LockOutlinedIcon/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
