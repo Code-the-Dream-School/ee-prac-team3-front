@@ -127,7 +127,7 @@ export default function SignUpPage() {
                             </Grid>
                         </Box>
                     </Box>
-                    <Copyright/>
+                    <Copyright sx={{mt: 5}} color={"text.secondary"}/>
                 </Grid>
             </Grid>
         </>
