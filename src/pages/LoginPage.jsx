@@ -109,7 +109,7 @@ export default function LoginPage() {
                                     </Link>
                                 </Grid>
                             </Grid>
-                            <Copyright/>
+                            <Copyright sx={{mt: 5}} color={"text.secondary"}/>
                         </Box>
                     </Box>
                 </Grid>

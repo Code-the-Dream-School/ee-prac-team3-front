@@ -87,7 +87,7 @@ export default function ResetPasswordPage () {
                                     {"Go to Sign in page"}
                                 </Link>
                             </Grid>
-                            <Copyright/>
+                            <Copyright sx={{mt: 5}} color={"text.secondary"}/>
                         </Box>
                     </Box>
                 </Grid>

@@ -1,9 +1,10 @@
 import React from 'react';
 import {Link, Typography} from "@mui/material";
 
-const Copyright = () => {
+const Copyright = (props) => {
+    const {color} = props
     return (
-        <Typography sx={{mt: 5}} variant="body2" color="text.secondary" align="center">
+        <Typography variant="body2" color={color} align="center">
             {'Copyright © '}
             <Link color="inherit" href="#">
                 JSQuiz
