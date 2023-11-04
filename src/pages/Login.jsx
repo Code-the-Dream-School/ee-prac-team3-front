@@ -1,23 +1,29 @@
 import * as React from 'react';
 import {
+    Avatar,
     Button,
     TextField,
     Link,
     Paper,
     Box,
     Grid,
-    Typography
+    Typography,
+    Checkbox,
+    FormControlLabel
 } from '@mui/material';
-import customColors from "../styles";
-import Copyright from "../components/Copyright";
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import customColors from "styles";
+import Copyright from "components/Copyright";
+import {RESET_PASSWORD, SIGNUP} from "App";
 
-export default function ResetPasswordPage () {
+export default function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
         /*//debugging code for testing receiving data from the form, delete when adding functionality
         const data = new FormData(event.currentTarget);
         console.log({
             email: data.get('email'),
+            password: data.get('password'),
         })*/
     };
 
@@ -32,8 +38,7 @@ export default function ResetPasswordPage () {
                     sx={{
                         backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
                         backgroundRepeat: 'no-repeat',
-                        backgroundColor: (t) =>
-                            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+                        backgroundColor: (t) => t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}
@@ -44,20 +49,17 @@ export default function ResetPasswordPage () {
                             my: 8,
                             mx: 4,
                             display: 'flex',
-                            flexDirection: 'column'
+                            flexDirection: 'column',
+                            alignItems: 'center',
                         }}
                     >
+                        <Avatar sx={{m: 1, backgroundColor: "primary.main"}}>
+                            <LockOutlinedIcon/>
+                        </Avatar>
                         <Typography component="h1" variant="h5">
-                            Forgot password
+                            Sign in
                         </Typography>
-                        <Box component="form" noValidate onSubmit={handleSubmit}
-                             sx={{
-                                 mt: 1,
-                                 display: 'flex',
-                                 flexDirection: 'column',
-                                 alignItems: 'center'
-                             }}
-                        >
+                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 1}}>
                             <TextField
                                 margin="normal"
                                 required
@@ -67,6 +69,20 @@ export default function ResetPasswordPage () {
                                 name="email"
                                 autoComplete="email"
                                 autoFocus
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                            />
+                            <FormControlLabel
+                                control={<Checkbox value="remember" color="primary"/>}
+                                label="Remember me"
                             />
                             <Button
                                 type="submit"
@@ -80,12 +96,19 @@ export default function ResetPasswordPage () {
                                     },
                                 ]}
                             >
-                                Send reset link
+                                Sign In
                             </Button>
-                            <Grid item sx={{width:"100%", display: "flex", flexDirection:"column", alignItems:"self-end"}}>
-                                <Link href="#" variant="body2" color="primary.main">
-                                    {"Go to Sign in page"}
-                                </Link>
+                            <Grid container>
+                                <Grid item xs>
+                                    <Link href={RESET_PASSWORD} variant="body2" color="primary.main">
+                                        Forgot password?
+                                    </Link>
+                                </Grid>
+                                <Grid item>
+                                    <Link href={SIGNUP} variant="body2" color="primary.main">
+                                        Don't have an account? Sign Up
+                                    </Link>
+                                </Grid>
                             </Grid>
                             <Copyright/>
                         </Box>
@@ -93,5 +116,5 @@ export default function ResetPasswordPage () {
                 </Grid>
             </Grid>
         </>
-    );
+    )
 }
