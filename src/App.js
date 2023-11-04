@@ -1,20 +1,64 @@
 import React from 'react';
-import {defaultTheme} from "./styles";
+import {Navigate, Route, Routes} from "react-router-dom";
+import useAuth from "auth/useAuth";
 import {CssBaseline, ThemeProvider} from "@mui/material";
-import Footer from "./components/Footer";
+import {defaultTheme} from "assets/styles";
+import Home from "pages/Home";
+import Login from "pages/Login";
+import SignUp from "pages/SignUp";
+import ResetPassword from "pages/ResetPassword";
+import Footer from "components/Footer";
+import Error from "pages/Error";
 
-/*// URL for quick access to the server
-const URL = 'http://localhost:8000/api/v1/';*/
+const PATH = {
+    /*
+    // For further use:
+    QUIZZES: '/quiz-app',
+    QUIZ: '/quiz',
+    ABOUT: '/about',
+    NOTES: '/notes,
+    UNAUTHORIZED: '/unauthorized',
+    FAVORITES: '/favorites',
+    CONFIRMATION: '/confirmation',
+    LOGOUT: '/logout',
+    USER_SETTINGS: '/user-settings'
+    */
+    HOME: '/home',
+    LOGIN: '/login',
+    SIGNUP: '/signup',
+    RESET_PASSWORD: '/reset-password',
+};
+
+export const {HOME, LOGIN, SIGNUP, RESET_PASSWORD} = PATH;
 
 function App() {
+    const {auth, } = useAuth();
     return (
+        <>
         <ThemeProvider theme={defaultTheme}>
-                <CssBaseline/>
-                {/*<LoginPage/>*/}
-                {/*<SignUpPage/>*/}
-                {/*<ResetPasswordPage/>*/}
+            <CssBaseline/>
+            <Routes>
+                {/* protected route */}
+                <Route
+                    path={LOGIN}
+                    element={
+                        auth.loggedIn ? (
+                            <Navigate to="/"></Navigate>
+                        ) : (
+                            <Login/>
+                        )
+                    }
+                    />
+                {/* non-protected routes */}
+                <Route path={'/'} element={<Navigate to={HOME}/>}/>
+                <Route path={HOME} element={<Home/>}/>
+                <Route path={SIGNUP} element={<SignUp/>}/>
+                <Route path={RESET_PASSWORD} element={<ResetPassword/>}/>
+                <Route path="/*" element={<Error/>}/>
+            </Routes>
             <Footer/>
         </ThemeProvider>
+        </>
     );
 }
 

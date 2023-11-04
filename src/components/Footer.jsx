@@ -2,7 +2,7 @@ import React from 'react';
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Copyright from "./Copyright";
-import customColors from "../styles";
+import customColors from "assets/styles";
 
 export default function Footer() {
     return (
@@ -16,10 +16,14 @@ export default function Footer() {
                     theme.palette.mode === 'light'
                         ? customColors.blackLight
                         : theme.palette.grey[800],
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0
             }}
         >
-            <Container maxWidth="sm">
-                <Copyright color={customColors.white}/>
+            <Container maxWidth="sm" >
+                <Copyright />
             </Container>
         </Box>
     )
