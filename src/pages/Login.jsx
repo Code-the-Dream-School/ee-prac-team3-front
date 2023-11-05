@@ -12,9 +12,8 @@ import {
     FormControlLabel
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import customColors from "styles";
-import Copyright from "components/Copyright";
 import {RESET_PASSWORD, SIGNUP} from "App";
+import customColors from "assets/styles";
 
 export default function Login() {
     const handleSubmit = (event) => {
@@ -110,7 +109,6 @@ export default function Login() {
                                     </Link>
                                 </Grid>
                             </Grid>
-                            <Copyright/>
                         </Box>
                     </Box>
                 </Grid>

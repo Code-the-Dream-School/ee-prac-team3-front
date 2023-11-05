@@ -1,13 +1,14 @@
 import React from 'react';
-import {defaultTheme} from "styles";
-import {CssBaseline, ThemeProvider} from "@mui/material";
 import {Navigate, Route, Routes} from "react-router-dom";
+import useAuth from "auth/useAuth";
+import {CssBaseline, ThemeProvider} from "@mui/material";
+import {defaultTheme} from "assets/styles";
 import Home from "pages/Home";
-import Error from "pages/Error";
 import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import ResetPassword from "pages/ResetPassword";
-import useAuth from "auth/useAuth";
+import Footer from "components/Footer";
+import Error from "pages/Error";
 
 const PATH = {
     /*
@@ -55,6 +56,7 @@ function App() {
                 <Route path={RESET_PASSWORD} element={<ResetPassword/>}/>
                 <Route path="/*" element={<Error/>}/>
             </Routes>
+            <Footer/>
         </ThemeProvider>
         </>
     );

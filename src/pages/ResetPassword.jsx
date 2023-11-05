@@ -8,11 +8,10 @@ import {
     Grid,
     Typography
 } from '@mui/material';
-import customColors from "styles";
-import Copyright from "components/Copyright";
+import customColors from "assets/styles";
 import {LOGIN} from "App";
 
-export default function ResetPassword () {
+export default function ResetPassword() {
     const handleSubmit = (event) => {
         event.preventDefault();
         /*//debugging code for testing receiving data from the form, delete when adding functionality
@@ -83,12 +82,16 @@ export default function ResetPassword () {
                             >
                                 Send reset link
                             </Button>
-                            <Grid item sx={{width:"100%", display: "flex", flexDirection:"column", alignItems:"self-end"}}>
+                            <Grid item sx={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "self-end"
+                            }}>
                                 <Link href={LOGIN} variant="body2" color="primary.main">
                                     {"Go to Sign in page"}
                                 </Link>
                             </Grid>
-                            <Copyright/>
                         </Box>
                     </Box>
                 </Grid>

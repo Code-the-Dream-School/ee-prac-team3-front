@@ -10,8 +10,7 @@ import {
     Typography
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import customColors from "styles";
-import Copyright from "components/Copyright";
+import customColors from "assets/styles";
 import {LOGIN} from "App";
 
 export default function SignUp() {
@@ -128,7 +127,6 @@ export default function SignUp() {
                             </Grid>
                         </Box>
                     </Box>
-                    <Copyright/>
                 </Grid>
             </Grid>
         </>
