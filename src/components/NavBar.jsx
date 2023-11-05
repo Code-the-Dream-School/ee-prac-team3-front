@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {
     Link,
     Paper,
@@ -13,8 +13,8 @@ import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 
 export default function NavBar() {
-    const [value, setValue] = React.useState(0);
-    const ref = React.useRef(null);
+    const [value, setValue] = useState(0);
+    const ref = useRef(null);
 
     return (
         <Box sx={{pb: 7}} ref={ref}>
