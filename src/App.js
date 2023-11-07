@@ -1,26 +1,60 @@
-import React, { useState, useEffect } from "react";
-// import { getAllData } from "./util/index";
-import MainPage from "./components/MainPage";
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import useAuth from "auth/useAuth";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { defaultTheme } from "assets/styles";
+import Home from "pages/Home";
+import MainPage from "components/MainPage";
+import Login from "pages/Login";
+import SignUp from "pages/SignUp";
+import ResetPassword from "pages/ResetPassword";
+import Footer from "components/Footer";
+import Error from "pages/Error";
 
-// const URL = "http://localhost:8000/api/v1/";
+const PATH = {
+  /*
+    // For further use:
+    QUIZZES: '/quiz-app',
+    QUIZ: '/quiz',
+    ABOUT: '/about',
+    NOTES: '/notes,
+    UNAUTHORIZED: '/unauthorized',
+    FAVORITES: '/favorites',
+    CONFIRMATION: '/confirmation',
+    LOGOUT: '/logout',
+    USER_SETTINGS: '/user-settings'
+    */
+  HOME: "/home",
+  MAIN: "/quizzes",
+  LOGIN: "/login",
+  SIGNUP: "/signup",
+  RESET_PASSWORD: "/reset-password",
+};
+
+export const { HOME, MAIN, LOGIN, SIGNUP, RESET_PASSWORD } = PATH;
 
 function App() {
-  // const [message, setMessage] = useState("");
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const myData = await getAllData(URL);
-  //     setMessage(myData.data);
-  //   })();
-
-  //   return () => {
-  //     console.log("unmounting");
-  //   };
-  // }, []);
-
+  const { auth } = useAuth();
   return (
     <>
-      <MainPage />
+      <ThemeProvider theme={defaultTheme}>
+        <CssBaseline />
+        <Routes>
+          {/* protected route */}
+          <Route
+            path={LOGIN}
+            element={auth.loggedIn ? <Navigate to="/"></Navigate> : <Login />}
+          />
+          {/* non-protected routes */}
+          <Route path={"/"} element={<Navigate to={HOME} />} />
+          <Route path={HOME} element={<Home />} />
+          <Route path={MAIN} element={<MainPage />} />
+          <Route path={SIGNUP} element={<SignUp />} />
+          <Route path={RESET_PASSWORD} element={<ResetPassword />} />
+          <Route path="/*" element={<Error />} />
+        </Routes>
+        <Footer />
+      </ThemeProvider>
     </>
   );
 }
