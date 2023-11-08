@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import QuizContent from './QuizContent';
 import { getAllData } from './util/index';
+import RegisterForm from './RegisterForm';
+import './App.css';
 
 const URL = 'http://localhost:8000/api/v1/';
 
@@ -22,7 +25,9 @@ const [message, setMessage] = useState('');
 
   return (
     <>
-      <h1>{message}</h1>
+      {message ? <h1>{message}</h1> : <h1></h1>} 
+      <QuizContent/>
+      {/*<RegisterForm/>*/}
     </>
   );
 }
