@@ -1,8 +1,6 @@
-import React from "react";
 import { Chip } from "@mui/material";
 
-const Labels = (props) => {
-  const { labels } = props;
+const Labels = ({ labels }) => {
   return (
     <>
       {labels.map((label, index) => (
