@@ -14,9 +14,9 @@ import {
 } from "@mui/material";
 import Progress from "../components/Progress";
 import Labels from "../components/Labels";
-import reactJsLogo from "../logoImages/react-logo.png";
+import reactJsLogo from "../logoImages/react-logo-svgrepo-com.svg";
 import jsLogo from "../logoImages/js.svg";
-import dataStructureLogo from "../logoImages/data-structure.png";
+import dataStructureLogo from "../logoImages/hierarchical-structure-svgrepo-com.svg";
 
 const quizCards = [
   {
