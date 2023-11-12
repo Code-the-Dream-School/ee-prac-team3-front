@@ -1,6 +1,7 @@
 {
-  "name": "ee-practicum-team1-front",
-  "version": "0.1.0",
+  "name": "ee-practicum-team-3-front",
+  "version": "1.0.0",
+  "description": "Front-End Repo for Team 3 of Echidna/Emu Practicum",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
