@@ -4,7 +4,7 @@ import useAuth from "auth/useAuth";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { defaultTheme } from "assets/styles";
 import Home from "pages/Home";
-import MainPage from "components/MainPage";
+import Main from "pages/Main";
 import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import ResetPassword from "pages/ResetPassword";
@@ -48,7 +48,7 @@ function App() {
           {/* non-protected routes */}
           <Route path={"/"} element={<Navigate to={HOME} />} />
           <Route path={HOME} element={<Home />} />
-          <Route path={MAIN} element={<MainPage />} />
+          <Route path={MAIN} element={<Main />} />
           <Route path={SIGNUP} element={<SignUp />} />
           <Route path={RESET_PASSWORD} element={<ResetPassword />} />
           <Route path="/*" element={<Error />} />
