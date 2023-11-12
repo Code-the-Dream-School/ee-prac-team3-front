@@ -2,8 +2,7 @@ import React from "react";
 import { CircularProgress } from "@mui/material";
 import customColors from "../customColors";
 
-const Progress = (props) => {
-  const { quizProgress, quizId } = props;
+const Progress = ({ quizProgress, quizId }) => {
   return (
     <>
       <CircularProgress
