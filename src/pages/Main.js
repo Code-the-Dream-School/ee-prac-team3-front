@@ -1,5 +1,4 @@
 import * as React from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
   Button,
   Card,
@@ -13,8 +12,8 @@ import {
   Container,
   Chip,
 } from "@mui/material";
-import Progress from "./Progress";
-import Labels from "./Labels";
+import Progress from "../components/Progress";
+import Labels from "../components/Labels";
 import reactJsLogo from "../logoImages/react-logo.png";
 import jsLogo from "../logoImages/js.svg";
 import dataStructureLogo from "../logoImages/data-structure.png";
@@ -94,11 +93,9 @@ const quizProgress = {
   ],
 };
 
-const defaultTheme = createTheme();
-
-export default function MainPage() {
+export default function Main() {
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       <CssBaseline />
       <main>
         <Box
@@ -164,7 +161,7 @@ export default function MainPage() {
                         <Progress
                           quizProgress={quizProgress}
                           quizId={card.id}
-                        ></Progress>
+                        />
                       </Box>
                       <Box>
                         <Typography
@@ -183,6 +180,6 @@ export default function MainPage() {
           </Grid>
         </Container>
       </main>
-    </ThemeProvider>
+    </>
   );
 }
