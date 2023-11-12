@@ -3,7 +3,7 @@ import { CircularProgress } from "@mui/material";
 import customColors from "../customColors";
 
 const Progress = (props) => {
-  const { userProgress, quizId } = props;
+  const { quizProgress, quizId } = props;
   return (
     <>
       <CircularProgress
@@ -15,7 +15,7 @@ const Progress = (props) => {
           position: "absolute",
         }}
       />
-      {userProgress["userId"].map((progress) =>
+      {quizProgress["userId"].map((progress) =>
         progress.id === quizId ? (
           <CircularProgress
             size={120}
