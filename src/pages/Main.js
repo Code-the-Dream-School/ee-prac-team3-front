@@ -68,30 +68,36 @@ const quizCards = [
     image: dataStructureLogo,
   },
 ];
-const quizProgress = {
-  ["userId"]: [
-    {
-      id: "react-basic",
-      attemptsNumber: "",
-      progress: 50,
-    },
-    {
-      id: "react-middle",
-      attemptsNumber: "",
-      progress: 10,
-    },
-    {
-      id: "js-basic",
-      attemptsNumber: "",
-      progress: 80,
-    },
-    {
-      id: "js-functions",
-      attemptsNumber: "",
-      progress: 100,
-    },
-  ],
-};
+const quizProgress = [
+  {
+    quizId: "react-basic",
+    attemptsCount: 1,
+    bestScore: 80,
+    lastScore: 50,
+    progress: 50,
+  },
+  {
+    quizId: "react-middle",
+    attemptsCount: 4,
+    bestScore: 50,
+    lastScore: 50,
+    progress: 10,
+  },
+  {
+    quizId: "js-basic",
+    attemptsCount: 3,
+    bestScore: 90,
+    lastScore: 30,
+    progress: 80,
+  },
+  {
+    quizId: "js-functions",
+    attemptsCount: 1,
+    bestScore: 20,
+    lastScore: 20,
+    progress: 100,
+  },
+];
 
 export default function Main() {
   return (
