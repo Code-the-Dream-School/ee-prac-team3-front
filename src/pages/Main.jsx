@@ -100,6 +100,10 @@ const quizProgress = [
 ];
 
 export default function Main() {
+  function getProgressForQuiz(quizId) {
+    const progressObj = quizProgress.find((p) => p.quizId === quizId);
+    return progressObj ? progressObj.progress : 0;
+  }
   return (
     <>
       <CssBaseline />
@@ -164,10 +168,7 @@ export default function Main() {
                           }}
                           image={card.image}
                         />
-                        <Progress
-                          quizProgress={quizProgress}
-                          quizId={card.id}
-                        />
+                        <Progress progress={getProgressForQuiz(card.id)} />
                       </Box>
                       <Box>
                         <Typography
