@@ -18,7 +18,7 @@ export default function NavBar() {
 
     return (
         <Box sx={{pb: 7}} ref={ref}>
-            <Paper sx={{position: 'fixed', top: 0, left: 0, right: 0}} elevation={3}>
+            <Paper elevation={3}>
                 <BottomNavigation
                     showLabels
                     value={value}
