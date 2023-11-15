@@ -1,5 +1,5 @@
 import {Box, Typography} from "@mui/material";
-import s from './Home.module.css'
+import s from './Highlights.module.css'
 import customColors, {defaultTheme} from "../../assets/styles";
 import React from "react";
 

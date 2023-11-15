@@ -9,41 +9,44 @@ import ResetPassword from "pages/ResetPassword";
 import Footer from "components/Footer";
 import Error from "pages/Error";
 import Home from "pages/Home/Home";
-import highlight_1 from '../src/assets/images/highlight_1.svg';
-import highlight_2 from '../src/assets/images/highlight_2.svg';
-import highlight_3 from '../src/assets/images/highlight_3.svg';
-import highlight_4 from '../src/assets/images/highlight_4.svg';
+import highlight_1 from './assets/images/highlight_effective_knowledge_testing.svg';
+import highlight_2 from './assets/images/highlight_preparing_for_a_job_interview.svg';
+import highlight_3 from './assets/images/highlight_improving_coding_skills.svg';
+import highlight_4 from './assets/images/highlight_notes_for_productive_studying.svg';
 import CustomizedSnackbars from "components/Snackbar";
+
+const BACKEND_TEAM='backend team';
+const FRONTEND_TEAM='frontend team';
 
 export const projectTeam = [
     {
         name: 'Katsiaryna',
         imageURL: 'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-        role: 'frontend team',
+        role: FRONTEND_TEAM,
         gitHub: 'https://github.com/katsiarynalashcheuskaya'
     },
     {
         name: 'Alina',
         imageURL: 'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-        role: 'backend team',
+        role: BACKEND_TEAM,
         gitHub: 'https://github.com/npnote8'
     },
     {
         name: 'David',
         imageURL: 'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-        role: 'frontend team',
+        role: FRONTEND_TEAM,
         gitHub: 'https://github.com/DavidGslade86'
     },
     {
         name: 'Bino',
         imageURL: 'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-        role: 'backend team',
+        role: BACKEND_TEAM,
         gitHub: 'https://github.com/Bino26'
     },
     {
         name: 'Eva',
         imageURL: 'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-        role: 'frontend team',
+        role: FRONTEND_TEAM,
         gitHub: 'https://github.com/evaw277'
     },
 ]
@@ -103,7 +106,7 @@ function App() {
                     severity={snackbar.severity}
                     variant="filled"
                     onClose={() =>
-                        setSnackbar((prevSnackbar) => ({ ...prevSnackbar, isOpened: false }))
+                        setSnackbar((prevSnackbar) => ({...prevSnackbar, isOpened: false}))
                     }
                     dismissible
                     message={snackbar.message}
@@ -122,7 +125,8 @@ function App() {
                     />
                     {/* non-protected routes */}
                     <Route path={'/'} element={<Navigate to={HOME}/>}/>
-                    <Route path={HOME} element={<Home snackbar={setSnackbar} team={projectTeam} highlights={highlights}/>}/>
+                    <Route path={HOME}
+                           element={<Home snackbar={setSnackbar} team={projectTeam} highlights={highlights}/>}/>
                     <Route path={SIGNUP} element={<SignUp/>}/>
                     <Route path={RESET_PASSWORD} element={<ResetPassword/>}/>
                     <Route path="/*" element={<Error/>}/>
