@@ -15,14 +15,17 @@ import highlight_3 from './assets/images/highlight_improving_coding_skills.svg';
 import highlight_4 from './assets/images/highlight_notes_for_productive_studying.svg';
 import CustomizedSnackbars from "components/Snackbar";
 
-const BACKEND_TEAM='backend team';
-const FRONTEND_TEAM='frontend team';
+const teamRoles = {
+    BACKEND_TEAM: 'backend team',
+    FRONTEND_TEAM: 'frontend team'
+}
+const {BACKEND_TEAM, FRONTEND_TEAM} = teamRoles;
 
 export const projectTeam = [
     {
         name: 'Katsiaryna',
         imageURL: 'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-        role: FRONTEND_TEAM,
+        role: BACKEND_TEAM,
         gitHub: 'https://github.com/katsiarynalashcheuskaya'
     },
     {
