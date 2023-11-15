@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Navigate, Route, Routes} from "react-router-dom";
 import useAuth from "auth/useAuth";
 import {CssBaseline, ThemeProvider} from "@mui/material";
@@ -8,11 +8,12 @@ import SignUp from "pages/SignUp";
 import ResetPassword from "pages/ResetPassword";
 import Footer from "components/Footer";
 import Error from "pages/Error";
-import Home from "./pages/Home/Home";
+import Home from "pages/Home/Home";
 import highlight_1 from '../src/assets/images/highlight_1.svg';
 import highlight_2 from '../src/assets/images/highlight_2.svg';
 import highlight_3 from '../src/assets/images/highlight_3.svg';
 import highlight_4 from '../src/assets/images/highlight_4.svg';
+import CustomizedSnackbars from "components/Snackbar";
 
 export const projectTeam = [
     {
@@ -86,32 +87,48 @@ const PATH = {
 export const {HOME, LOGIN, SIGNUP, RESET_PASSWORD} = PATH;
 
 function App() {
-    const {auth, } = useAuth();
+    const {auth,} = useAuth();
+    const [snackbar, setSnackbar] = useState({
+        isOpened: false,
+        severity: "",
+        message: "",
+    });
+
     return (
         <>
-        <ThemeProvider theme={defaultTheme}>
-            <CssBaseline/>
-            <Routes>
-                {/* protected route */}
-                <Route
-                    path={LOGIN}
-                    element={
-                        auth.loggedIn ? (
-                            <Navigate to="/"></Navigate>
-                        ) : (
-                            <Login/>
-                        )
+            <ThemeProvider theme={defaultTheme}>
+                <CssBaseline/>
+                <CustomizedSnackbars
+                    open={snackbar.isOpened}
+                    severity={snackbar.severity}
+                    variant="filled"
+                    onClose={() =>
+                        setSnackbar((prevSnackbar) => ({ ...prevSnackbar, isOpened: false }))
                     }
+                    dismissible
+                    message={snackbar.message}
+                ></CustomizedSnackbars>
+                <Routes>
+                    {/* protected route */}
+                    <Route
+                        path={LOGIN}
+                        element={
+                            auth.loggedIn ? (
+                                <Navigate to="/"></Navigate>
+                            ) : (
+                                <Login/>
+                            )
+                        }
                     />
-                {/* non-protected routes */}
-                <Route path={'/'} element={<Navigate to={HOME}/>}/>
-                <Route path={HOME} element={<Home team={projectTeam} highlights={highlights}/>}/>
-                <Route path={SIGNUP} element={<SignUp/>}/>
-                <Route path={RESET_PASSWORD} element={<ResetPassword/>}/>
-                <Route path="/*" element={<Error/>}/>
-            </Routes>
-            <Footer/>
-        </ThemeProvider>
+                    {/* non-protected routes */}
+                    <Route path={'/'} element={<Navigate to={HOME}/>}/>
+                    <Route path={HOME} element={<Home snackbar={setSnackbar} team={projectTeam} highlights={highlights}/>}/>
+                    <Route path={SIGNUP} element={<SignUp/>}/>
+                    <Route path={RESET_PASSWORD} element={<ResetPassword/>}/>
+                    <Route path="/*" element={<Error/>}/>
+                </Routes>
+                <Footer/>
+            </ThemeProvider>
         </>
     );
 }

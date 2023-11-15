@@ -4,17 +4,26 @@ import c from "../../App.module.css";
 import customColors, {defaultTheme} from "../../assets/styles";
 import emailjs from "emailjs-com";
 
-export default function ContactForm() {
+export default function ContactForm({snackbar}) {
     const handleSubmit = (e) => {
         e.preventDefault();
         emailjs.sendForm('js_quiz', 'contact_form_jsquiz', e.target, 'cCsGOz-hDdPkNz6dF')
             .then(res => {
+                snackbar({
+                    isOpened: true,
+                    severity: 'success',
+                    message: 'Message successfully sent!',
+                });
                 e.target.reset();
                 /* //debugging code
-                console.log('Email successfully sent!');
                 console.log(res);*/
             })
             .catch(err => {
+                snackbar({
+                    isOpened: true,
+                    severity: 'error',
+                    message: 'An error has occurred!',
+                });
                 throw new Error(`Error during sending email:', ${err}`);
             })
     }

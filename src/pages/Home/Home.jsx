@@ -1,5 +1,5 @@
 import React from 'react';
-import {Avatar, Box, Button, Paper, Typography} from '@mui/material';
+import {Box, Button, Paper, Typography} from '@mui/material';
 import jsQuizLogo from '../../assets/images/logo.svg';
 import s from './Home.module.css'
 import c from '../../App.module.css'
@@ -10,12 +10,13 @@ import ContactForm from "./ContactForm";
 import HighlightsSection from "./Highlights";
 import Team from "./Team";
 
-export default function Home({team, highlights}) {
+export default function Home({team, highlights, snackbar}) {
     return (
         <>
             {/*Home section*/}
             <Box className={s.homeBackground}>
                 <img
+                    alt='JSQuiz logo'
                     className={s.logoImage}
                     src={jsQuizLogo}
                 />
@@ -383,7 +384,7 @@ export default function Home({team, highlights}) {
                     padding: '50px 0',
                 }
             }}>
-                <ContactForm/>
+                <ContactForm snackbar={snackbar}/>
             </Box>
         </>
     );
