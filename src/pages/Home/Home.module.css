@@ -46,7 +46,9 @@
 }
 
 .quizSectionImage {
-    background-image: url('../../assets/images/quiz_section.svg');
+    background-image: url('../../assets/images/quiz_section.webp');
+    background-size: cover;
+    background-position: center;
     position: relative;
     width: 100%;
 }
