@@ -20,12 +20,11 @@ const teamRoles = {
     FRONTEND_TEAM: 'frontend team'
 }
 const {BACKEND_TEAM, FRONTEND_TEAM} = teamRoles;
-
 export const projectTeam = [
     {
         name: 'Katsiaryna',
         imageURL: 'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-        role: BACKEND_TEAM,
+        role: FRONTEND_TEAM,
         gitHub: 'https://github.com/katsiarynalashcheuskaya'
     },
     {
