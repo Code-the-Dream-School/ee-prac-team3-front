@@ -17,28 +17,6 @@
     height: 139px;
 }
 
-.highlights {
-    padding: 20px 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.highlights img {
-    width: 90px;
-    margin-bottom: 15px;
-}
-
-.highlightWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin: 10px;
-    width: 158px;
-}
-
 .quizContainer {
     display: flex;
     justify-content: initial;
@@ -56,15 +34,5 @@
 @media screen and (max-width: 900px) {
     .logoImage {
         width: 220px;
-    }
-
-    .highlights img {
-        width: 70px;
-    }
-}
-
-@media screen and (max-width: 600px) {
-    .highlights img {
-        width: 40px;
     }
 }
