@@ -41,9 +41,6 @@ const Team = ({team}) => {
                         fontSize: '14px',
                         textTransform: 'uppercase',
                         color: customColors.greyMedium,
-                        [defaultTheme.breakpoints.down('sm')]: {
-                            fontSize: '12px'
-                        }
                     }}>{member.role}</Typography>
                 </Box>
             ))}

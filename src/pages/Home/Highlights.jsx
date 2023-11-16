@@ -9,9 +9,6 @@ const HighlightsSection = ({highlights}) => (
             <Box key={index} className={s.highlightWrapper}>
                 <img src={highlight.image} alt={`Highlight ${highlight.text}`}/>
                 <Typography sx={{
-                    [defaultTheme.breakpoints.down('sm')]: {
-                        fontSize: 10
-                    },
                     fontWeight: 600,
                     color: customColors.blueDark,
                     fontSize: 14

@@ -45,9 +45,6 @@ export default function ContactForm({snackbar}) {
                     fontSize: '14px',
                     textTransform: 'uppercase',
                     color: customColors.greyMedium,
-                    [defaultTheme.breakpoints.down('sm')]: {
-                        fontSize: '12px'
-                    }
 
                 }}>We are here to help you</Typography>
                 <form id='contact_form' onSubmit={handleSubmit}>

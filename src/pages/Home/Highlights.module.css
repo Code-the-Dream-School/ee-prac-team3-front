@@ -4,6 +4,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .highlights img {
@@ -24,7 +25,6 @@
     .logoImage {
         width: 220px;
     }
-
     .highlights img {
         width: 70px;
     }
@@ -32,6 +32,6 @@
 
 @media screen and (max-width: 600px) {
     .highlights img {
-        width: 40px;
+        width: 50px;
     }
 }
