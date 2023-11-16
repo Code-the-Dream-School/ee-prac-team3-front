@@ -170,9 +170,6 @@ export default function Home({team, highlights, snackbar}) {
                                 fontSize: '14px',
                                 textTransform: 'uppercase',
                                 color: customColors.greyMedium,
-                                [defaultTheme.breakpoints.down('sm')]: {
-                                    fontSize: '12px'
-                                }
                             }}>Steve
                             Jobs</Typography>
                     </Box>
@@ -287,7 +284,7 @@ export default function Home({team, highlights, snackbar}) {
                     <Box sx={{
                         pl: 15, pt: 5, pb: 5, pr: 15,
                         [defaultTheme.breakpoints.down('md')]: {
-                            p: 5
+                            p: 3
                         }
                     }}>
                         <Box>
