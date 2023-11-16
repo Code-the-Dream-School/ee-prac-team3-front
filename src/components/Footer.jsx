@@ -16,7 +16,6 @@ export default function Footer() {
                     theme.palette.mode === 'light'
                         ? customColors.blackLight
                         : theme.palette.grey[800],
-                position: 'fixed',
                 bottom: 0,
                 left: 0,
                 right: 0
