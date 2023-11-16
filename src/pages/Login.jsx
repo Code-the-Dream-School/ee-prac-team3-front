@@ -101,7 +101,7 @@ export default function Login() {
                 email: '',
                 password: ''
             }); // Resetting the login data to its initial state.
-            //navigate(HOME);
+            navigate(HOME);
         } catch (error) {
             setIsLoading(false); // Ensure loading state is reset even on error.
             console.error(error.message);
