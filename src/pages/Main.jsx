@@ -125,9 +125,11 @@ export default function Main() {
             </Typography>
           </Container>
         </Box>
-        <Container sx={{ py: 8 }} maxWidth="md">
+        <Container sx={{ py: 8 }} maxWidth="lg">
+          {/* this is the grid layout of all the cards */}
           <Grid container spacing={4}>
             {quizCards.map((card) => (
+              // this is the whole individual card
               <Grid item key={card.id} xs={12} sm={6} md={4}>
                 <Card
                   sx={{
@@ -135,52 +137,59 @@ export default function Main() {
                     display: "flex",
                   }}
                 >
-                  <CardContent sx={{ display: "flex" }}>
-                    <Box direction="row" flexWrap="wrap" gap="5px">
-                      <Labels labels={card.labels}></Labels>
-                      <Chip size={"small"} label={card.level} />
-                      <Chip size={"small"} label={card.category} />{" "}
-                      <Box marginTop="80px">
-                        <CardActions>
-                          <Button variant="outlined" size="small">
-                            Start Quiz
-                          </Button>
-                        </CardActions>
+                  {/* this is the content of the left side inside each card */}
+                  <Grid
+                    container
+                    direction="column"
+                    justifyContent="space-between"
+                    alignItems="flex-start"
+                  >
+                    <CardContent sx={{ display: "flex" }}>
+                      <Box direction="row" flexWrap="wrap" gap="5px">
+                        <Labels labels={card.labels}></Labels>
+                        <Chip size={"small"} label={card.level} />
+                        <Chip size={"small"} label={card.category} />{" "}
+                        <Box>
+                          <Typography>Not Passed</Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                    <Box marginLeft="50px">
-                      <Box
-                        marginTop="25px"
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          position: "relative",
-                        }}
-                      >
-                        <CardMedia
-                          width="100%"
-                          component="div"
+
+                      {/* this is the content of the right side inside each card */}
+
+                      <Box marginLeft="50px">
+                        <Box
+                          marginTop="25px"
                           sx={{
-                            width: "63px",
-                            height: "62px",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            // position: "relative",
                           }}
-                          image={card.image}
-                        />
-                        <Progress progress={getProgressForQuiz(card.id)} />
-                      </Box>
-                      <Box>
-                        <Typography
-                          variant="h6"
-                          component="h2"
-                          marginTop="30px"
                         >
-                          {card.title}
-                        </Typography>
+                          <CardMedia
+                            width="100%"
+                            component="div"
+                            sx={{
+                              width: "63px",
+                              height: "62px",
+                            }}
+                            image={card.image}
+                          />
+                          <Progress progress={getProgressForQuiz(card.id)} />
+                        </Box>
+                        <Box>
+                          <Typography
+                            variant="h6"
+                            component="h2"
+                            marginTop="30px"
+                          >
+                            {card.title}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  </CardContent>
+                    </CardContent>{" "}
+                  </Grid>
                 </Card>
               </Grid>
             ))}
