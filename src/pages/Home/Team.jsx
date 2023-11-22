@@ -6,8 +6,8 @@ import React from "react";
 const Team = ({team}) => {
     return (
         <>
-            {team.map((member, index) => (
-                <Box key={index} sx={{
+            {team.map((member) => (
+                <Box key={member.id} sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',

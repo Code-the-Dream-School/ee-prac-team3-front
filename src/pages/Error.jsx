@@ -1,12 +1,14 @@
 import React from 'react';
-import {HOME} from "App";
-import {Link} from "@mui/material";
+import {Box, Grid, Typography} from "@mui/material";
+import c from "App.module.css"
 
 export default function Error() {
     return (
-        <div>
-            Error 404 :(
-            <Link href={HOME}>Go to home page</Link>
-        </div>
+       <Grid container sx={{height: '88vh', }}>
+           <Box className={c.container}>
+               <Typography variant={"h3"}>Error 404 :(</Typography>
+           </Box>
+
+        </Grid>
     );
 };

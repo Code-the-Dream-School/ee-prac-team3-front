@@ -1,23 +1,55 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-    Link,
     Paper,
     Box,
     BottomNavigation,
     BottomNavigationAction
 } from '@mui/material';
-import {LOGIN} from "App";
+import {FAVORITES, LIBRARY, NOTES, QUIZZES, USER_SETTINGS} from "App";
 import SchoolIcon from '@mui/icons-material/School';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
-import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
+import {Link, useLocation} from "react-router-dom";
+
+const NAVIGATION_ROUTES = {
+    QUIZZES: 0,
+    FAVORITES: 1,
+    NOTES: 2,
+    LIBRARY: 3,
+};
 
 export default function NavBar() {
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(localStorage.getItem("selectedPage"));
     const ref = useRef(null);
+    const location = useLocation();
+
+    useEffect(() => {
+        const route = location.pathname;
+        switch (route) {
+            case QUIZZES:
+                setValue(NAVIGATION_ROUTES.QUIZZES);
+                break;
+            case FAVORITES:
+                setValue(NAVIGATION_ROUTES.FAVORITES);
+                break;
+            case NOTES:
+                setValue(NAVIGATION_ROUTES.NOTES);
+                break;
+            case LIBRARY:
+                setValue(NAVIGATION_ROUTES.LIBRARY);
+                break;
+            default:
+                setValue(localStorage.getItem("selectedPage"));
+        }
+    }, [location.pathname]);
+
+    useEffect(() => {
+        localStorage.setItem('selectedPage', value);
+    }, [value]);
 
     return (
-        <Box sx={{pb: 7}} ref={ref}>
+        <Box ref={ref}>
             <Paper elevation={3}>
                 <BottomNavigation
                     showLabels
@@ -25,12 +57,14 @@ export default function NavBar() {
                     onChange={(event, newValue) => {
                         setValue(newValue)
                     }}
+                    sx={{display: location.pathname === QUIZZES || location.pathname === NOTES || location.pathname === FAVORITES || location.pathname === LIBRARY || location.pathname === USER_SETTINGS ? 'flex' : 'none'
+                }}
                 >
                     {/* The link to the login page has been added for testing purposes and will be replaced as soon as the main page is ready. */}
-                    <BottomNavigationAction component={Link} to={LOGIN} label="Quizzes" icon={<SchoolIcon/>}/>
-                    <BottomNavigationAction label="Favorites" icon={<FavoriteIcon/>}/>
-                    <BottomNavigationAction label="Notes" icon={<SpeakerNotesIcon/>}/>
-                    <BottomNavigationAction label="Help Center" icon={<HelpRoundedIcon/>}/>
+                    <BottomNavigationAction component={Link} to={QUIZZES} label="Quizzes" icon={<SchoolIcon/>}/>
+                    <BottomNavigationAction component={Link} to={FAVORITES} label="Favorites" icon={<FavoriteIcon/>}/>
+                    <BottomNavigationAction component={Link} to={NOTES} label="Notes" icon={<SpeakerNotesIcon/>}/>
+                    <BottomNavigationAction component={Link} to={LIBRARY} label="Library" icon={<LocalLibraryIcon/>}/>
                 </BottomNavigation>
             </Paper>
         </Box>

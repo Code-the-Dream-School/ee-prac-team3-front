@@ -1,11 +1,10 @@
 import React from 'react';
 import {Link, Typography} from "@mui/material";
 import {HOME} from "App";
-import customColors from "assets/styles";
 
-const Copyright = () => {
+const Copyright = ({color}) => {
     return (
-        <Typography variant="body2" color={customColors.white} align="center">
+        <Typography variant="body2" color={color} align="center">
             {'Copyright © '}
             <Link color="inherit" href={HOME}>
                 JSQuiz
@@ -17,3 +16,5 @@ const Copyright = () => {
 };
 
 export default Copyright;
+
+
