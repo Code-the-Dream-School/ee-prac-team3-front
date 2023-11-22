@@ -178,7 +178,7 @@ export default function Header({profileSettings, userData, auth, filterVisible, 
                         </Box>
                         {auth.loggedIn ? (
                             <Button component={Link}
-                                    to={LOGIN}
+                                    to={QUIZZES}
                                     variant='outlined'
                                     sx={[
                                         {
@@ -193,10 +193,10 @@ export default function Header({profileSettings, userData, auth, filterVisible, 
                                             height: '30px',
                                             display: isLoginButtonVisible ? 'flex' : 'none',
                                         }
-                                    ]}>Logout</Button>
+                                    ]}>QUIZZES</Button>
                         ) : (
                             <Button component={Link}
-                                    to={SIGNUP}
+                                    to={LOGIN}
                                     variant='outlined'
                                     id='loginButton'
                                     sx={[
