@@ -9,19 +9,10 @@ import {Link} from "react-router-dom";
 import ContactForm from "./ContactForm";
 import HighlightsSection from "./Highlights";
 import Team from "./Team";
-import Header from "../../components/Header";
-
-const profileSettings = ['Account', 'Logout'];
-const userData={
-    firstName: "Katsiaryna",
-    lastName: "Lashcheuskaya",
-    email: "test@test.com",
-}
 
 export default function Home({team, highlights, snackbar}) {
     return (
         <>
-            <Header profileSettings={profileSettings} userData={userData}/>
             {/*Home section*/}
             <Box className={s.homeBackground}>
                 <img
