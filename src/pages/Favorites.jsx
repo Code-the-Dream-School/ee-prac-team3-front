@@ -20,6 +20,7 @@ const Favorites = ({favoriteQuizzes, activeFilters, changeFilter, filterVisible}
         <Container sx={{
             minHeight: '85vh',
             backgroundColor: customColors.backgroundLight,
+            maxWidth: 'none !important',
             pt: 6,
             pb: 2
         }}>
@@ -32,7 +33,8 @@ const Favorites = ({favoriteQuizzes, activeFilters, changeFilter, filterVisible}
                                 fontSize: '20px'
                             }
                         }}>Your favorite quizzes</Typography>
-            <Box sx={{margin: '0 auto'}}>
+            <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                <Box sx={{maxWidth: '1200px', display: 'flex', flexDirection: 'column'}}>
                 {favoriteQuizzes && filterVisible && <FilterButtonGroup changeFilter={changeFilter}/>}
                 {filteredQuizzes.length === 0 && <Typography sx={{
                     mt: 5, textAlign: 'center', color: customColors.greyDark
@@ -45,6 +47,7 @@ const Favorites = ({favoriteQuizzes, activeFilters, changeFilter, filterVisible}
                     </Box>
                 )}
             </Box>
+                </Box>
         </Container>
     );
 };

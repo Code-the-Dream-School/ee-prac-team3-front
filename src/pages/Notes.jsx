@@ -7,6 +7,7 @@ const Notes = () => {
         <Container sx={{
             minHeight: '85vh',
             backgroundColor: customColors.backgroundLight,
+            maxWidth: 'none !important',
             pt: 6,
             pb: 2
         }}>
@@ -19,8 +20,10 @@ const Notes = () => {
                                 fontSize: '20px'
                             }
                         }}>Notes will be here</Typography>
-            <Box>
+            <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                <Box sx={{maxWidth: '1200px', display: 'flex', flexDirection: 'column'}}>
 
+                </Box>
             </Box>
         </Container>
     );

@@ -21,8 +21,9 @@ const FakeMainPageContainer = ({quizzes, changeFilter, filterVisible, activeFilt
             <Container sx={{
                 minHeight: '85vh',
                 backgroundColor: customColors.backgroundLight,
+                maxWidth: 'none !important',
                 pt: 6,
-                pb: 2
+                pb: 2,
             }}>
                 <Typography variant={'h5'}
                             sx={{
@@ -33,18 +34,20 @@ const FakeMainPageContainer = ({quizzes, changeFilter, filterVisible, activeFilt
                                     fontSize: '20px'
                                 }
                             }}>Choose a quiz</Typography>
-                <Box sx={{margin: '0 auto'}}>
+                <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                <Box sx={{maxWidth: '1200px', display: 'flex', flexDirection: 'column'}}>
                     {quizzes && filterVisible && <FilterButtonGroup changeFilter={changeFilter}/>}
                     {filteredQuizzes.length === 0 && <Typography sx={{
                         mt: 5, textAlign: 'center', color: customColors.greyDark
                     }}>No quizzes were found.</Typography>}
                     {filteredQuizzes.length > 0 && (
-                        <Box sx={{width: '100%'}}>
+                        <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
                             {filteredQuizzes.map((q) => (
                                 <Quiz key={q.id} quiz={q} activeFilters={activeFilters}/>
                             ))}
                         </Box>
                     )}
+                </Box>
                 </Box>
         </Container>
     );
