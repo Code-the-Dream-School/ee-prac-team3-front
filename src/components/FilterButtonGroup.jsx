@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import {useState} from 'react';
-import {defaultTheme} from "../assets/styles";
+import customColors, {defaultTheme} from "../assets/styles";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({theme}) => ({
     '& .MuiToggleButtonGroup-grouped': {
@@ -38,8 +38,7 @@ const filterOptions = {
     categories: [
         {value: 'react', label: 'react'},
         {value: 'javascript', label: 'javascript'},
-        {value: 'data structure', label: 'data structure'},
-        /*{value: 'html', label: 'html', disabled: true},*/
+        {value: 'data structure', label: 'data structure'}
     ],
     labels: [
         {value: 'frontend', label: 'frontend'},
@@ -85,6 +84,7 @@ const FilterButtonGroup = ({changeFilter}) => {
                    display: 'flex',
                    flexWrap: 'wrap',
                    justifyContent: 'center',
+                   backgroundColor: customColors.backgroundLight,
                }}
         >
             {filterTypes.map(([filterType, options], index) => (

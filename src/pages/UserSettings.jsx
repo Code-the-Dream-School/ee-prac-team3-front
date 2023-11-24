@@ -1,17 +1,18 @@
 import React from 'react';
-import {Box} from "@mui/material";
-import c from "../App.module.css";
+import {Box, Container} from "@mui/material";
 
 const UserSettings = () => {
     return (
-        <Box sx={{
-            height: '88vh',
+        <Container sx={{
+            minHeight: '88vh',
+            pt: 6,
+            pb: 2
         }}>
-            <Box className={c.container}>
+            <Box>
                 Account settings page
 
             </Box>
-        </Box>
+        </Container>
     );
 };
 

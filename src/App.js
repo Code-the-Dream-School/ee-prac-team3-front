@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import useAuth from "auth/useAuth";
-import {Box, CssBaseline, ThemeProvider} from "@mui/material";
+import {CssBaseline, ThemeProvider} from "@mui/material";
 import customColors, {defaultTheme} from "assets/styles";
 import Login from "pages/Login";
 import SignUp from "pages/SignUp";

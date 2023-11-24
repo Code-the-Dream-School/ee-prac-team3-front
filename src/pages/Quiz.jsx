@@ -6,7 +6,7 @@ const Quiz = ({quiz, activeFilters}) => {
         return activeFilters[filterType].length > 0 && activeFilters[filterType].includes(value);
     };
     return (
-        <Box sx={{padding: '16px', marginBottom: '16px'}}>
+        <Box sx={{padding: '16px'}}>
             <p> Title: {quiz.title}</p>
             <p>
                 <span
