@@ -7,6 +7,7 @@ const Library = () => {
         <Container sx={{
             minHeight: '85vh',
             backgroundColor: customColors.backgroundLight,
+            maxWidth: 'none !important',
             pt: 6,
             pb: 2
         }}>
@@ -19,8 +20,10 @@ const Library = () => {
                                 fontSize: '20px'
                             }
                         }}>Library</Typography>
-            <Box>
+            <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                <Box sx={{maxWidth: '1200px', display: 'flex', flexDirection: 'column'}}>
 
+                </Box>
             </Box>
         </Container>
     );
