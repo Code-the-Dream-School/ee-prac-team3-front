@@ -1,16 +1,17 @@
 import React from 'react';
-import {Box, Typography} from "@mui/material";
-import c from "../App.module.css";
+import {Box, Container, Typography} from "@mui/material";
 
 const About = () => {
     return (
-        <Box sx={{
-            height: '88vh',
+        <Container sx={{
+            minHeight: '88vh',
+            pt: 6,
+            pb: 2
         }}>
-            <Box className={c.container}>
+            <Box>
                 <Typography>Some info about our project will be here. =)</Typography>
             </Box>
-        </Box>
+        </Container>
     );
 };
 

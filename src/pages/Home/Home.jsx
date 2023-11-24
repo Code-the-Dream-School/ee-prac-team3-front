@@ -4,7 +4,7 @@ import jsQuizLogo from '../../assets/images/logo.svg';
 import s from './Home.module.css'
 import c from '../../App.module.css'
 import customColors, {defaultTheme} from '../../assets/styles';
-import {LOGIN} from "../../App";
+import {LOGIN, QUIZZES} from "../../App";
 import {Link} from "react-router-dom";
 import ContactForm from "./ContactForm";
 import HighlightsSection from "./Highlights";
@@ -20,9 +20,10 @@ export default function Home({team, highlights, snackbar}) {
                     className={s.logoImage}
                     src={jsQuizLogo}
                 />
+                {
                 <Button
                     component={Link}
-                    to={LOGIN}
+                    to={QUIZZES}
                     size={'large'}
                     variant="outlined"
                     sx={[{
@@ -44,6 +45,7 @@ export default function Home({team, highlights, snackbar}) {
                 >
                     Start here
                 </Button>
+                    }
             </Box>
             {/*Highlights section*/}
             <Box sx={{

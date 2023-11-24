@@ -49,7 +49,7 @@ export default function NavBar() {
     }, [value]);
 
     return (
-        <Box ref={ref}>
+        <Box ref={ref} position={'relative'}>
             <Paper elevation={3}>
                 <BottomNavigation
                     showLabels

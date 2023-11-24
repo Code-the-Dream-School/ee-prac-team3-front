@@ -48,7 +48,7 @@ const SearchComponent = () => {
     const location = useLocation();
     return (
         <Search id='search'
-                sx={{display: location.pathname === QUIZZES || location.pathname === NOTES || location.pathname === FAVORITES || location.pathname === LIBRARY ? 'flex' : 'none'}}>
+                sx={{display: location.pathname === QUIZZES || location.pathname === NOTES || location.pathname === FAVORITES ? 'flex' : 'none'}}>
             <SearchIconWrapper>
                 <SearchIcon/>
             </SearchIconWrapper>

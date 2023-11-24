@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Typography} from "@mui/material";
+import {Box, Container, Typography} from "@mui/material";
 import Quiz from "./Quiz";
 import FilterButtonGroup from "../components/FilterButtonGroup";
 import customColors, {defaultTheme} from "../assets/styles";
@@ -17,19 +17,22 @@ const Favorites = ({favoriteQuizzes, activeFilters, changeFilter, filterVisible}
 
     const filteredQuizzes = filterQuizzes();
     return (
-        <Box sx={{
-            height: '85vh',
+        <Container sx={{
+            minHeight: '85vh',
+            backgroundColor: customColors.backgroundLight,
+            pt: 6,
+            pb: 2
         }}>
             <Typography variant={'h5'}
                         sx={{
                             textTransform: 'uppercase',
-                            mt: 6, mb: 2, textAlign: 'center',
+                            mb: 2, textAlign: 'center',
                             fontWeight: 'bold',
                             [defaultTheme.breakpoints.down('md')]: {
                                 fontSize: '20px'
                             }
                         }}>Your favorite quizzes</Typography>
-            <Box sx={{maxWidth: '1200px', margin: '0 auto'}}>
+            <Box sx={{margin: '0 auto'}}>
                 {favoriteQuizzes && filterVisible && <FilterButtonGroup changeFilter={changeFilter}/>}
                 {filteredQuizzes.length === 0 && <Typography sx={{
                     mt: 5, textAlign: 'center', color: customColors.greyDark
@@ -42,7 +45,7 @@ const Favorites = ({favoriteQuizzes, activeFilters, changeFilter, filterVisible}
                     </Box>
                 )}
             </Box>
-        </Box>
+        </Container>
     );
 };
 

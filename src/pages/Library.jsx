@@ -1,26 +1,28 @@
 import React from 'react';
-import {Box, Typography} from "@mui/material";
-import c from "../App.module.css";
-import {defaultTheme} from "../assets/styles";
+import {Box, Container, Typography} from "@mui/material";
+import customColors, {defaultTheme} from "../assets/styles";
 
 const Library = () => {
     return (
-        <Box sx={{
-            height: '88vh',
+        <Container sx={{
+            minHeight: '85vh',
+            backgroundColor: customColors.backgroundLight,
+            pt: 6,
+            pb: 2
         }}>
             <Typography variant={'h5'}
                         sx={{
                             textTransform: 'uppercase',
-                            mt: 6, mb: 2, textAlign: 'center',
+                            mb: 2, textAlign: 'center',
                             fontWeight: 'bold',
                             [defaultTheme.breakpoints.down('md')]: {
                                 fontSize: '20px'
                             }
                         }}>Library</Typography>
-            <Box className={c.container}>
+            <Box>
 
             </Box>
-        </Box>
+        </Container>
     );
 };
 
