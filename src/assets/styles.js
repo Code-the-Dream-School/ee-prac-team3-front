@@ -1,15 +1,15 @@
-import {createTheme} from "@mui/material/styles";
+import { createTheme } from '@mui/material/styles';
 
 export const defaultTheme = createTheme();
 
 const customColors = {
-    blackMedium: "#1D2126",
-    blackLight: "#323232",
-    backgroundLight: "#FAFAFA",
-    greyDark: "#565656",
-    greyMedium: "#8F8F8F",
-    greyLight: "#E8E8E8",
-    white: "#FFFFFF"
-}
+  blackMedium: '#1D2126',
+  blackLight: '#323232',
+  backgroundLight: '#FAFAFA',
+  greyDark: '#565656',
+  greyMedium: '#8F8F8F',
+  greyLight: '#E8E8E8',
+  white: '#FFFFFF',
+};
 
-export default customColors
+export default customColors;
