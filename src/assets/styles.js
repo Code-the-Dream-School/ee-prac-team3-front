@@ -8,8 +8,11 @@ const customColors = {
     backgroundLight: "#FAFAFA",
     greyDark: "#565656",
     greyMedium: "#8F8F8F",
-    greyLight: "#E8E8E8",
-    white: "#FFFFFF"
+    greyLight: "#F3F3F3",
+    white: "#FFFFFF",
+    blueDark: '#0057B2',
+    blueMedium: '#1976D2',
+    orangeDark: '#F1662A'
 }
 
 export default customColors
