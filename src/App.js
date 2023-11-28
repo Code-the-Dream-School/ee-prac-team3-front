@@ -3,16 +3,17 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import useAuth from "auth/useAuth";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import customColors, {defaultTheme} from "assets/styles";
+import Main from "pages/Main";
 import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import ResetPassword from "pages/ResetPassword";
 import Footer from "components/Footer";
 import Error from "pages/Error";
 import Home from "pages/Home/Home";
-import highlight_1 from './assets/images/highlight_effective_knowledge_testing.svg';
-import highlight_2 from './assets/images/highlight_preparing_for_a_job_interview.svg';
-import highlight_3 from './assets/images/highlight_improving_coding_skills.svg';
-import highlight_4 from './assets/images/highlight_notes_for_productive_studying.svg';
+import highlight_1 from "./assets/images/highlight_effective_knowledge_testing.svg";
+import highlight_2 from "./assets/images/highlight_preparing_for_a_job_interview.svg";
+import highlight_3 from "./assets/images/highlight_improving_coding_skills.svg";
+import highlight_4 from "./assets/images/highlight_notes_for_productive_studying.svg";
 import CustomizedSnackbars from "components/Snackbar";
 import Header from "./components/Header/Header";
 import SettingsRoundedIcon from '@mui/icons-material/Settings';
@@ -64,10 +65,10 @@ export const {
 } = PATH;
 
 const teamRoles = {
-    BACKEND_TEAM: 'backend team',
-    FRONTEND_TEAM: 'frontend team'
-}
-const {BACKEND_TEAM, FRONTEND_TEAM} = teamRoles;
+  BACKEND_TEAM: "backend team",
+  FRONTEND_TEAM: "frontend team",
+};
+const { BACKEND_TEAM, FRONTEND_TEAM } = teamRoles;
 export const projectTeam = [
     {
         id: '1',
@@ -147,8 +148,8 @@ const userData = {
     email: "test@test.com",
 }
 
-function App() {
-    const {auth,} = useAuth();
+export default function App() {
+    const {auth} = useAuth();
     const [snackbar, setSnackbar] = useState({
         isOpened: false,
         severity: "",
@@ -314,7 +315,4 @@ function App() {
             </ThemeProvider>
         </>
     );
-
 }
-
-export default App;
