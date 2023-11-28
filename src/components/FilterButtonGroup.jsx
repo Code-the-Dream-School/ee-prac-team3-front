@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {styled} from '@mui/material/styles';
-import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import {useState} from 'react';
 import customColors, {defaultTheme} from "../assets/styles";
+import {Divider} from "@mui/material";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({theme}) => ({
     '& .MuiToggleButtonGroup-grouped': {
@@ -14,7 +14,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({theme}) => ({
         flexWrap: 'wrap',
         [defaultTheme.breakpoints.down('sm')]: {
             margin: theme.spacing(0.3),
-            padding: '4px',
+            padding: '4px'
         },
         '&.Mui-disabled': {
             border: 0,
@@ -28,7 +28,6 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({theme}) => ({
         },
     },
 }));
-
 const filterOptions = {
     levels: [
         {value: 'basic', label: 'basic'},
@@ -51,7 +50,7 @@ const ToggleButtonFilterGroup = ({value, onChange, options, ariaLabel}) => {
         <StyledToggleButtonGroup size="small" value={value} onChange={onChange} aria-label={ariaLabel}>
             {options.map((option) => (
                 <ToggleButton key={option.value} value={option.value} aria-label={option.label}
-                              disabled={option.disabled} sx={{margin:0}}>
+                              disabled={option.disabled}>
                     {option.label}
                 </ToggleButton>
             ))}
@@ -96,12 +95,17 @@ const FilterButtonGroup = ({changeFilter}) => {
                         ariaLabel={`filtration by ${filterType}`}
                     />
                     {index < filterTypes.length - 1 && (
-                        <Divider flexItem orientation="vertical" sx={{ mx: 0.3, my: 1, }} />
+                        <Divider flexItem orientation="vertical" sx={{
+                            mx: 0.3,
+                            my: 1,
+                            [defaultTheme.breakpoints.down('sm')]: {
+                                display: 'none'
+                            },
+                        }}/>
                     )}
                 </React.Fragment>
             ))}
         </Paper>
     );
 };
-
 export default FilterButtonGroup;

@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Navigate, Route, Routes, useLocation} from "react-router-dom";
+import React, {useCallback, useState} from 'react';
+import {Navigate, Route, Routes} from "react-router-dom";
 import useAuth from "auth/useAuth";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import customColors, {defaultTheme} from "assets/styles";
@@ -17,13 +17,14 @@ import CustomizedSnackbars from "components/Snackbar";
 import Header from "./components/Header/Header";
 import SettingsRoundedIcon from '@mui/icons-material/Settings';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import FakeMainPageContainer from "./pages/TemporaryMainPage";
+import {Quizzes} from "./pages/TemporaryMainPage";
+import {Favorites} from "./pages/TemporaryMainPage";
 import About from "./pages/About";
 import NavBar from "./components/NavBar";
-import Favorites from "./pages/Favorites";
 import Notes from "./pages/Notes";
 import Library from "./pages/Library";
 import UserSettings from "./pages/UserSettings";
+import useFilterState from "./components/filterState";
 
 const PATH = {
     /*
@@ -130,12 +131,12 @@ export const highlights = [
 const profileSettings = [
     {
         title: 'Account',
-        icon: <SettingsRoundedIcon sx={{color:customColors.blackLight}}/>,
+        icon: <SettingsRoundedIcon sx={{color: customColors.blackLight}}/>,
         path: USER_SETTINGS
     },
     {
         title: 'Logout',
-        icon: <LogoutRoundedIcon sx={{color:customColors.blackLight}}/>,
+        icon: <LogoutRoundedIcon sx={{color: customColors.blackLight}}/>,
         path: LOGOUT
     }
 ];
@@ -227,51 +228,12 @@ function App() {
             labels: ['frontend', 'backend']
         },
     ]);
-    const [filterVisible, setFilterVisible] = useState(false);
-
-
-    const useFilterState = () => {
-        const [activeFilters, setActiveFilters] = useState({
-            levels: [],
-            categories: [],
-            labels: [],
-        });
-
-        const setActiveFilter = useCallback((type, filter) => {
-            setActiveFilters(prevFilters => ({
-                ...prevFilters,
-                [type]: toggleFilter(prevFilters[type], filter),
-            }));
-        }, []);
-
-        const toggleFilter = (prevFilters, filter) => (
-            filter
-                ? (prevFilters.includes(filter) ? prevFilters.filter(f => f !== filter) : [...prevFilters, filter])
-                : []
-        );
-        const location = useLocation();
-        useEffect(() => {
-            // Reset activeFilters when the route changes
-            setActiveFilters({
-                levels: [],
-                categories: [],
-                labels: [],
-            });
-        }, [location.pathname]);
-
-        return {activeFilters, setActiveFilter};
-    };
-
 
     const {activeFilters, setActiveFilter} = useFilterState();
 
     const changeFilter = useCallback((filterType, filter) => {
         setActiveFilter(filterType, filter);
     }, [setActiveFilter]);
-
-    const toggleFilterVisibility = () => {
-        setFilterVisible((prevVisible) => !prevVisible);
-    };
 
     return (
         <>
@@ -287,8 +249,9 @@ function App() {
                     dismissible
                     message={snackbar.message}
                 ></CustomizedSnackbars>
-                <Header profileSettings={profileSettings} userData={userData} auth={auth} filterVisible={filterVisible}
-                        onFilterIconClick={toggleFilterVisibility}/>
+                <Header profileSettings={profileSettings}
+                        userData={userData}
+                        auth={auth}/>
                 <NavBar/>
                 <Routes>
                     {/* protected route */}
@@ -301,26 +264,50 @@ function App() {
                                 <Login/>
                             )}
                     />
+                    <Route path={QUIZZES}
+                           element={
+                               auth.loggedIn ? (
+                                   <Quizzes quizzes={quizzes}
+                                            changeFilter={changeFilter}
+                                            activeFilters={activeFilters}
+                                   />
+                               ) : (
+                                   <Navigate to={LOGIN}></Navigate>
+                               )
+
+                           }/>
+                    <Route path={SIGNUP} element={
+                        auth.loggedIn ? (<Navigate to="/"></Navigate>) : (<SignUp/>)
+                    }/>
+                    <Route path={RESET_PASSWORD} element={
+                        auth.loggedIn ? (<Navigate to="/"></Navigate>) : (<ResetPassword/>)}/>
+                    <Route path={FAVORITES}
+                           element={
+                               auth.loggedIn ? (<Favorites favoriteQuizzes={favoriteQuizzes}
+                                                           changeFilter={changeFilter}
+                                                           activeFilters={activeFilters}/>)
+                                   : (<Navigate to={LOGIN}></Navigate>)
+                           }/>
+                    <Route path={NOTES} element={
+                        auth.loggedIn ? (<Notes/>)
+                            : (<Navigate to={LOGIN}></Navigate>)
+                    }/>
+                    <Route path={LIBRARY} element={
+                        auth.loggedIn ? (<Library/>)
+                            : (<Navigate to={LOGIN}></Navigate>)
+                    }/>
+                    <Route path={USER_SETTINGS} element={
+                        auth.loggedIn ? (<UserSettings/>)
+                            : (<Navigate to={LOGIN}></Navigate>)
+                    }/>
                     {/* non-protected routes */}
                     <Route path={'/'} element={<Navigate to={HOME}/>}/>
                     <Route path={HOME}
-                           element={<Home snackbar={setSnackbar} team={projectTeam} highlights={highlights}/>}/>
-                    <Route path={SIGNUP} element={<SignUp/>}/>
+                           element={<Home snackbar={setSnackbar}
+                                          team={projectTeam}
+                                          highlights={highlights}/>}/>
                     <Route path={ABOUT} element={<About/>}/>
-                    <Route path={QUIZZES}
-                           element={<FakeMainPageContainer quizzes={quizzes} filterVisible={filterVisible}
-                                                           changeFilter={changeFilter}
-                                                           activeFilters={activeFilters}
-                           />}/>
-
-                    <Route path={RESET_PASSWORD} element={<ResetPassword/>}/>
-                    <Route path={FAVORITES}
-                           element={<Favorites favoriteQuizzes={favoriteQuizzes} filterVisible={filterVisible}
-                                               changeFilter={changeFilter} activeFilters={activeFilters}/>}/>
-                    <Route path={NOTES} element={<Notes/>}/>
-                    <Route path={LIBRARY} element={<Library/>}/>
                     <Route path={ERROR} element={<Error/>}/>
-                    <Route path={USER_SETTINGS} element={<UserSettings/>}/>
                     <Route path="/*" element={<Navigate to={ERROR}></Navigate>}/>
                 </Routes>
                 <Footer/>

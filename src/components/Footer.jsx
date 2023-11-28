@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Copyright from "./Copyright";
 import customColors from "assets/styles";
-import {ABOUT, ERROR, LOGIN, RESET_PASSWORD, SIGNUP} from "../App";
+import {LOGIN, RESET_PASSWORD, SIGNUP} from "../App";
 import {useMediaQuery} from "@mui/material";
 import {useLocation} from "react-router-dom";
 

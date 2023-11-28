@@ -17,7 +17,7 @@ import {
 import jsQuizLogo from "../../assets/images/logo.svg"
 import customColors, {defaultTheme} from "assets/styles";
 import Search from "./Search";
-import AboutElement from "./AbouElement";
+import AboutElement from "./AboutElement";
 import {
     HOME,
     LOGIN,
@@ -31,26 +31,22 @@ import {
     ABOUT,
     USER_SETTINGS, QUIZ
 } from "../../App";
-import FilterListRoundedIcon from '@mui/icons-material/FilterListRounded';
-import FilterListOffRoundedIcon from '@mui/icons-material/FilterListOffRounded';
 
-export default function Header({profileSettings, userData, auth, filterVisible, onFilterIconClick}) {
+export default function Header({profileSettings, userData, auth}) {
     const [headerState, setHeaderState] = useState({
         anchorElUser: null,
         isLoginButtonVisible: false,
-        isFilterIconEnabled: false,
         isUserMenuVisible: false,
         isLogoVisible: false
     });
 
     const location = useLocation();
-    const {anchorElUser, isLoginButtonVisible, isUserMenuVisible, isLogoVisible, isFilterIconEnabled} = headerState;
+    const {anchorElUser, isLoginButtonVisible, isUserMenuVisible, isLogoVisible} = headerState;
 
     useEffect(() => {
         setHeaderState((prevState) => ({
             ...prevState,
             isLoginButtonVisible: location.pathname === HOME,
-            isFilterIconEnabled: location.pathname === QUIZZES || location.pathname === FAVORITES,
             isLogoVisible: [
                 QUIZZES,
                 QUIZ,
@@ -123,13 +119,6 @@ export default function Header({profileSettings, userData, auth, filterVisible, 
                         }
                     }}>
                         <Search/>
-                        {filterVisible ? (
-                            <FilterListRoundedIcon sx={{display: isFilterIconEnabled ? 'flex' : 'none'}}
-                                                   onClick={onFilterIconClick}/>
-                        ) : (
-                            <FilterListOffRoundedIcon sx={{display: isFilterIconEnabled ? 'flex' : 'none'}}
-                                                      onClick={onFilterIconClick}/>
-                        )}
                     </Box>
                     <Box sx={{display: 'flex', alignItems: 'center'}}>
                         <AboutElement/>
@@ -167,11 +156,14 @@ export default function Header({profileSettings, userData, auth, filterVisible, 
                                 }}>{userData.email}</Typography>
                                 <Divider/>
                                 {profileSettings.map((setting) => (
-                                    <MenuItem key={setting.title} component={Link} to={setting.path} onClick={handleCloseUserMenu}>
+                                    <MenuItem key={setting.title} component={Link} to={setting.path}
+                                              onClick={handleCloseUserMenu}>
                                         {setting.icon}
-                                        <Typography textAlign="center" sx={{ml:1, textTransform:'uppercase',
+                                        <Typography textAlign="center" sx={{
+                                            ml: 1, textTransform: 'uppercase',
                                             fontSize: '14px',
-                                            color: customColors.greyMedium}}>{setting.title}</Typography>
+                                            color: customColors.greyMedium
+                                        }}>{setting.title}</Typography>
                                     </MenuItem>
                                 ))}
                             </Menu>

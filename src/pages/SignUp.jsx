@@ -41,7 +41,7 @@ export default function SignUp() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: '100vh', // Set the height to cover the full viewport height
+                height: '90vh',
             }}
         >
             <Grid container component="main" sx={{height: '100%'}}>
