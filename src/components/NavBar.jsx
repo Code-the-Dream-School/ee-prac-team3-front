@@ -57,10 +57,10 @@ export default function NavBar() {
                     onChange={(event, newValue) => {
                         setValue(newValue)
                     }}
-                    sx={{display: location.pathname === QUIZZES || location.pathname === NOTES || location.pathname === FAVORITES || location.pathname === LIBRARY || location.pathname === USER_SETTINGS ? 'flex' : 'none'
-                }}
+                    sx={{
+                        display: location.pathname === QUIZZES || location.pathname === NOTES || location.pathname === FAVORITES || location.pathname === LIBRARY || location.pathname === USER_SETTINGS ? 'flex' : 'none'
+                    }}
                 >
-                    {/* The link to the login page has been added for testing purposes and will be replaced as soon as the main page is ready. */}
                     <BottomNavigationAction component={Link} to={QUIZZES} label="Quizzes" icon={<SchoolIcon/>}/>
                     <BottomNavigationAction component={Link} to={FAVORITES} label="Favorites" icon={<FavoriteIcon/>}/>
                     <BottomNavigationAction component={Link} to={NOTES} label="Notes" icon={<SpeakerNotesIcon/>}/>
