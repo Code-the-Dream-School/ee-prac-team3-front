@@ -11,7 +11,7 @@ export const AuthContextProvider = ({ children }) => {
         email: "",
         avatarURL: "",
         role: [""],
-        loggedIn: false,
+        loggedIn: true,
         accessToken: "",
         isActive: undefined,
         progress: [
