@@ -67,9 +67,6 @@ const Fieldset = ({label, children}) => {
             border: 'none',
             borderRadius: '4px',
             padding: 0,
-            [defaultTheme.breakpoints.down('sm')]: {
-                width: '100%'
-            },
         }}>
             <legend style={{color: '#D1D1D1', textTransform: 'uppercase', fontSize: '13px'}}>
                 {legendContent}
@@ -124,6 +121,9 @@ const FilterButtonGroup = ({changeFilter}) => {
                    flexWrap: 'wrap',
                    justifyContent: 'center',
                    backgroundColor: customColors.backgroundLight,
+                   [defaultTheme.breakpoints.down('md')]: {
+                       justifyContent: 'start',
+                   },
                }}
         >
             {filterTypes.map(([filterType, options]) => (
