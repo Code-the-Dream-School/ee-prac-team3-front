@@ -16,7 +16,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({theme}) => ({
         flexWrap: 'wrap',
         [defaultTheme.breakpoints.down('sm')]: {
             margin: theme.spacing(0.3),
-            padding: '4px 4px 4px 0'
+            padding: '4px 4px 4px 0',
         },
         '&.Mui-disabled': {
             border: 0,
@@ -66,16 +66,16 @@ const Fieldset = ({label, children}) => {
         <Box component="fieldset" sx={{
             border: 'none',
             borderRadius: '4px',
-            padding: 0
+            padding: 0,
+            [defaultTheme.breakpoints.down('sm')]: {
+                width: '100%'
+            },
         }}>
             <legend style={{color: '#D1D1D1', textTransform: 'uppercase', fontSize: '13px'}}>
                 {legendContent}
                 <Divider
                     flexItem
                     orientation="horizontal"
-                    sx={{
-
-                    }}
                 />
             </legend>
             {children}
@@ -129,16 +129,7 @@ const FilterButtonGroup = ({changeFilter}) => {
             {filterTypes.map(([filterType, options]) => (
                 <React.Fragment
                     key={filterType}
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
                 >
-                    {/*<Divider flexItem orientation="vertical" sx={{
-                        mx: 0.3,
-                        my: 1,
-                    }}/>*/}
                     <ToggleButtonFilterGroup
                         value={filters[filterType]}
                         onChange={(e, newValue) => handleFilter(filterType, newValue, e.target.value)}

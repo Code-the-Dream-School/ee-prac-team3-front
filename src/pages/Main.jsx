@@ -3,6 +3,7 @@ import {Box, Container, Grid, Typography} from "@mui/material";
 import Quiz from "./Quiz";
 import FilterButtonGroup from "../components/FilterButtonGroup";
 import customColors, {defaultTheme} from "../assets/styles";
+import "./Main.css";
 
 const containerStyles = {
     minHeight: '85vh',
@@ -44,6 +45,8 @@ const QuizzesContainer = ({title, quizzes, activeFilters, changeFilter, message,
         });
     }, [quizzes, activeFilters]);
 
+    const quizzesLength = filteredQuizzes.length;
+
     return (
         <Container sx={containerStyles}>
             <Typography variant="h5" sx={titleStyles}>
@@ -52,12 +55,12 @@ const QuizzesContainer = ({title, quizzes, activeFilters, changeFilter, message,
             <Box sx={{display: 'flex', justifyContent: 'center'}}>
                 <Box sx={boxStyles}>
                     {quizzes && <FilterButtonGroup changeFilter={changeFilter}/>}
-                    {filteredQuizzes.length === 0 && <Typography sx={messageStyles}>{message}</Typography>}
-                    {filteredQuizzes.length > 0 && (
+                    {quizzesLength === 0 && <Typography sx={messageStyles}>{message}</Typography>}
+                    {quizzesLength > 0 && (
                         <Box sx={{ py: 3 }} maxWidth="lg">
                             <Grid container spacing={4}>
                             {filteredQuizzes.map((q) => (
-                                <Quiz key={q.id} quiz={q} activeFilters={activeFilters} getProgressForQuiz={getProgressForQuiz}/>
+                                <Quiz key={q.id} quiz={q} activeFilters={activeFilters} getProgressForQuiz={getProgressForQuiz} quizzesLength={quizzesLength}/>
                             ))}
                             </Grid>
                         </Box>

@@ -2,9 +2,9 @@ import React from 'react';
 import {Box, Card, CardContent, CardMedia, Chip, Grid, Typography, useMediaQuery} from "@mui/material";
 import Labels from "../components/Labels";
 import Progress from "../components/Progress";
-import customColors from "../assets/styles";
+import customColors, {defaultTheme} from "../assets/styles";
 
-const Quiz = ({quiz, activeFilters, getProgressForQuiz}) => {
+const Quiz = ({quiz, activeFilters, getProgressForQuiz, quizzesLength}) => {
     const isFilterActive = (filterType, value) => activeFilters[filterType].length > 0 && activeFilters[filterType].includes(value);
     const progress = getProgressForQuiz(quiz.id);
     const isSmallScreen = useMediaQuery('(max-width:600px)');
@@ -15,7 +15,11 @@ const Quiz = ({quiz, activeFilters, getProgressForQuiz}) => {
                   sx={{
                       height: "100%",
                       display: "flex",
-                      padding: "20px 30px"
+                      padding: "20px 30px",
+                      minWidth: quizzesLength === 1 ? "350px" : "275px",
+                      [defaultTheme.breakpoints.up('md')]: {
+                         marginRight: quizzesLength === 2 ? "50px" : 0
+                      },
                   }}
             >
                 <Grid
