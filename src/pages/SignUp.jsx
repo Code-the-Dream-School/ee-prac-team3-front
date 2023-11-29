@@ -7,13 +7,21 @@ import {
     Paper,
     Box,
     Grid,
-    Typography
+    Typography, Container, useMediaQuery
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import customColors from "assets/styles";
-import {LOGIN} from "App";
+import customColors, {defaultTheme} from "assets/styles";
+import {LOGIN, RESET_PASSWORD, SIGNUP} from "App";
+import Copyright from "../components/Copyright";
+import {useLocation} from "react-router-dom";
+import backgroundAuth from "../assets/images/background-auth.svg";
+import jsQuizLogo from "../assets/images/logo.svg";
 
 export default function SignUp() {
+    const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
+    const location = useLocation();
+    const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(location.pathname);
+
     const handleSubmit = (event) => {
         event.preventDefault();
         /*//debugging code for testing receiving data from the form, delete when adding functionality
@@ -27,22 +35,40 @@ export default function SignUp() {
     };
 
     return (
-        <>
-            <Grid container component="main" sx={{height: '100vh'}}>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '90vh',
+            }}
+        >
+            <Grid container component="main" sx={{height: '100%'}}>
                 <Grid
                     item
-                    xs={false}
                     sm={4}
                     md={7}
                     sx={{
-                        backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+                        backgroundImage: `url(${backgroundAuth})`,
                         backgroundRepeat: 'no-repeat',
-                        backgroundColor: (t) =>
-                            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+                        backgroundColor: (t) => t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}
-                />
+                >
+                    <Avatar src={jsQuizLogo} variant='square' sx={{ width: '311px',
+                        height: '139px',
+                        [defaultTheme.breakpoints.down('md')]: {
+                            display: 'none',
+                        },
+                    }}>
+                    </Avatar>
+                </Grid>
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                     <Box
                         sx={{
@@ -125,10 +151,13 @@ export default function SignUp() {
                                     </Link>
                                 </Grid>
                             </Grid>
+                            <Container maxWidth="sm" sx={{mt:6}} >
+                                {isMdScreenAndUp && isAuthPages && <Copyright color={customColors.blackMedium}/>}
+                            </Container>
                         </Box>
                     </Box>
                 </Grid>
             </Grid>
-        </>
+        </Box>
     );
 }
