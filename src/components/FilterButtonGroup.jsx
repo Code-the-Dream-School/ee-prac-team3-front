@@ -5,20 +5,21 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import {useState} from 'react';
 import customColors, {defaultTheme} from "../assets/styles";
-import {Divider} from "@mui/material";
+import {Box, Divider} from "@mui/material";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({theme}) => ({
     '& .MuiToggleButtonGroup-grouped': {
         margin: theme.spacing(0.5),
         border: 0,
+        paddingLeft: 4,
+        marginLeft: 0,
         flexWrap: 'wrap',
         [defaultTheme.breakpoints.down('sm')]: {
             margin: theme.spacing(0.3),
-            padding: '4px'
+            padding: '4px 4px 4px 0'
         },
         '&.Mui-disabled': {
             border: 0,
-
         },
         '&:not(:first-of-type)': {
             borderRadius: theme.shape.borderRadius,
@@ -45,16 +46,55 @@ const filterOptions = {
     ],
 };
 
-const ToggleButtonFilterGroup = ({value, onChange, options, ariaLabel}) => {
+const Fieldset = ({label, children}) => {
+    let legendContent;
+    switch (label) {
+        case 'levels':
+            legendContent = 'Level';
+            break;
+        case 'categories':
+            legendContent = 'Category';
+            break;
+        case 'labels':
+            legendContent = 'Stack';
+            break;
+        default:
+            legendContent = label;
+    }
+
     return (
-        <StyledToggleButtonGroup size="small" value={value} onChange={onChange} aria-label={ariaLabel}>
-            {options.map((option) => (
-                <ToggleButton key={option.value} value={option.value} aria-label={option.label}
-                              disabled={option.disabled}>
-                    {option.label}
-                </ToggleButton>
-            ))}
-        </StyledToggleButtonGroup>
+        <Box component="fieldset" sx={{
+            border: 'none',
+            borderRadius: '4px',
+            padding: 0
+        }}>
+            <legend style={{color: '#D1D1D1', textTransform: 'uppercase', fontSize: '13px'}}>
+                {legendContent}
+                <Divider
+                    flexItem
+                    orientation="horizontal"
+                    sx={{
+
+                    }}
+                />
+            </legend>
+            {children}
+        </Box>
+    );
+}
+
+const ToggleButtonFilterGroup = ({value, onChange, options, ariaLabel, label}) => {
+    return (
+        <Fieldset label={label}>
+            <StyledToggleButtonGroup size="small" value={value} onChange={onChange} aria-label={ariaLabel}>
+                {options.map((option) => (
+                    <ToggleButton key={option.value} value={option.value} aria-label={option.label}
+                                  disabled={option.disabled}>
+                        {option.label}
+                    </ToggleButton>
+                ))}
+            </StyledToggleButtonGroup>
+        </Fieldset>
     );
 };
 
@@ -86,26 +126,30 @@ const FilterButtonGroup = ({changeFilter}) => {
                    backgroundColor: customColors.backgroundLight,
                }}
         >
-            {filterTypes.map(([filterType, options], index) => (
-                <React.Fragment key={filterType}>
+            {filterTypes.map(([filterType, options]) => (
+                <React.Fragment
+                    key={filterType}
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    {/*<Divider flexItem orientation="vertical" sx={{
+                        mx: 0.3,
+                        my: 1,
+                    }}/>*/}
                     <ToggleButtonFilterGroup
                         value={filters[filterType]}
                         onChange={(e, newValue) => handleFilter(filterType, newValue, e.target.value)}
                         options={options}
                         ariaLabel={`filtration by ${filterType}`}
+                        label={filterType}
                     />
-                    {index < filterTypes.length - 1 && (
-                        <Divider flexItem orientation="vertical" sx={{
-                            mx: 0.3,
-                            my: 1,
-                            [defaultTheme.breakpoints.down('sm')]: {
-                                display: 'none'
-                            },
-                        }}/>
-                    )}
                 </React.Fragment>
             ))}
         </Paper>
     );
 };
+
 export default FilterButtonGroup;

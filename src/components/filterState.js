@@ -9,7 +9,6 @@ const useFilterState = () => {
     });
 
     const setActiveFilter = useCallback((type, filter) => {
-        console.log(filter)
         setActiveFilters(prevFilters => ({
             ...prevFilters,
             [type]: toggleFilter(prevFilters[type], filter),

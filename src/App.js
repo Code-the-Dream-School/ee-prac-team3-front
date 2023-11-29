@@ -3,7 +3,6 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import useAuth from "auth/useAuth";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import customColors, {defaultTheme} from "assets/styles";
-import Main from "pages/Main";
 import Login from "pages/Login";
 import SignUp from "pages/SignUp";
 import ResetPassword from "pages/ResetPassword";
@@ -18,14 +17,17 @@ import CustomizedSnackbars from "components/Snackbar";
 import Header from "./components/Header/Header";
 import SettingsRoundedIcon from '@mui/icons-material/Settings';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import {Quizzes} from "./pages/TemporaryMainPage";
-import {Favorites} from "./pages/TemporaryMainPage";
+import {Quizzes} from "./pages/Main";
+import {Favorites} from "./pages/Main";
 import About from "./pages/About";
 import NavBar from "./components/NavBar";
 import Notes from "./pages/Notes";
 import Library from "./pages/Library";
 import UserSettings from "./pages/UserSettings";
 import useFilterState from "./components/filterState";
+import reactJsLogo from "./assets/images/react-logo-svgrepo-com.svg";
+import jsLogo from "./assets/images/js.svg";
+import dataStructureLogo from "./assets/images/hierarchical-structure-svgrepo-com.svg";
 
 const PATH = {
     /*
@@ -148,6 +150,37 @@ const userData = {
     email: "test@test.com",
 }
 
+const quizProgress = [
+    {
+        quizId: "react-basic",
+        attemptsCount: 1,
+        bestScore: 80,
+        lastScore: 50,
+        progress: 50,
+    },
+    {
+        quizId: "react-middle",
+        attemptsCount: 4,
+        bestScore: 50,
+        lastScore: 50,
+        progress: 10,
+    },
+    {
+        quizId: "js-basic",
+        attemptsCount: 3,
+        bestScore: 90,
+        lastScore: 30,
+        progress: 80,
+    },
+    {
+        quizId: "js-functions",
+        attemptsCount: 1,
+        bestScore: 20,
+        lastScore: 20,
+        progress: 100,
+    },
+];
+
 export default function App() {
     const {auth} = useAuth();
     const [snackbar, setSnackbar] = useState({
@@ -161,56 +194,64 @@ export default function App() {
             title: 'React Basic',
             category: 'react',
             level: 'basic',
-            labels: ['frontend']
+            labels: ['frontend'],
+            image: reactJsLogo,
         },
         {
             id: 'react-middle',
             title: 'React Middle',
             category: 'react',
             level: 'middle',
-            labels: ['frontend']
+            labels: ['frontend'],
+            image: reactJsLogo,
         },
         {
             id: 'js-basic',
             title: 'JS Basic',
             category: 'javascript',
             level: 'basic',
-            labels: ['frontend', 'backend']
+            labels: ['frontend', 'backend'],
+            image: jsLogo,
         },
         {
             id: 'js-functions',
             title: 'JS Functions',
             category: 'javascript',
             level: 'basic',
-            labels: ['frontend', 'backend']
+            labels: ['frontend', 'backend'],
+            image: jsLogo,
         },
         {
             id: 'js-middle',
             title: 'JS Middle',
             category: 'javascript',
             level: 'middle',
-            labels: ['frontend', 'backend']
+            labels: ['frontend', 'backend'],
+            image: jsLogo,
         },
         {
             id: 'data-structures',
             title: 'Data structures',
             category: 'data structure',
             level: 'middle',
-            labels: ['frontend', 'backend']
+            labels: ['frontend', 'backend'],
+            image: dataStructureLogo,
         },
         {
             id: 'js-arrays',
             title: 'JS Arrays',
             category: 'javascript',
             level: 'basic',
-            labels: ['frontend', 'backend']
+            labels: ['frontend', 'backend'],
+            image: jsLogo,
         },
         {
             id: 'js-promises',
             title: 'JS Promises',
             category: 'javascript',
             level: 'middle',
-            labels: ['frontend', 'backend']
+            labels: ['frontend', 'backend'],
+            image: jsLogo,
         }
     ]);
     const [favoriteQuizzes] = useState([
@@ -219,14 +260,17 @@ export default function App() {
             title: 'React Middle',
             category: 'react',
             level: 'middle',
-            labels: ['frontend']
+            labels: ['frontend'],
+            image: reactJsLogo,
         },
         {
             id: 'js-arrays',
             title: 'JS Arrays',
             category: 'javascript',
             level: 'basic',
-            labels: ['frontend', 'backend']
+            labels: ['frontend', 'backend'],
+            image: jsLogo,
+
         },
     ]);
 
@@ -268,9 +312,11 @@ export default function App() {
                     <Route path={QUIZZES}
                            element={
                                auth.loggedIn ? (
+                                  /* <Main quizzes={quizzes}/>*/
                                    <Quizzes quizzes={quizzes}
                                             changeFilter={changeFilter}
                                             activeFilters={activeFilters}
+                                            quizProgress={quizProgress}
                                    />
                                ) : (
                                    <Navigate to={LOGIN}></Navigate>
@@ -286,7 +332,8 @@ export default function App() {
                            element={
                                auth.loggedIn ? (<Favorites favoriteQuizzes={favoriteQuizzes}
                                                            changeFilter={changeFilter}
-                                                           activeFilters={activeFilters}/>)
+                                                           activeFilters={activeFilters}
+                                                           quizProgress={quizProgress}/>)
                                    : (<Navigate to={LOGIN}></Navigate>)
                            }/>
                     <Route path={NOTES} element={

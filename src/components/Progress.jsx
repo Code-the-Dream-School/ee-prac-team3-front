@@ -1,6 +1,6 @@
 import React from "react";
 import { CircularProgress } from "@mui/material";
-import customColors from "assets/customColors";
+import customColors from "../assets/styles";
 
 const Progress = ({ progress }) => {
   return (
@@ -11,7 +11,7 @@ const Progress = ({ progress }) => {
         value={100}
         sx={{
           color: customColors.greyLight,
-          position: "absolute",
+          position: "absolute"
         }}
       />
       <CircularProgress
