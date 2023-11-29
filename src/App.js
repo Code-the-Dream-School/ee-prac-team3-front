@@ -31,6 +31,8 @@ const PATH = {
 
 export const { HOME, LOGIN, SIGNUP, RESET_PASSWORD } = PATH;
 
+export const port = `http://localhost:8000`;
+
 function App() {
   const { auth } = useAuth();
   return (

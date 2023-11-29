@@ -8,15 +8,13 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import NavBar from 'components/NavBar';
-import { LOGIN, SIGNUP } from 'App';
+import { LOGIN, SIGNUP, port } from 'App';
 
 export default function Home() {
   const [userData, setUserData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
-
-  const baseURL = `http://localhost:8000`;
 
   const checkLoginStatus = async () => {
     const options = {
@@ -28,7 +26,7 @@ export default function Home() {
       credentials: 'include',
     };
 
-    const url = `${baseURL}/api/v1/login`; // API endpoint
+    const url = `${port}/api/v1/login`; // API endpoint
 
     try {
       const response = await fetch(url, options);
@@ -57,7 +55,7 @@ export default function Home() {
       credentials: 'include',
     };
 
-    const url = `${baseURL}/api/v1/logout`; // API endpoint
+    const url = `${port}/api/v1/logout`; // API endpoint
 
     try {
       const response = await fetch(url, options);
@@ -81,10 +79,8 @@ export default function Home() {
       try {
         const userNames = await checkLoginStatus();
         setUserData(userNames);
+        setIsLoading(false);
       } catch (error) {
-        console.error(error.message);
-        // Handle error in UI, e.g., show a message
-      } finally {
         setIsLoading(false);
       }
     };

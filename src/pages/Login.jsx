@@ -13,10 +13,11 @@ import {
   IconButton,
   Checkbox,
   FormControlLabel,
+  Alert,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { RESET_PASSWORD, SIGNUP, HOME } from 'App';
+import { RESET_PASSWORD, SIGNUP, HOME, port } from 'App';
 import customColors from 'assets/styles';
 
 export default function Login() {
@@ -36,6 +37,8 @@ export default function Login() {
   });
 
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   const navigate = useNavigate();
 
@@ -58,24 +61,26 @@ export default function Login() {
       credentials: 'include',
     };
 
-    const url = `http://localhost:8000/api/v1/login`; // API endpoint here
+    const url = `${port}/api/v1/login`; // API endpoint here
 
     try {
       const response = await fetch(url, options);
-      if (!response.ok) {
-        const errorMessage = `Error: ${response.status} - ${response.statusText}`;
-        const responseBody = await response.json();
-        console.error(errorMessage, responseBody);
-        throw new Error(errorMessage);
-      }
       const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          throw new Error(data.message || 'Invalid request');
+        } else {
+          throw new Error('Server error. Please try again later.');
+        }
+      }
+
       return {
         success: data.success,
         message: data.message,
       };
     } catch (error) {
-      console.error(error.message); // Using console.error for errors.
-      throw error; // Re-throw to be caught in the calling function.
+      throw error;
     }
   };
 
@@ -90,11 +95,11 @@ export default function Login() {
   };
 
   const handleSubmitData = async (event, loginData) => {
+    event.preventDefault();
+    setIsLoading(true);
+
     try {
-      event.preventDefault();
-      setIsLoading(true);
       const apiStatus = await loginUser(loginData);
-      console.log(apiStatus);
       setIsLoading(false);
       setLoginData({
         //username: '',
@@ -104,8 +109,7 @@ export default function Login() {
       navigate(HOME);
     } catch (error) {
       setIsLoading(false); // Ensure loading state is reset even on error.
-      console.error(error.message);
-      // TODO: Provide feedback to the user about the error.
+      setErrorMessage(error.message); // Set error message to display
     }
   };
 
@@ -204,6 +208,11 @@ export default function Login() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
+              {errorMessage && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {errorMessage}
+                </Alert>
+              )}
               <Button
                 type="submit"
                 fullWidth
