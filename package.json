@@ -24,7 +24,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "format": "prettier --write \"src/**/*.{js,jsx,json,css}\"",
+    "format": "npx prettier --write .",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

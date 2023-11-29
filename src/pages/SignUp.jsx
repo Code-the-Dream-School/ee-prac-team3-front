@@ -16,7 +16,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import customColors from 'assets/styles';
-import { LOGIN } from 'App';
+import { LOGIN, RESET_PASSWORD, port } from 'App';
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -60,24 +60,21 @@ export default function SignUp() {
       body: JSON.stringify(registrationData),
     };
 
-    const url = `http://localhost:8000/api/v1/signup`; // API endpoint here
+    const url = `${port}/api/v1/signup`; // API endpoint here
 
     try {
       const response = await fetch(url, options);
+      const data = await response.json();
       if (!response.ok) {
         const errorMessage = `Error: ${response.status} - ${response.statusText}`;
-        const responseBody = await response.json();
-        console.error(errorMessage, responseBody);
         throw new Error(errorMessage);
       }
-      const data = await response.json();
       return {
         id: data._id,
         firstname: data.firstname,
         lastname: data.lastname,
       };
     } catch (error) {
-      console.error(error.message); // Using console.error for errors.
       throw error; // Re-throw to be caught in the calling function.
     }
   };
@@ -114,8 +111,8 @@ export default function SignUp() {
     }
   };
 
-  const onLoginRedirect = () => {
-    alert(`Let's go to the Login Page!`);
+  const onRedirect = (event, nav) => {
+    event.preventDefault();
     setUserData({
       firstName: '',
       lastName: '',
@@ -123,20 +120,8 @@ export default function SignUp() {
       password: '',
       email: '',
     });
+    navigate(nav);
   };
-
-  const onForgotPassword = (data) => {
-    alert(`lets rest the password for ${data.username}!`);
-    setUserData({
-      firstName: '',
-      lastName: '',
-      username: '',
-      password: '',
-      email: '',
-    });
-  };
-
-  console.log(userData);
 
   return (
     <>
@@ -259,7 +244,7 @@ export default function SignUp() {
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href={LOGIN} variant="body2">
+                  <Link href = {LOGIN} onClick = {onRedirect} variant="body2">
                     Already have an account? Sign in
                   </Link>
                 </Grid>
