@@ -9,37 +9,39 @@ import {
   Box,
   Grid,
   Typography,
-  InputAdornment,
-  IconButton,
   Checkbox,
   FormControlLabel,
+  Container,
+  useMediaQuery,
+  InputAdornment,
+  IconButton,
   Alert,
 } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import useAuth from 'auth/useAuth';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { RESET_PASSWORD, SIGNUP, HOME, port } from 'App';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { LOGIN, RESET_PASSWORD, SIGNUP, HOME, port } from 'App';
 import customColors from 'assets/styles';
+import Copyright from '../components/Copyright';
+import backgroundAuth from '../assets/images/background-auth.svg';
+import jsQuizLogo from '../assets/images/logo.svg';
+import { useLocation } from 'react-router-dom';
 
 export default function Login() {
+  const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
+  const location = useLocation();
+  const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
+    location.pathname
+  );
   const [showPassword, setShowPassword] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const { setAuth } = useAuth();
   const [loginData, setLoginData] = React.useState({
     //username: '',
     email: '',
     password: '',
   });
-
-  const [errors, setErrors] = React.useState({
-    firstName: null,
-    lastName: null,
-    username: null,
-    password: null,
-    email: null,
-  });
-
-  const [isLoading, setIsLoading] = React.useState(false);
-
-  const [errorMessage, setErrorMessage] = React.useState('');
-
   const navigate = useNavigate();
 
   //signs user in with credentials
@@ -93,20 +95,24 @@ export default function Login() {
   const handleLoginDataChange = (field) => (e) => {
     setLoginData((prevData) => ({ ...prevData, [field]: e.target.value }));
   };
-
-  const handleSubmitData = async (event, loginData) => {
+  const handleSubmit = async (event, loginData) => {
     event.preventDefault();
     setIsLoading(true);
 
     try {
       const apiStatus = await loginUser(loginData);
-      setIsLoading(false);
-      setLoginData({
-        //username: '',
-        email: '',
-        password: '',
-      }); // Resetting the login data to its initial state.
-      navigate(HOME);
+      if (apiStatus.success === true) {
+        setIsLoading(false);
+        setLoginData({
+          //username: '',
+          email: '',
+          password: '',
+        }); // Resetting the login data to its initial state.
+        setAuth({
+          loggedIn: true,
+        });
+        navigate(HOME);
+      }
     } catch (error) {
       setIsLoading(false); // Ensure loading state is reset even on error.
       setErrorMessage(error.message); // Set error message to display
@@ -130,16 +136,22 @@ export default function Login() {
   };
 
   return (
-    <>
-      <Grid container component="main" sx={{ height: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '90vh',
+      }}
+    >
+      <Grid container component="main" sx={{ height: '100%' }}>
         <Grid
           item
-          xs={false}
           sm={4}
           md={7}
           sx={{
-            backgroundImage:
-              'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundImage: `url(${backgroundAuth})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light'
@@ -147,8 +159,22 @@ export default function Login() {
                 : t.palette.grey[900],
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
-        />
+        >
+          <Avatar
+            src={jsQuizLogo}
+            variant="square"
+            sx={{
+              width: '311px',
+              height: '139px',
+              display: isMdScreenAndUp ? 'flex' : 'none',
+            }}
+          ></Avatar>
+        </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
@@ -168,7 +194,7 @@ export default function Login() {
             <Box
               component="form"
               noValidate
-              onSubmit={(e) => handleSubmitData(e, loginData)}
+              onSubmit={(e) => handleSubmit(e, loginData)}
               sx={{ mt: 1 }}
             >
               <TextField
@@ -251,11 +277,16 @@ export default function Login() {
                     Don't have an account? Sign Up
                   </Link>
                 </Grid>
+                <Container maxWidth="sm" sx={{ mt: 6 }}>
+                  {isMdScreenAndUp && isAuthPages && (
+                    <Copyright color={customColors.blackMedium} />
+                  )}
+                </Container>
               </Grid>
             </Box>
           </Box>
         </Grid>
       </Grid>
-    </>
+    </Box>
   );
 }
