@@ -63,15 +63,16 @@ export default function SignUp() {
 
     try {
       const response = await fetch(url, options);
-      const data = await response.json();
+      const responseData = await response.json();
       if (!response.ok) {
         const errorMessage = `Error: ${response.status} - ${response.statusText}`;
         throw new Error(errorMessage);
       }
       return {
-        id: data._id,
-        firstname: data.firstname,
-        lastname: data.lastname,
+        firstName: responseData.data.firstname,
+        lastName: responseData.data.lastname,
+        email: responseData.data.email,
+        id: responseData.data._id,
       };
     } catch (error) {
       throw new Error(error); // Re-throw to be caught in the calling function.
