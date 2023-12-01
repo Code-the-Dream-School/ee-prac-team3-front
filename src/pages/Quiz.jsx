@@ -23,7 +23,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
 
   return (
     <Grid item key={quiz.id} xs={12} sm={6} md={4}>
-      <Link to="/">
+      <Link to="/" style={{ textDecoration: "none" }}>
         <Card
           elevation={1}
           sx={{
