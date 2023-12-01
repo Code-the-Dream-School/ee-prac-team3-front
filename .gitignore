@@ -30,3 +30,7 @@ yarn-error.log*
 .idea/modules.xml
 .idea/vcs.xml
 .idea
+
+.eslintrc
+localhost.pem
+localhost-key.pem
