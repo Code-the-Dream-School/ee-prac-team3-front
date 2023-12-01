@@ -17,7 +17,7 @@ import {
 import jsQuizLogo from '../../assets/images/logo.svg';
 import customColors, { defaultTheme } from 'assets/styles';
 import Search from './Search';
-import AboutElement from './AbouElement';
+import AboutElement from './AboutElement';
 import {
   HOME,
   LOGIN,
@@ -32,20 +32,11 @@ import {
   USER_SETTINGS,
   QUIZ,
 } from '../../App';
-import FilterListRoundedIcon from '@mui/icons-material/FilterListRounded';
-import FilterListOffRoundedIcon from '@mui/icons-material/FilterListOffRounded';
 
-export default function Header({
-  profileSettings,
-  userData,
-  auth,
-  filterVisible,
-  onFilterIconClick,
-}) {
+export default function Header({ profileSettings, userData, auth }) {
   const [headerState, setHeaderState] = useState({
     anchorElUser: null,
     isLoginButtonVisible: false,
-    isFilterIconEnabled: false,
     isUserMenuVisible: false,
     isLogoVisible: false,
   });
@@ -56,15 +47,12 @@ export default function Header({
     isLoginButtonVisible,
     isUserMenuVisible,
     isLogoVisible,
-    isFilterIconEnabled,
   } = headerState;
 
   useEffect(() => {
     setHeaderState((prevState) => ({
       ...prevState,
       isLoginButtonVisible: location.pathname === HOME,
-      isFilterIconEnabled:
-        location.pathname === QUIZZES || location.pathname === FAVORITES,
       isLogoVisible: [
         QUIZZES,
         QUIZ,
@@ -102,11 +90,15 @@ export default function Header({
 
   // user icon
   const stringAvatar = (name) => {
+    const initials = name
+      .split(' ')
+      .map((part) => part[0]?.toUpperCase())
+      .join('');
     return {
       sx: {
         backgroundColor: 'primary.main',
       },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+      children: initials,
     };
   };
 
@@ -150,17 +142,6 @@ export default function Header({
             }}
           >
             <Search />
-            {filterVisible ? (
-              <FilterListRoundedIcon
-                sx={{ display: isFilterIconEnabled ? 'flex' : 'none' }}
-                onClick={onFilterIconClick}
-              />
-            ) : (
-              <FilterListOffRoundedIcon
-                sx={{ display: isFilterIconEnabled ? 'flex' : 'none' }}
-                onClick={onFilterIconClick}
-              />
-            )}
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <AboutElement />
@@ -216,7 +197,10 @@ export default function Header({
                     key={setting.title}
                     component={Link}
                     to={setting.path}
-                    onClick={handleCloseUserMenu}
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      if (setting.onClick) setting.onClick();
+                    }}
                   >
                     {setting.icon}
                     <Typography

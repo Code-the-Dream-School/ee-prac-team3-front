@@ -11,15 +11,26 @@ import {
   InputAdornment,
   IconButton,
   Typography,
+  useMediaQuery,
+  Container,
 } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import customColors, { defaultTheme } from 'assets/styles';
+import { LOGIN, RESET_PASSWORD, SIGNUP, port } from 'App';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import customColors from 'assets/styles';
-import { LOGIN, RESET_PASSWORD, port } from 'App';
+import Copyright from '../components/Copyright';
+import { useLocation } from 'react-router-dom';
+import backgroundAuth from '../assets/images/background-auth.svg';
+import jsQuizLogo from '../assets/images/logo.svg';
 
 export default function SignUp() {
+  const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
+  const location = useLocation();
+  const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
+    location.pathname
+  );
   const [showPassword, setShowPassword] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [userData, setUserData] = React.useState({
     firstName: '',
     lastName: '',
@@ -27,17 +38,6 @@ export default function SignUp() {
     email: '',
     password: '',
   });
-
-  const [errors, setErrors] = React.useState({
-    firstName: null,
-    lastName: null,
-    username: null,
-    password: null,
-    email: null,
-  });
-
-  const [isLoading, setIsLoading] = React.useState(false);
-
   const navigate = useNavigate();
 
   //updates API with new user registration data
@@ -55,7 +55,6 @@ export default function SignUp() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        //'Authorization': `Bearer YOUR_TOKEN`
       },
       body: JSON.stringify(registrationData),
     };
@@ -75,7 +74,7 @@ export default function SignUp() {
         lastname: data.lastname,
       };
     } catch (error) {
-      throw error; // Re-throw to be caught in the calling function.
+      throw new Error(error); // Re-throw to be caught in the calling function.
     }
   };
 
@@ -124,16 +123,22 @@ export default function SignUp() {
   };
 
   return (
-    <>
-      <Grid container component="main" sx={{ height: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '90vh',
+      }}
+    >
+      <Grid container component="main" sx={{ height: '100%' }}>
         <Grid
           item
-          xs={false}
           sm={4}
           md={7}
           sx={{
-            backgroundImage:
-              'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundImage: `url(${backgroundAuth})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light'
@@ -141,8 +146,24 @@ export default function SignUp() {
                 : t.palette.grey[900],
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
-        />
+        >
+          <Avatar
+            src={jsQuizLogo}
+            variant="square"
+            sx={{
+              width: '311px',
+              height: '139px',
+              [defaultTheme.breakpoints.down('md')]: {
+                display: 'none',
+              },
+            }}
+          ></Avatar>
+        </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
@@ -228,7 +249,7 @@ export default function SignUp() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                disabled={isLoading} // Disable button when loading
+                disabled={isLoading}
                 sx={[
                   {
                     '&:hover': { backgroundColor: customColors.greyDark },
@@ -240,19 +261,28 @@ export default function SignUp() {
                   },
                 ]}
               >
-                {isLoading ? <CircularProgress size={24} /> : 'Sign Up'}
+                Sign Up
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href={LOGIN} onClick={onRedirect} variant="body2">
+                  <Link
+                    href={LOGIN}
+                    onClick={(e, LOGIN) => onRedirect()}
+                    variant="body2"
+                  >
                     Already have an account? Sign in
                   </Link>
                 </Grid>
               </Grid>
+              <Container maxWidth="sm" sx={{ mt: 6 }}>
+                {isMdScreenAndUp && isAuthPages && (
+                  <Copyright color={customColors.blackMedium} />
+                )}
+              </Container>
             </Box>
           </Box>
         </Grid>
       </Grid>
-    </>
+    </Box>
   );
 }

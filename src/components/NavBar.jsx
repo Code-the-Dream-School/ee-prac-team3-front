@@ -1,182 +1,99 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  Link,
   Paper,
   Box,
   BottomNavigation,
   BottomNavigationAction,
-  Grid,
-  Button,
-  Modal,
-  Backdrop,
-  Typography,
 } from '@mui/material';
-import { LOGIN, SIGNUP } from 'App';
+import { FAVORITES, LIBRARY, NOTES, QUIZZES, USER_SETTINGS } from 'App';
 import SchoolIcon from '@mui/icons-material/School';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
-import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
-import { useNavigate } from 'react-router-dom';
-import { useSpring, animated } from '@react-spring/web';
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
+import { Link, useLocation } from 'react-router-dom';
 
-const Fade = React.forwardRef(function Fade(props, ref) {
-  const {
-    children,
-    in: open,
-    onClick,
-    onEnter,
-    onExited,
-    ownerState,
-    ...other
-  } = props;
-  const style = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: open ? 1 : 0 },
-    onStart: () => {
-      if (open && onEnter) {
-        onEnter(null, true);
-      }
-    },
-    onRest: () => {
-      if (!open && onExited) {
-        onExited(null, true);
-      }
-    },
-  });
-
-  return (
-    <animated.div ref={ref} style={style} {...other}>
-      {React.cloneElement(children, { onClick })}
-    </animated.div>
-  );
-});
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
+const NAVIGATION_ROUTES = {
+  QUIZZES: 0,
+  FAVORITES: 1,
+  NOTES: 2,
+  LIBRARY: 3,
 };
 
-export default function NavBar(props) {
-  const { isLoading, userData, onLogout, setUserData } = props;
-  const [value, setValue] = useState(0);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
+export default function NavBar() {
+  const [value, setValue] = useState(localStorage.getItem('selectedPage'));
   const ref = useRef(null);
+  const location = useLocation();
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const route = location.pathname;
+    switch (route) {
+      case QUIZZES:
+        setValue(NAVIGATION_ROUTES.QUIZZES);
+        break;
+      case FAVORITES:
+        setValue(NAVIGATION_ROUTES.FAVORITES);
+        break;
+      case NOTES:
+        setValue(NAVIGATION_ROUTES.NOTES);
+        break;
+      case LIBRARY:
+        setValue(NAVIGATION_ROUTES.LIBRARY);
+        break;
+      default:
+        setValue(localStorage.getItem('selectedPage'));
+    }
+  }, [location.pathname]);
 
-  const handleLogout = async () => {
-    try {
-      const successful = await onLogout();
-      console.log(successful);
-      setUserData({
-        firstName: '',
-        lastName: '',
-      });
-      handleOpen();
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
-  const renderAuthButtons = () => {
-    if (isLoading) {
-      return <p>Loading...</p>;
-    }
-    if (userData.firstName) {
-      return (
-        <Grid item>
-          <Button onClick={() => handleLogout()} variant="outlined">
-            Logout
-          </Button>
-        </Grid>
-      );
-    }
-    return (
-      <>
-        <Grid item>
-          <Button onClick={() => navigate(LOGIN)} variant="outlined">
-            Login
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button onClick={() => navigate(SIGNUP)} variant="outlined">
-            Sign up
-          </Button>
-        </Grid>
-      </>
-    );
-  };
+  useEffect(() => {
+    localStorage.setItem('selectedPage', value);
+  }, [value]);
 
   return (
-    <>
-      <Box sx={{ pb: 7 }} ref={ref}>
-        <Paper
-          sx={{ position: 'fixed', top: 0, left: 0, right: 0 }}
-          elevation={3}
+    <Box ref={ref} position={'relative'}>
+      <Paper elevation={3}>
+        <BottomNavigation
+          showLabels
+          value={value}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+          }}
+          sx={{
+            display:
+              location.pathname === QUIZZES ||
+              location.pathname === NOTES ||
+              location.pathname === FAVORITES ||
+              location.pathname === LIBRARY ||
+              location.pathname === USER_SETTINGS
+                ? 'flex'
+                : 'none',
+          }}
         >
-          <BottomNavigation
-            showLabels
-            value={value}
-            onChange={(event, newValue) => {
-              setValue(newValue);
-            }}
-          >
-            {/* The link to the login page has been added for testing purposes and will be replaced as soon as the main page is ready. */}
-            <BottomNavigationAction
-              component={Link}
-              to={LOGIN}
-              label="Quizzes"
-              icon={<SchoolIcon />}
-            />
-            <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-            <BottomNavigationAction label="Notes" icon={<SpeakerNotesIcon />} />
-            <BottomNavigationAction
-              label="Help Center"
-              icon={<HelpRoundedIcon />}
-            />
-          </BottomNavigation>
-        </Paper>
-        <Grid
-          container
-          spacing={2}
-          direction="row"
-          justifyContent="flex-end"
-          alignItems="center"
-        >
-          {renderAuthButtons()}
-        </Grid>
-      </Box>
-      <Modal
-        aria-labelledby="spring-modal-title"
-        aria-describedby="spring-modal-description"
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            TransitionComponent: Fade,
-          },
-        }}
-      >
-        <Fade in={open}>
-          <Box sx={style}>
-            <Typography id="spring-modal-title" variant="h6" component="h2">
-              You have successfully Logged Out
-            </Typography>
-          </Box>
-        </Fade>
-      </Modal>
-    </>
+          <BottomNavigationAction
+            component={Link}
+            to={QUIZZES}
+            label="Quizzes"
+            icon={<SchoolIcon />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            to={FAVORITES}
+            label="Favorites"
+            icon={<FavoriteIcon />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            to={NOTES}
+            label="Notes"
+            icon={<SpeakerNotesIcon />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            to={LIBRARY}
+            label="Library"
+            icon={<LocalLibraryIcon />}
+          />
+        </BottomNavigation>
+      </Paper>
+    </Box>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
 
-export default function Error() {
+const About = () => {
   return (
     <Container
       sx={{
@@ -11,8 +11,10 @@ export default function Error() {
       }}
     >
       <Box>
-        <Typography variant={'h3'}>Error 404 :(</Typography>
+        <Typography>Some info about our project will be here. =)</Typography>
       </Box>
     </Container>
   );
-}
+};
+
+export default About;
