@@ -50,7 +50,6 @@ export default function Login() {
       //'username': newUserData.username,
       email: newUserData.email,
       password: newUserData.password,
-      //'quizData' : {}
     };
 
     const options = {

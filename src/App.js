@@ -88,7 +88,7 @@ const checkLoginStatus = async () => {
       const errorMessage = `Error: ${response.status} - ${response.statusText}`;
       throw new Error(errorMessage);
     }
-    return data;
+    return data.user;
   } catch (error) {
     throw error;
   }
@@ -214,7 +214,6 @@ export default function App() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        //'Authorization':
       },
       credentials: 'include',
     };
