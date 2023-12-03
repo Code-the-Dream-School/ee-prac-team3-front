@@ -19,7 +19,7 @@ import SettingsRoundedIcon from '@mui/icons-material/Settings';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { Quizzes } from './pages/Main';
 import { Favorites } from './pages/Main';
-import About from './pages/About';
+import About from './pages/About/About';
 import NavBar from './components/NavBar';
 import Notes from './pages/Notes';
 import Library from './pages/Library';
@@ -33,13 +33,13 @@ const PATH = {
   /*
     // For further use:
     UNAUTHORIZED: '/unauthorized',
-    CONFIRMATION: '/confirmation'
+    CONFIRMATION: '/confirmation',
+    LOGOUT: '/logout',
     */
   HOME: '/home',
   LOGIN: '/login',
   SIGNUP: '/signup',
   RESET_PASSWORD: '/reset-password',
-  LOGOUT: '/logout',
   USER_SETTINGS: '/settings',
   ABOUT: '/about',
   QUIZZES: '/quiz-app',
@@ -57,7 +57,6 @@ export const {
   RESET_PASSWORD,
   QUIZZES,
   USER_SETTINGS,
-  LOGOUT,
   ABOUT,
   ERROR,
   FAVORITES,
@@ -97,49 +96,83 @@ const checkLoginStatus = async () => {
 const teamRoles = {
   BACKEND_TEAM: 'backend team',
   FRONTEND_TEAM: 'frontend team',
+  MENTOR: 'mentor'
 };
-const { BACKEND_TEAM, FRONTEND_TEAM } = teamRoles;
+const { BACKEND_TEAM, FRONTEND_TEAM, MENTOR } = teamRoles;
 export const projectTeam = [
   {
     id: '1',
-    name: 'Katsiaryna',
+    name: 'Elijah Bernstein-Cooper',
     imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-    role: FRONTEND_TEAM,
-    gitHub: 'https://github.com/katsiarynalashcheuskaya',
+        'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
+    role: MENTOR,
+    gitHub: 'https://github.com/ezbc',
+    description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Malesuada fames ac turpis egestas integer. Et malesuada fames ac turpis egestas sed.',
   },
   {
     id: '2',
-    name: 'Alina',
-    imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-    role: BACKEND_TEAM,
-    gitHub: 'https://github.com/npnote8',
+    name: 'Sergey Sherstobitov',
+    imageURL: 'https://avatars.githubusercontent.com/u/3116876?v=4',
+    role: MENTOR,
+    gitHub: 'https://github.com/in43sh',
+    description:
+        'Full-stack web-developer with hands-on experience in building responsive and fast websites. He is also a continuous learner, always looking for effective ways to overcome a challenge. In addition, he is passionate about improving user’s interaction with a website.',
   },
   {
     id: '3',
-    name: 'David',
-    imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
+    name: 'Katsiaryna Lashcheuskaya',
+    imageURL: 'https://avatars.githubusercontent.com/u/111474106?v=4',
     role: FRONTEND_TEAM,
-    gitHub: 'https://github.com/DavidGslade86',
+    gitHub: 'https://github.com/katsiarynalashcheuskaya',
+    description:
+        'As a junior developer, her goal is to continue growing, collaborating, and making impactful contributions to the world of web development. ' +
+        'Her strengths include strong analytical skills and a sense of responsibility.',
   },
   {
     id: '4',
-    name: 'Bino',
+    name: 'David Greenslade',
     imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-    role: BACKEND_TEAM,
-    gitHub: 'https://github.com/Bino26',
+        'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
+    role: FRONTEND_TEAM,
+    gitHub: 'https://github.com/DavidGslade86',
+    description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Malesuada fames ac turpis egestas integer. Et malesuada fames ac turpis egestas sed.',
   },
   {
     id: '5',
-    name: 'Eva',
+    name: 'Eva Weisneck',
     imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
+        'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
     role: FRONTEND_TEAM,
     gitHub: 'https://github.com/evaw277',
+    description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Malesuada fames ac turpis egestas integer. Et malesuada fames ac turpis egestas sed.',
   },
+  {
+    id: '6',
+    name: 'Alina Matskevich',
+    imageURL:
+        'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
+    role: BACKEND_TEAM,
+    gitHub: 'https://github.com/npnote8',
+    description:
+        'She believes strongly in the power of programming\n' +
+        'and was looking to build the app that is beneficial for others.\n' +
+        'Besides   coding,   Alina   enjoys   listening   to   music,   gardening,\n' +
+        'and reading books',
+  },
+  {
+    id: '7',
+    name: 'Bangah M’Bayi Yann',
+    imageURL: 'https://avatars.githubusercontent.com/u/81714858?v=4',
+    role: BACKEND_TEAM,
+    gitHub: 'https://github.com/Bino26',
+    description:
+        'He   is passionate about coding and enjoys being challenged.    Bino\n' +
+        'is a fast learner and a creative problem-solver - all things that\n' +
+        'make   him   an   excellent   software   developer. ',
+  }
 ];
 export const highlights = [
   {
@@ -479,12 +512,11 @@ export default function App() {
             element={
               <Home
                 snackbar={setSnackbar}
-                team={projectTeam}
                 highlights={highlights}
               />
             }
           />
-          <Route path={ABOUT} element={<About />} />
+          <Route path={ABOUT} element={<About  team={projectTeam}/>} />
           <Route path={ERROR} element={<Error />} />
           <Route path="/*" element={<Navigate to={ERROR}></Navigate>} />
         </Routes>

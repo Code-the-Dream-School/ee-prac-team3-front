@@ -118,17 +118,8 @@ export default function Login() {
     }
   };
 
-  const onSignupRedirect = () => {
+  const onRedirect = () => {
     setLoginData({
-      //username: '',
-      password: '',
-      email: '',
-    });
-  };
-
-  const onForgotPassword = () => {
-    setLoginData({
-      //username: '',
       password: '',
       email: '',
     });
@@ -185,7 +176,7 @@ export default function Login() {
             }}
           >
             <Avatar sx={{ m: 1, backgroundColor: 'primary.main' }}>
-              <LockOutlinedIcon />
+              <LockOutlinedIcon sx={{color: customColors.white}}/>
             </Avatar>
             <Typography component="h1" variant="h5">
               Sign in
@@ -259,7 +250,7 @@ export default function Login() {
                 <Grid item xs>
                   <Link
                     href={RESET_PASSWORD}
-                    onClick={onForgotPassword}
+                    onClick={onRedirect}
                     variant="body2"
                     color="primary.main"
                   >
@@ -269,7 +260,7 @@ export default function Login() {
                 <Grid item>
                   <Link
                     href={SIGNUP}
-                    onClick={onSignupRedirect}
+                    onClick={onRedirect}
                     variant="body2"
                     color="primary.main"
                   >
