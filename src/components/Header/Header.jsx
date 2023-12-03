@@ -97,6 +97,7 @@ export default function Header({ profileSettings, userData, auth }) {
     return {
       sx: {
         backgroundColor: 'primary.main',
+        color: customColors.white
       },
       children: initials,
     };

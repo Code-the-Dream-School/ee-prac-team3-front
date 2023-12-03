@@ -8,9 +8,9 @@ import { QUIZZES } from '../../App';
 import { Link } from 'react-router-dom';
 import ContactForm from './ContactForm';
 import HighlightsSection from './Highlights';
-import Team from './Team';
+import Team from '../About/Team';
 
-export default function Home({ team, highlights, snackbar }) {
+export default function Home({ highlights, snackbar }) {
   return (
     <>
       {/*Home section*/}
@@ -297,48 +297,6 @@ export default function Home({ team, highlights, snackbar }) {
           },
         }}
       ></Box>
-      {/*Team section*/}
-      <Box
-        sx={{
-          backgroundColor: customColors.greyLight,
-          padding: '100px 100px',
-          textAlign: 'center',
-          [defaultTheme.breakpoints.down('sm')]: {
-            padding: '50px 0',
-          },
-        }}
-      >
-        <Box className={c.container}>
-          <Typography
-            variant={'h4'}
-            sx={{
-              mb: 3,
-              [defaultTheme.breakpoints.down('sm')]: {
-                fontSize: '28px',
-              },
-            }}
-          >
-            Our team
-          </Typography>
-          <Box>
-            <Typography
-              variant={'body1'}
-              sx={{
-                [defaultTheme.breakpoints.down('sm')]: {
-                  fontSize: '14px',
-                },
-              }}
-            >
-              Our dynamic team consists of a group of junior developers who are
-              deeply passionate about coding. We're constantly working to
-              enhance our skills and stay up-to-date with the latest in the
-              world of technology. With a shared commitment to growth and
-              improvement, we are dedicated to delivering top-notch solutions.
-            </Typography>
-          </Box>
-          <Team team={team} />
-        </Box>
-      </Box>
       {/*CTD section*/}
       <Box
         sx={{
