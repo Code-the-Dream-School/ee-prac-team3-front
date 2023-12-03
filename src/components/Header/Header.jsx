@@ -97,7 +97,7 @@ export default function Header({ profileSettings, userData, auth }) {
     return {
       sx: {
         backgroundColor: 'primary.main',
-        color: customColors.white
+        color: customColors.white,
       },
       children: initials,
     };
@@ -109,7 +109,14 @@ export default function Header({ profileSettings, userData, auth }) {
 
   return (
     <AppBar position="static" sx={{ backgroundColor: customColors.blackLight }}>
-      <Container sx={{ maxWidth: '1200px' }}>
+      <Container
+        sx={{
+          maxWidth: '1200px',
+          [defaultTheme.breakpoints.up('lg')]: {
+            padding: 0,
+          },
+        }}
+      >
         <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
           {isLogoOnRight && <Box sx={{ flexGrow: 1 }} />}
           <Link to={HOME}>

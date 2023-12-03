@@ -38,7 +38,6 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = React.useState('');
   const { setAuth } = useAuth();
   const [loginData, setLoginData] = React.useState({
-    //username: '',
     email: '',
     password: '',
   });
@@ -47,7 +46,6 @@ export default function Login() {
   //signs user in with credentials
   const loginUser = async (newUserData) => {
     const loginData = {
-      //'username': newUserData.username,
       email: newUserData.email,
       password: newUserData.password,
     };
@@ -103,7 +101,6 @@ export default function Login() {
       if (apiStatus.success === true) {
         setIsLoading(false);
         setLoginData({
-          //username: '',
           email: '',
           password: '',
         }); // Resetting the login data to its initial state.
@@ -176,7 +173,7 @@ export default function Login() {
             }}
           >
             <Avatar sx={{ m: 1, backgroundColor: 'primary.main' }}>
-              <LockOutlinedIcon sx={{color: customColors.white}}/>
+              <LockOutlinedIcon sx={{ color: customColors.white }} />
             </Avatar>
             <Typography component="h1" variant="h5">
               Sign in
