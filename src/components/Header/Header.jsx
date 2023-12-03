@@ -112,7 +112,7 @@ export default function Header({ profileSettings, userData, auth }) {
       <Container
         sx={{
           maxWidth: '1200px',
-          [defaultTheme.breakpoints.up('lg')]: {
+          [defaultTheme.breakpoints.up('xl')]: {
             padding: 0,
           },
         }}
