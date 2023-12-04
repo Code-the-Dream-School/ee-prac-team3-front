@@ -28,7 +28,7 @@ import useFilterState from './components/filterState';
 import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from './assets/images/js.svg';
 import dataStructureLogo from './assets/images/hierarchical-structure-svgrepo-com.svg';
-import Loading from './components/Loading';
+// import Loading from './components/Loading';
 import Box from '@mui/material/Box';
 
 const PATH = {
@@ -127,7 +127,35 @@ const quizProgress = [
     progress: 50,
   },
   {
-    quizId: 'react-middle',
+    quizId: 'react-intermediate',
+    attemptsCount: 4,
+    bestScore: 50,
+    lastScore: 50,
+    progress: 10,
+  },
+  {
+    quizId: 'js-basic',
+    attemptsCount: 3,
+    bestScore: 90,
+    lastScore: 30,
+    progress: 80,
+  },
+  {
+    quizId: 'js-functions',
+    attemptsCount: 1,
+    bestScore: 20,
+    lastScore: 20,
+    progress: 100,
+  },
+  {
+    quizId: 'react-basic',
+    attemptsCount: 1,
+    bestScore: 80,
+    lastScore: 50,
+    progress: 50,
+  },
+  {
+    quizId: 'react-intermediate',
     attemptsCount: 4,
     bestScore: 50,
     lastScore: 50,
@@ -238,6 +266,7 @@ export default function App() {
       }
     };
     authenticateUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
 
   const [quizzes] = useState([
@@ -250,10 +279,10 @@ export default function App() {
       image: reactJsLogo,
     },
     {
-      id: 'react-middle',
-      title: 'React Middle',
+      id: 'react-intermediate',
+      title: 'React Intermediate',
       category: 'react',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend'],
       image: reactJsLogo,
     },
@@ -274,10 +303,10 @@ export default function App() {
       image: jsLogo,
     },
     {
-      id: 'js-middle',
-      title: 'JS Middle',
+      id: 'js-intermediate',
+      title: 'JS Intermediate',
       category: 'javascript',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend', 'backend'],
       image: jsLogo,
     },
@@ -285,7 +314,7 @@ export default function App() {
       id: 'data-structures',
       title: 'Data structures',
       category: 'data structure',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend', 'backend'],
       image: dataStructureLogo,
     },
@@ -301,17 +330,17 @@ export default function App() {
       id: 'js-promises',
       title: 'JS Promises',
       category: 'javascript',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend', 'backend'],
       image: jsLogo,
     },
   ]);
   const [favoriteQuizzes] = useState([
     {
-      id: 'react-middle',
-      title: 'React Middle',
+      id: 'react-intermediate',
+      title: 'React Intermediate',
       category: 'react',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend'],
       image: reactJsLogo,
     },
