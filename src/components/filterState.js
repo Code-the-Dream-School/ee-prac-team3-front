@@ -8,6 +8,7 @@ const useFilterState = () => {
     labels: [],
   });
 
+  //add new filter to activeFilters
   const setActiveFilter = useCallback((type, filter) => {
     setActiveFilters((prevFilters) => ({
       ...prevFilters,
