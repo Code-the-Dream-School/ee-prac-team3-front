@@ -7,7 +7,6 @@ export const AuthContextProvider = ({ children }) => {
     userId: '',
     firstName: '',
     lastName: '',
-    username: '',
     email: '',
     avatarURL: '',
     role: [''],

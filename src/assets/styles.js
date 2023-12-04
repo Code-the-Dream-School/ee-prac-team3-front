@@ -1,7 +1,5 @@
 import { createTheme } from '@mui/material/styles';
 
-export const defaultTheme = createTheme();
-
 const customColors = {
   blackMedium: '#1D2126',
   blackLight: '#323232',
@@ -16,5 +14,13 @@ const customColors = {
   orangeDark: '#F1662A',
   greenMedium: '#3BB98A',
 };
+
+export const defaultTheme = createTheme({
+  palette: {
+    background: {
+      default: customColors.blackLight,
+    },
+  },
+});
 
 export default customColors;

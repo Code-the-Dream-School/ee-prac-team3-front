@@ -19,7 +19,7 @@ import SettingsRoundedIcon from '@mui/icons-material/Settings';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { Quizzes } from './pages/Main';
 import { Favorites } from './pages/Main';
-import About from './pages/About';
+import About from './pages/About/About';
 import NavBar from './components/NavBar';
 import Notes from './pages/Notes';
 import Library from './pages/Library';
@@ -28,18 +28,20 @@ import useFilterState from './components/filterState';
 import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from './assets/images/js.svg';
 import dataStructureLogo from './assets/images/hierarchical-structure-svgrepo-com.svg';
+import Loading from './components/Loading';
+import Box from '@mui/material/Box';
 
 const PATH = {
   /*
     // For further use:
     UNAUTHORIZED: '/unauthorized',
-    CONFIRMATION: '/confirmation'
+    CONFIRMATION: '/confirmation',
+    LOGOUT: '/logout',
     */
   HOME: '/home',
   LOGIN: '/login',
   SIGNUP: '/signup',
   RESET_PASSWORD: '/reset-password',
-  LOGOUT: '/logout',
   USER_SETTINGS: '/settings',
   ABOUT: '/about',
   QUIZZES: '/quiz-app',
@@ -57,7 +59,6 @@ export const {
   RESET_PASSWORD,
   QUIZZES,
   USER_SETTINGS,
-  LOGOUT,
   ABOUT,
   ERROR,
   FAVORITES,
@@ -94,53 +95,6 @@ const checkLoginStatus = async () => {
   }
 };
 
-const teamRoles = {
-  BACKEND_TEAM: 'backend team',
-  FRONTEND_TEAM: 'frontend team',
-};
-const { BACKEND_TEAM, FRONTEND_TEAM } = teamRoles;
-export const projectTeam = [
-  {
-    id: '1',
-    name: 'Katsiaryna',
-    imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-    role: FRONTEND_TEAM,
-    gitHub: 'https://github.com/katsiarynalashcheuskaya',
-  },
-  {
-    id: '2',
-    name: 'Alina',
-    imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-    role: BACKEND_TEAM,
-    gitHub: 'https://github.com/npnote8',
-  },
-  {
-    id: '3',
-    name: 'David',
-    imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-    role: FRONTEND_TEAM,
-    gitHub: 'https://github.com/DavidGslade86',
-  },
-  {
-    id: '4',
-    name: 'Bino',
-    imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-    role: BACKEND_TEAM,
-    gitHub: 'https://github.com/Bino26',
-  },
-  {
-    id: '5',
-    name: 'Eva',
-    imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
-    role: FRONTEND_TEAM,
-    gitHub: 'https://github.com/evaw277',
-  },
-];
 export const highlights = [
   {
     id: 'highlight 1',
@@ -202,7 +156,7 @@ export default function App() {
     severity: '',
     message: '',
   });
-
+  const [loading, setLoading] = useState(true);
   const userData = {
     firstName: auth.firstName,
     lastName: auth.lastName,
@@ -232,7 +186,6 @@ export default function App() {
           userId: '',
           firstName: '',
           lastName: '',
-          username: '',
           email: '',
           avatarURL: '',
           role: [''],
@@ -272,7 +225,6 @@ export default function App() {
           userId: backendUserData.userId,
           firstName: backendUserData.firstname,
           lastName: backendUserData.lastname,
-          username: backendUserData.username,
           email: backendUserData.url,
           role: backendUserData.role,
           loggedIn: true,
@@ -281,6 +233,8 @@ export default function App() {
         });
       } catch (error) {
         throw new Error(error);
+      } finally {
+        setLoading(false);
       }
     };
     authenticateUser();
@@ -403,92 +357,100 @@ export default function App() {
           auth={auth}
         />
         <NavBar />
-        <Routes>
-          {/* protected route */}
-          <Route
-            path={LOGIN}
-            element={auth.loggedIn ? <Navigate to="/"></Navigate> : <Login />}
-          />
-          <Route
-            path={QUIZZES}
-            element={
-              auth.loggedIn ? (
-                /* <Main quizzes={quizzes}/>*/
-                <Quizzes
-                  quizzes={quizzes}
-                  changeFilter={changeFilter}
-                  activeFilters={activeFilters}
-                  quizProgress={quizProgress}
-                />
-              ) : (
-                <Navigate to={LOGIN}></Navigate>
-              )
-            }
-          />
-          <Route
-            path={SIGNUP}
-            element={auth.loggedIn ? <Navigate to="/"></Navigate> : <SignUp />}
-          />
-          <Route
-            path={RESET_PASSWORD}
-            element={
-              auth.loggedIn ? <Navigate to="/"></Navigate> : <ResetPassword />
-            }
-          />
-          <Route
-            path={FAVORITES}
-            element={
-              auth.loggedIn ? (
-                <Favorites
-                  favoriteQuizzes={favoriteQuizzes}
-                  changeFilter={changeFilter}
-                  activeFilters={activeFilters}
-                  quizProgress={quizProgress}
-                />
-              ) : (
-                <Navigate to={LOGIN}></Navigate>
-              )
-            }
-          />
-          <Route
-            path={NOTES}
-            element={
-              auth.loggedIn ? <Notes /> : <Navigate to={LOGIN}></Navigate>
-            }
-          />
-          <Route
-            path={LIBRARY}
-            element={
-              auth.loggedIn ? <Library /> : <Navigate to={LOGIN}></Navigate>
-            }
-          />
-          <Route
-            path={USER_SETTINGS}
-            element={
-              auth.loggedIn ? (
-                <UserSettings />
-              ) : (
-                <Navigate to={LOGIN}></Navigate>
-              )
-            }
-          />
-          {/* non-protected routes */}
-          <Route path={'/'} element={<Navigate to={HOME} />} />
-          <Route
-            path={HOME}
-            element={
-              <Home
-                snackbar={setSnackbar}
-                team={projectTeam}
-                highlights={highlights}
+        {!loading && (
+          <Box sx={{ height: '100vh' }}>
+            <Routes>
+              {/* protected route */}
+              <Route
+                path={LOGIN}
+                element={
+                  auth.loggedIn ? <Navigate to="/"></Navigate> : <Login />
+                }
               />
-            }
-          />
-          <Route path={ABOUT} element={<About />} />
-          <Route path={ERROR} element={<Error />} />
-          <Route path="/*" element={<Navigate to={ERROR}></Navigate>} />
-        </Routes>
-        <Footer />
+              <Route
+                path={QUIZZES}
+                element={
+                  auth.loggedIn ? (
+                    /* <Main quizzes={quizzes}/>*/
+                    <Quizzes
+                      quizzes={quizzes}
+                      changeFilter={changeFilter}
+                      activeFilters={activeFilters}
+                      quizProgress={quizProgress}
+                    />
+                  ) : (
+                    <Navigate to={LOGIN}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path={SIGNUP}
+                element={
+                  auth.loggedIn ? <Navigate to="/"></Navigate> : <SignUp />
+                }
+              />
+              <Route
+                path={RESET_PASSWORD}
+                element={
+                  auth.loggedIn ? (
+                    <Navigate to="/"></Navigate>
+                  ) : (
+                    <ResetPassword />
+                  )
+                }
+              />
+              <Route
+                path={FAVORITES}
+                element={
+                  auth.loggedIn ? (
+                    <Favorites
+                      favoriteQuizzes={favoriteQuizzes}
+                      changeFilter={changeFilter}
+                      activeFilters={activeFilters}
+                      quizProgress={quizProgress}
+                    />
+                  ) : (
+                    <Navigate to={LOGIN}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path={NOTES}
+                element={
+                  auth.loggedIn ? <Notes /> : <Navigate to={LOGIN}></Navigate>
+                }
+              />
+              <Route
+                path={LIBRARY}
+                element={
+                  auth.loggedIn ? <Library /> : <Navigate to={LOGIN}></Navigate>
+                }
+              />
+              <Route
+                path={USER_SETTINGS}
+                element={
+                  auth.loggedIn ? (
+                    <UserSettings />
+                  ) : (
+                    <Navigate to={LOGIN}></Navigate>
+                  )
+                }
+              />
+              {/* non-protected routes */}
+              <Route path={'/'} element={<Navigate to={HOME} />} />
+              <Route
+                path={HOME}
+                element={
+                  <Home snackbar={setSnackbar} highlights={highlights} />
+                }
+              />
+              <Route path={ABOUT} element={<About />} />
+              <Route path={ERROR} element={<Error />} />
+              <Route path="/*" element={<Navigate to={ERROR}></Navigate>} />
+            </Routes>
+            <Footer />
+          </Box>
+        )}
       </ThemeProvider>
     </>
   );
