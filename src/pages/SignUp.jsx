@@ -22,6 +22,7 @@ import Copyright from '../components/Copyright';
 import { useLocation } from 'react-router-dom';
 import backgroundAuth from '../assets/images/background-auth.svg';
 import jsQuizLogo from '../assets/images/logo.svg';
+import Loading from '../components/Loading';
 
 export default function SignUp() {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -34,7 +35,6 @@ export default function SignUp() {
   const [userData, setUserData] = React.useState({
     firstName: '',
     lastName: '',
-    username: '',
     email: '',
     password: '',
   });
@@ -45,7 +45,6 @@ export default function SignUp() {
     const registrationData = {
       firstname: newUserData.firstName,
       lastname: newUserData.lastName,
-      //'username': newUserData.username,
       email: newUserData.email,
       password: newUserData.password,
       //'quizData' : {}
@@ -99,7 +98,6 @@ export default function SignUp() {
       setUserData({
         firstName: '',
         lastName: '',
-        username: '',
         password: '',
         email: '',
       }); // Resetting the user data to its initial state.
@@ -116,7 +114,6 @@ export default function SignUp() {
     setUserData({
       firstName: '',
       lastName: '',
-      username: '',
       password: '',
       email: '',
     });
@@ -178,109 +175,113 @@ export default function SignUp() {
             <Avatar sx={{ m: 1, backgroundColor: 'primary.main' }}>
               <LockOutlinedIcon sx={{ color: customColors.white }} />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" mb={3}>
               Sign up
             </Typography>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={(e) => handleSubmitData(e, userData)}
-              sx={{ mt: 3 }}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    autoComplete="given-name"
-                    name="firstName"
-                    required
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    autoFocus
-                    onChange={handleUserDataChange('firstName')}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="lastName"
-                    autoComplete="family-name"
-                    onChange={handleUserDataChange('lastName')}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    onChange={handleUserDataChange('email')}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    id="password"
-                    autoComplete="new-password"
-                    type={showPassword ? 'text' : 'password'}
-                    onChange={handleUserDataChange('password')}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </Grid>
-              </Grid>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                disabled={isLoading}
-                sx={[
-                  {
-                    '&:hover': { backgroundColor: customColors.greyDark },
-                  },
-                  {
-                    mt: 3,
-                    mb: 2,
-                    backgroundColor: customColors.blackLight,
-                  },
-                ]}
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <Box
+                component="form"
+                noValidate
+                onSubmit={(e) => handleSubmitData(e, userData)}
+                sx={{ mt: 3 }}
               >
-                Sign Up
-              </Button>
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Link
-                    href={LOGIN}
-                    onClick={(e, LOGIN) => onRedirect()}
-                    variant="body2"
-                  >
-                    Already have an account? Sign in
-                  </Link>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      autoComplete="given-name"
+                      name="firstName"
+                      required
+                      fullWidth
+                      id="firstName"
+                      label="First Name"
+                      autoFocus
+                      onChange={handleUserDataChange('firstName')}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="lastName"
+                      label="Last Name"
+                      name="lastName"
+                      autoComplete="family-name"
+                      onChange={handleUserDataChange('lastName')}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      onChange={handleUserDataChange('email')}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      name="password"
+                      label="Password"
+                      id="password"
+                      autoComplete="new-password"
+                      type={showPassword ? 'text' : 'password'}
+                      onChange={handleUserDataChange('password')}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-              <Container maxWidth="sm" sx={{ mt: 6 }}>
-                {isMdScreenAndUp && isAuthPages && (
-                  <Copyright color={customColors.blackMedium} />
-                )}
-              </Container>
-            </Box>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={isLoading}
+                  sx={[
+                    {
+                      '&:hover': { backgroundColor: customColors.greyDark },
+                    },
+                    {
+                      mt: 3,
+                      mb: 2,
+                      backgroundColor: customColors.blackLight,
+                    },
+                  ]}
+                >
+                  Sign Up
+                </Button>
+                <Grid container justifyContent="flex-end">
+                  <Grid item>
+                    <Link
+                      href={LOGIN}
+                      onClick={(e, LOGIN) => onRedirect()}
+                      variant="body2"
+                    >
+                      Already have an account? Sign in
+                    </Link>
+                  </Grid>
+                </Grid>
+                <Container maxWidth="sm" sx={{ mt: 6 }}>
+                  {isMdScreenAndUp && isAuthPages && (
+                    <Copyright color={customColors.blackMedium} />
+                  )}
+                </Container>
+              </Box>
+            )}
           </Box>
         </Grid>
       </Grid>
