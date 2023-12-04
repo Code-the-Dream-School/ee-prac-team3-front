@@ -9,7 +9,7 @@ import {
   NOTES,
   QUIZ,
   QUIZZES,
-  USER_SETTINGS,
+  ACCOUNT_SETTINGS,
 } from '../../App';
 import customColors, { defaultTheme } from '../../assets/styles';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -29,7 +29,7 @@ const AboutElement = () => {
         location.pathname === QUIZ ||
         location.pathname === NOTES ||
         location.pathname === FAVORITES ||
-        location.pathname === USER_SETTINGS ||
+        location.pathname === ACCOUNT_SETTINGS ||
         location.pathname === LIBRARY,
     });
   }, [location.pathname]);

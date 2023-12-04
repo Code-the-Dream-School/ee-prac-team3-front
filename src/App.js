@@ -23,12 +23,11 @@ import About from './pages/About/About';
 import NavBar from './components/NavBar';
 import Notes from './pages/Notes';
 import Library from './pages/Library';
-import UserSettings from './pages/UserSettings';
+import AccountSettings from './pages/AccountSettings';
 import useFilterState from './components/filterState';
 import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from './assets/images/js.svg';
 import dataStructureLogo from './assets/images/hierarchical-structure-svgrepo-com.svg';
-import Loading from './components/Loading';
 import Box from '@mui/material/Box';
 
 const PATH = {
@@ -42,7 +41,7 @@ const PATH = {
   LOGIN: '/login',
   SIGNUP: '/signup',
   RESET_PASSWORD: '/reset-password',
-  USER_SETTINGS: '/settings',
+  ACCOUNT_SETTINGS: '/settings',
   ABOUT: '/about',
   QUIZZES: '/quiz-app',
   ERROR: '/error',
@@ -58,7 +57,7 @@ export const {
   SIGNUP,
   RESET_PASSWORD,
   QUIZZES,
-  USER_SETTINGS,
+  ACCOUNT_SETTINGS,
   ABOUT,
   ERROR,
   FAVORITES,
@@ -207,7 +206,7 @@ export default function App() {
     {
       title: 'Account',
       icon: <SettingsRoundedIcon sx={{ color: customColors.blackLight }} />,
-      path: USER_SETTINGS,
+      path: ACCOUNT_SETTINGS,
     },
     {
       title: 'Logout',
@@ -221,11 +220,12 @@ export default function App() {
     const authenticateUser = async () => {
       try {
         const backendUserData = await checkLoginStatus();
+        console.log(backendUserData);
         setAuth({
           userId: backendUserData.userId,
           firstName: backendUserData.firstname,
           lastName: backendUserData.lastname,
-          email: backendUserData.url,
+          email: backendUserData.email,
           role: backendUserData.role,
           loggedIn: true,
           accessToken: backendUserData.accessToken,
@@ -251,9 +251,9 @@ export default function App() {
     },
     {
       id: 'react-middle',
-      title: 'React Middle',
+      title: 'React Intermediate',
       category: 'react',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend'],
       image: reactJsLogo,
     },
@@ -275,9 +275,9 @@ export default function App() {
     },
     {
       id: 'js-middle',
-      title: 'JS Middle',
+      title: 'JS Intermediate',
       category: 'javascript',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend', 'backend'],
       image: jsLogo,
     },
@@ -285,7 +285,7 @@ export default function App() {
       id: 'data-structures',
       title: 'Data structures',
       category: 'data structure',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend', 'backend'],
       image: dataStructureLogo,
     },
@@ -301,7 +301,7 @@ export default function App() {
       id: 'js-promises',
       title: 'JS Promises',
       category: 'javascript',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend', 'backend'],
       image: jsLogo,
     },
@@ -309,9 +309,9 @@ export default function App() {
   const [favoriteQuizzes] = useState([
     {
       id: 'react-middle',
-      title: 'React Middle',
+      title: 'React Intermediate',
       category: 'react',
-      level: 'middle',
+      level: 'intermediate',
       labels: ['frontend'],
       image: reactJsLogo,
     },
@@ -427,10 +427,10 @@ export default function App() {
                 }
               />
               <Route
-                path={USER_SETTINGS}
+                path={ACCOUNT_SETTINGS}
                 element={
                   auth.loggedIn ? (
-                    <UserSettings />
+                    <AccountSettings userData={userData} />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
                   )

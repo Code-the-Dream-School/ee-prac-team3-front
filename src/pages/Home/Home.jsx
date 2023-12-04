@@ -8,7 +8,6 @@ import { NOTES, QUIZZES } from '../../App';
 import { Link } from 'react-router-dom';
 import ContactForm from './ContactForm';
 import HighlightsSection from './Highlights';
-import Team from '../About/Team';
 
 export default function Home({ highlights, snackbar }) {
   return (

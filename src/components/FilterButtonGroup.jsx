@@ -32,7 +32,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 const filterOptions = {
   levels: [
     { value: 'basic', label: 'basic' },
-    { value: 'middle', label: 'middle' },
+    { value: 'intermediate', label: 'intermediate' },
     { value: 'advanced', label: 'advanced' },
   ],
   categories: [
