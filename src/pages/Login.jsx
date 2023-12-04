@@ -26,6 +26,7 @@ import Copyright from '../components/Copyright';
 import backgroundAuth from '../assets/images/background-auth.svg';
 import jsQuizLogo from '../assets/images/logo.svg';
 import { useLocation } from 'react-router-dom';
+import Loading from '../components/Loading';
 
 export default function Login() {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -175,9 +176,10 @@ export default function Login() {
             <Avatar sx={{ m: 1, backgroundColor: 'primary.main' }}>
               <LockOutlinedIcon sx={{ color: customColors.white }} />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" mb={3}>
               Sign in
             </Typography>
+            {isLoading && <Loading />}
             <Box
               component="form"
               noValidate
