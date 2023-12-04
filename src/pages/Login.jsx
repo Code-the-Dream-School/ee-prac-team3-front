@@ -179,103 +179,100 @@ export default function Login() {
             <Typography component="h1" variant="h5" mb={3}>
               Sign in
             </Typography>
-            {isLoading ? (
-              <Loading />
-            ) : (
-              <Box
-                component="form"
-                noValidate
-                onSubmit={(e) => handleSubmit(e, loginData)}
-                sx={{ mt: 1 }}
+            {isLoading && <Loading />}
+            <Box
+              component="form"
+              noValidate
+              onSubmit={(e) => handleSubmit(e, loginData)}
+              sx={{ mt: 1 }}
+            >
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                onChange={handleLoginDataChange('email')}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                id="password"
+                autoComplete="current-password"
+                type={showPassword ? 'text' : 'password'}
+                onChange={handleLoginDataChange('password')}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
+              {errorMessage && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {errorMessage}
+                </Alert>
+              )}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={[
+                  {
+                    '&:hover': { backgroundColor: customColors.greyDark },
+                  },
+                  {
+                    mt: 3,
+                    mb: 2,
+                    backgroundColor: customColors.blackLight,
+                  },
+                ]}
               >
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  onChange={handleLoginDataChange('email')}
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  id="password"
-                  autoComplete="current-password"
-                  type={showPassword ? 'text' : 'password'}
-                  onChange={handleLoginDataChange('password')}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                />
-                {errorMessage && (
-                  <Alert severity="error" sx={{ mb: 2 }}>
-                    {errorMessage}
-                  </Alert>
-                )}
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={[
-                    {
-                      '&:hover': { backgroundColor: customColors.greyDark },
-                    },
-                    {
-                      mt: 3,
-                      mb: 2,
-                      backgroundColor: customColors.blackLight,
-                    },
-                  ]}
-                >
-                  Sign In
-                </Button>
-                <Grid container>
-                  <Grid item xs>
-                    <Link
-                      href={RESET_PASSWORD}
-                      onClick={onRedirect}
-                      variant="body2"
-                      color="primary.main"
-                    >
-                      Forgot password?
-                    </Link>
-                  </Grid>
-                  <Grid item>
-                    <Link
-                      href={SIGNUP}
-                      onClick={onRedirect}
-                      variant="body2"
-                      color="primary.main"
-                    >
-                      Don't have an account? Sign Up
-                    </Link>
-                  </Grid>
-                  <Container maxWidth="sm" sx={{ mt: 6 }}>
-                    {isMdScreenAndUp && isAuthPages && (
-                      <Copyright color={customColors.blackMedium} />
-                    )}
-                  </Container>
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                  <Link
+                    href={RESET_PASSWORD}
+                    onClick={onRedirect}
+                    variant="body2"
+                    color="primary.main"
+                  >
+                    Forgot password?
+                  </Link>
                 </Grid>
-              </Box>
-            )}
+                <Grid item>
+                  <Link
+                    href={SIGNUP}
+                    onClick={onRedirect}
+                    variant="body2"
+                    color="primary.main"
+                  >
+                    Don't have an account? Sign Up
+                  </Link>
+                </Grid>
+                <Container maxWidth="sm" sx={{ mt: 6 }}>
+                  {isMdScreenAndUp && isAuthPages && (
+                    <Copyright color={customColors.blackMedium} />
+                  )}
+                </Container>
+              </Grid>
+            </Box>
           </Box>
         </Grid>
       </Grid>

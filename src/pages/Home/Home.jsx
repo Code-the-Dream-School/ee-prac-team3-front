@@ -4,7 +4,7 @@ import jsQuizLogo from '../../assets/images/logo.svg';
 import s from './Home.module.css';
 import c from '../../App.module.css';
 import customColors, { defaultTheme } from '../../assets/styles';
-import { QUIZZES } from '../../App';
+import { NOTES, QUIZZES } from '../../App';
 import { Link } from 'react-router-dom';
 import ContactForm from './ContactForm';
 import HighlightsSection from './Highlights';
@@ -154,6 +154,7 @@ export default function Home({ highlights, snackbar }) {
                     educational.{' '}
                   </Typography>
                   <Button
+                    href={QUIZZES}
                     variant="contained"
                     sx={{
                       mt: 3,
@@ -274,6 +275,7 @@ export default function Home({ highlights, snackbar }) {
                     of AI assistant for free.
                   </Typography>
                   <Button
+                    href={NOTES}
                     variant="contained"
                     sx={{
                       mt: 3,

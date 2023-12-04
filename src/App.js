@@ -225,7 +225,6 @@ export default function App() {
           userId: backendUserData.userId,
           firstName: backendUserData.firstname,
           lastName: backendUserData.lastname,
-          username: backendUserData.username,
           email: backendUserData.url,
           role: backendUserData.role,
           loggedIn: true,
@@ -358,9 +357,7 @@ export default function App() {
           auth={auth}
         />
         <NavBar />
-        {loading ? (
-          <Loading />
-        ) : (
+        {!loading && (
           <Box sx={{ height: '100vh' }}>
             <Routes>
               {/* protected route */}
