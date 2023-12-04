@@ -85,7 +85,7 @@ export default function ResetPassword() {
               flexDirection: 'column',
             }}
           >
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" mb={3}>
               Forgot password
             </Typography>
             <Box

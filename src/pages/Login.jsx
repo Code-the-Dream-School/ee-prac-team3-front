@@ -26,6 +26,7 @@ import Copyright from '../components/Copyright';
 import backgroundAuth from '../assets/images/background-auth.svg';
 import jsQuizLogo from '../assets/images/logo.svg';
 import { useLocation } from 'react-router-dom';
+import Loading from '../components/Loading';
 
 export default function Login() {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -38,7 +39,6 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = React.useState('');
   const { setAuth } = useAuth();
   const [loginData, setLoginData] = React.useState({
-    //username: '',
     email: '',
     password: '',
   });
@@ -47,7 +47,6 @@ export default function Login() {
   //signs user in with credentials
   const loginUser = async (newUserData) => {
     const loginData = {
-      //'username': newUserData.username,
       email: newUserData.email,
       password: newUserData.password,
     };
@@ -103,7 +102,6 @@ export default function Login() {
       if (apiStatus.success === true) {
         setIsLoading(false);
         setLoginData({
-          //username: '',
           email: '',
           password: '',
         }); // Resetting the login data to its initial state.
@@ -118,17 +116,8 @@ export default function Login() {
     }
   };
 
-  const onSignupRedirect = () => {
+  const onRedirect = () => {
     setLoginData({
-      //username: '',
-      password: '',
-      email: '',
-    });
-  };
-
-  const onForgotPassword = () => {
-    setLoginData({
-      //username: '',
       password: '',
       email: '',
     });
@@ -185,11 +174,12 @@ export default function Login() {
             }}
           >
             <Avatar sx={{ m: 1, backgroundColor: 'primary.main' }}>
-              <LockOutlinedIcon />
+              <LockOutlinedIcon sx={{ color: customColors.white }} />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" mb={3}>
               Sign in
             </Typography>
+            {isLoading && <Loading />}
             <Box
               component="form"
               noValidate
@@ -259,7 +249,7 @@ export default function Login() {
                 <Grid item xs>
                   <Link
                     href={RESET_PASSWORD}
-                    onClick={onForgotPassword}
+                    onClick={onRedirect}
                     variant="body2"
                     color="primary.main"
                   >
@@ -269,7 +259,7 @@ export default function Login() {
                 <Grid item>
                   <Link
                     href={SIGNUP}
-                    onClick={onSignupRedirect}
+                    onClick={onRedirect}
                     variant="body2"
                     color="primary.main"
                   >

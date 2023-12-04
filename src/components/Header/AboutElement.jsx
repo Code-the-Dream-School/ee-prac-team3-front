@@ -36,7 +36,7 @@ const AboutElement = () => {
 
   return (
     <>
-      <Tooltip title="About element">
+      <Tooltip title="About">
         <Link
           href={ABOUT}
           sx={{
