@@ -28,7 +28,7 @@ import useFilterState from './components/filterState';
 import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from './assets/images/js.svg';
 import dataStructureLogo from './assets/images/hierarchical-structure-svgrepo-com.svg';
-import Loading from './components/Loading';
+// import Loading from './components/Loading';
 import Box from '@mui/material/Box';
 
 const PATH = {
@@ -266,6 +266,7 @@ export default function App() {
       }
     };
     authenticateUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
 
   const [quizzes] = useState([

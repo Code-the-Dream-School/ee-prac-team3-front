@@ -29,13 +29,6 @@ const boxStyles = {
   width: '100%',
   maxWidth: '1200px',
 };
-const cardHoverStyles = {
-  transition: 'transform 0.2s',
-  '&:hover': {
-    transform: 'scale(1.05)',
-    backgroundColor: customColors.blueDark,
-  },
-};
 
 const QuizzesContainer = ({
   title,
