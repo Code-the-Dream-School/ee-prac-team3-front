@@ -28,6 +28,8 @@ import useFilterState from './components/filterState';
 import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from './assets/images/js.svg';
 import dataStructureLogo from './assets/images/hierarchical-structure-svgrepo-com.svg';
+import Loading from './components/Loading';
+import Box from '@mui/material/Box';
 
 const PATH = {
   /*
@@ -154,7 +156,7 @@ export default function App() {
     severity: '',
     message: '',
   });
-
+  const [loading, setLoading] = useState(true);
   const userData = {
     firstName: auth.firstName,
     lastName: auth.lastName,
@@ -184,7 +186,6 @@ export default function App() {
           userId: '',
           firstName: '',
           lastName: '',
-          username: '',
           email: '',
           avatarURL: '',
           role: [''],
@@ -224,7 +225,6 @@ export default function App() {
           userId: backendUserData.userId,
           firstName: backendUserData.firstname,
           lastName: backendUserData.lastname,
-          username: backendUserData.username,
           email: backendUserData.url,
           role: backendUserData.role,
           loggedIn: true,
@@ -233,6 +233,8 @@ export default function App() {
         });
       } catch (error) {
         throw new Error(error);
+      } finally {
+        setLoading(false);
       }
     };
     authenticateUser();
@@ -355,86 +357,100 @@ export default function App() {
           auth={auth}
         />
         <NavBar />
-        <Routes>
-          {/* protected route */}
-          <Route
-            path={LOGIN}
-            element={auth.loggedIn ? <Navigate to="/"></Navigate> : <Login />}
-          />
-          <Route
-            path={QUIZZES}
-            element={
-              auth.loggedIn ? (
-                /* <Main quizzes={quizzes}/>*/
-                <Quizzes
-                  quizzes={quizzes}
-                  changeFilter={changeFilter}
-                  activeFilters={activeFilters}
-                  quizProgress={quizProgress}
-                />
-              ) : (
-                <Navigate to={LOGIN}></Navigate>
-              )
-            }
-          />
-          <Route
-            path={SIGNUP}
-            element={auth.loggedIn ? <Navigate to="/"></Navigate> : <SignUp />}
-          />
-          <Route
-            path={RESET_PASSWORD}
-            element={
-              auth.loggedIn ? <Navigate to="/"></Navigate> : <ResetPassword />
-            }
-          />
-          <Route
-            path={FAVORITES}
-            element={
-              auth.loggedIn ? (
-                <Favorites
-                  favoriteQuizzes={favoriteQuizzes}
-                  changeFilter={changeFilter}
-                  activeFilters={activeFilters}
-                  quizProgress={quizProgress}
-                />
-              ) : (
-                <Navigate to={LOGIN}></Navigate>
-              )
-            }
-          />
-          <Route
-            path={NOTES}
-            element={
-              auth.loggedIn ? <Notes /> : <Navigate to={LOGIN}></Navigate>
-            }
-          />
-          <Route
-            path={LIBRARY}
-            element={
-              auth.loggedIn ? <Library /> : <Navigate to={LOGIN}></Navigate>
-            }
-          />
-          <Route
-            path={USER_SETTINGS}
-            element={
-              auth.loggedIn ? (
-                <UserSettings />
-              ) : (
-                <Navigate to={LOGIN}></Navigate>
-              )
-            }
-          />
-          {/* non-protected routes */}
-          <Route path={'/'} element={<Navigate to={HOME} />} />
-          <Route
-            path={HOME}
-            element={<Home snackbar={setSnackbar} highlights={highlights} />}
-          />
-          <Route path={ABOUT} element={<About />} />
-          <Route path={ERROR} element={<Error />} />
-          <Route path="/*" element={<Navigate to={ERROR}></Navigate>} />
-        </Routes>
-        <Footer />
+        {!loading && (
+          <Box sx={{ height: '100vh' }}>
+            <Routes>
+              {/* protected route */}
+              <Route
+                path={LOGIN}
+                element={
+                  auth.loggedIn ? <Navigate to="/"></Navigate> : <Login />
+                }
+              />
+              <Route
+                path={QUIZZES}
+                element={
+                  auth.loggedIn ? (
+                    /* <Main quizzes={quizzes}/>*/
+                    <Quizzes
+                      quizzes={quizzes}
+                      changeFilter={changeFilter}
+                      activeFilters={activeFilters}
+                      quizProgress={quizProgress}
+                    />
+                  ) : (
+                    <Navigate to={LOGIN}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path={SIGNUP}
+                element={
+                  auth.loggedIn ? <Navigate to="/"></Navigate> : <SignUp />
+                }
+              />
+              <Route
+                path={RESET_PASSWORD}
+                element={
+                  auth.loggedIn ? (
+                    <Navigate to="/"></Navigate>
+                  ) : (
+                    <ResetPassword />
+                  )
+                }
+              />
+              <Route
+                path={FAVORITES}
+                element={
+                  auth.loggedIn ? (
+                    <Favorites
+                      favoriteQuizzes={favoriteQuizzes}
+                      changeFilter={changeFilter}
+                      activeFilters={activeFilters}
+                      quizProgress={quizProgress}
+                    />
+                  ) : (
+                    <Navigate to={LOGIN}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path={NOTES}
+                element={
+                  auth.loggedIn ? <Notes /> : <Navigate to={LOGIN}></Navigate>
+                }
+              />
+              <Route
+                path={LIBRARY}
+                element={
+                  auth.loggedIn ? <Library /> : <Navigate to={LOGIN}></Navigate>
+                }
+              />
+              <Route
+                path={USER_SETTINGS}
+                element={
+                  auth.loggedIn ? (
+                    <UserSettings />
+                  ) : (
+                    <Navigate to={LOGIN}></Navigate>
+                  )
+                }
+              />
+              {/* non-protected routes */}
+              <Route path={'/'} element={<Navigate to={HOME} />} />
+              <Route
+                path={HOME}
+                element={
+                  <Home snackbar={setSnackbar} highlights={highlights} />
+                }
+              />
+              <Route path={ABOUT} element={<About />} />
+              <Route path={ERROR} element={<Error />} />
+              <Route path="/*" element={<Navigate to={ERROR}></Navigate>} />
+            </Routes>
+            <Footer />
+          </Box>
+        )}
       </ThemeProvider>
     </>
   );

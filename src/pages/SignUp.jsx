@@ -22,6 +22,7 @@ import Copyright from '../components/Copyright';
 import { useLocation } from 'react-router-dom';
 import backgroundAuth from '../assets/images/background-auth.svg';
 import jsQuizLogo from '../assets/images/logo.svg';
+import Loading from '../components/Loading';
 
 export default function SignUp() {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -34,7 +35,6 @@ export default function SignUp() {
   const [userData, setUserData] = React.useState({
     firstName: '',
     lastName: '',
-    username: '',
     email: '',
     password: '',
   });
@@ -45,7 +45,6 @@ export default function SignUp() {
     const registrationData = {
       firstname: newUserData.firstName,
       lastname: newUserData.lastName,
-      //'username': newUserData.username,
       email: newUserData.email,
       password: newUserData.password,
       //'quizData' : {}
@@ -99,7 +98,6 @@ export default function SignUp() {
       setUserData({
         firstName: '',
         lastName: '',
-        username: '',
         password: '',
         email: '',
       }); // Resetting the user data to its initial state.
@@ -116,7 +114,6 @@ export default function SignUp() {
     setUserData({
       firstName: '',
       lastName: '',
-      username: '',
       password: '',
       email: '',
     });
@@ -178,7 +175,7 @@ export default function SignUp() {
             <Avatar sx={{ m: 1, backgroundColor: 'primary.main' }}>
               <LockOutlinedIcon sx={{ color: customColors.white }} />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" mb={3}>
               Sign up
             </Typography>
             <Box
@@ -187,6 +184,7 @@ export default function SignUp() {
               onSubmit={(e) => handleSubmitData(e, userData)}
               sx={{ mt: 3 }}
             >
+              {isLoading && <Loading />}
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField

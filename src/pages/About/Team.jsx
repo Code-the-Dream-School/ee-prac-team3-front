@@ -89,14 +89,7 @@ const Team = () => {
   return (
     <>
       {projectTeam.map((member) => (
-        <Grid
-          item
-          key={member.id}
-          xs={12}
-          sm={12}
-          md={5}
-          container
-        >
+        <Grid item key={member.id} xs={12} sm={12} md={5} container>
           <Paper
             sx={{
               display: 'flex',
