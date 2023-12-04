@@ -1,38 +1,38 @@
-import React, { useMemo } from "react";
-import { Box, Container, Grid, Typography } from "@mui/material";
-import Quiz from "./Quiz";
-import FilterButtonGroup from "../components/FilterButtonGroup";
-import customColors, { defaultTheme } from "../assets/styles";
+import React, { useMemo } from 'react';
+import { Box, Container, Grid, Typography } from '@mui/material';
+import Quiz from './Quiz';
+import FilterButtonGroup from '../components/FilterButtonGroup';
+import customColors, { defaultTheme } from '../assets/styles';
 
 const containerStyles = {
-  minHeight: "85vh",
+  minHeight: '85vh',
   backgroundColor: customColors.backgroundLight,
-  maxWidth: "none !important",
+  maxWidth: 'none !important',
   pt: 6,
   pb: 6,
 };
 const titleStyles = {
-  textTransform: "uppercase",
+  textTransform: 'uppercase',
   mb: 2,
-  textAlign: "center",
-  fontWeight: "bold",
-  [defaultTheme.breakpoints.down("md")]: {
-    fontSize: "20px",
+  textAlign: 'center',
+  fontWeight: 'bold',
+  [defaultTheme.breakpoints.down('md')]: {
+    fontSize: '20px',
   },
 };
 const messageStyles = {
   mt: 5,
-  textAlign: "center",
+  textAlign: 'center',
   color: customColors.greyDark,
 };
 const boxStyles = {
-  width: "100%",
-  maxWidth: "1200px",
+  width: '100%',
+  maxWidth: '1200px',
 };
 const cardHoverStyles = {
-  transition: "transform 0.2s",
-  "&:hover": {
-    transform: "scale(1.05)",
+  transition: 'transform 0.2s',
+  '&:hover': {
+    transform: 'scale(1.05)',
     backgroundColor: customColors.blueDark,
   },
 };
@@ -70,7 +70,7 @@ const QuizzesContainer = ({
       <Typography variant="h5" sx={titleStyles}>
         {title}
       </Typography>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box sx={boxStyles}>
           {quizzes && <FilterButtonGroup changeFilter={changeFilter} />}
           {filteredQuizzes.length === 0 && (
@@ -81,7 +81,7 @@ const QuizzesContainer = ({
               <Grid
                 container
                 spacing={4}
-                sx={{ display: "flex", justifyContent: "start" }}
+                sx={{ display: 'flex', justifyContent: 'start' }}
               >
                 {filteredQuizzes.map((q) => (
                   <Quiz

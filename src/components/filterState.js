@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const useFilterState = () => {
   const [activeFilters, setActiveFilters] = useState({
@@ -16,14 +16,12 @@ const useFilterState = () => {
     }));
   }, []);
 
-  //remove unchecked filter from activeFilters
   const toggleFilter = (prevFilters, filter) =>
     filter
       ? prevFilters.includes(filter)
         ? prevFilters.filter((f) => f !== filter)
         : [...prevFilters, filter]
       : [];
-
   const location = useLocation();
   useEffect(() => {
     // Reset activeFilters when the route changes
