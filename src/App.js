@@ -186,7 +186,6 @@ export default function App() {
           firstName: '',
           lastName: '',
           email: '',
-          avatarURL: '',
           role: [''],
           loggedIn: false,
           accessToken: '',
@@ -220,12 +219,12 @@ export default function App() {
     const authenticateUser = async () => {
       try {
         const backendUserData = await checkLoginStatus();
-        console.log(backendUserData);
         setAuth({
           userId: backendUserData.userId,
           firstName: backendUserData.firstname,
           lastName: backendUserData.lastname,
           email: backendUserData.email,
+          avatarURL: backendUserData.avatarURL,
           role: backendUserData.role,
           loggedIn: true,
           accessToken: backendUserData.accessToken,
