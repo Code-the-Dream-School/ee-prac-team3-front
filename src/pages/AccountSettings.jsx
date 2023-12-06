@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {
   Avatar,
   Box,
@@ -9,12 +9,12 @@ import {
   Grid,
   TextField,
 } from '@mui/material';
-import customColors, { defaultTheme } from '../assets/styles';
+import customColors from '../assets/styles';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 import s from './AccountSettings.module.css';
 import useAuth from '../auth/useAuth';
-import { port } from '../App';
+import {port} from '../App';
 
 const Delete = ({ onClick }) => (
   <div
@@ -60,10 +60,11 @@ const AvatarSection = ({
         bgcolor: customColors.grey,
       }}
     >
-      {formValues.avatarURL ? (
-        <>
+      {/*{formValues.avatarURL ? (
+        <>*/}
           <Avatar
-            src={formValues.avatarURL}
+            /*src={formValues.avatarURL}*/
+            src={'https://avatars.githubusercontent.com/u/111474106?v=4'}
             alt={`${formValues.firstName} ${formValues.lastName}`}
             style={{
               width: '100%',
@@ -87,7 +88,7 @@ const AvatarSection = ({
               <Delete onClick={handleDelete} />
             </Box>
           )}
-        </>
+       {/* </>
       ) : (
         <>
           <AddAPhotoIcon
@@ -104,7 +105,7 @@ const AvatarSection = ({
             onChange={handleFileChange}
           />
         </>
-      )}
+      )}*/}
     </Avatar>
   </label>
 );
@@ -180,56 +181,68 @@ const PasswordSection = ({
   passwordFormValues,
   setPasswordFormValues,
   changePasswordHandler,
-}) => (
-  <Box
-    component="form"
-    noValidate
-    onSubmit={changePasswordHandler}
-    sx={{ mt: 3, mb: 2 }}
-  >
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <TextField
-          required
-          fullWidth
-          name="currentPassword"
-          onChange={(e) =>
-            setPasswordFormValues({
-              ...passwordFormValues,
-              currentPassword: e.target.value,
-            })
-          }
-          label="Current password"
-          type="password"
-          id="currentPassword"
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          required
-          fullWidth
-          name="password"
-          onChange={(e) =>
-            setPasswordFormValues({
-              ...passwordFormValues,
-              newPassword: e.target.value,
-            })
-          }
-          label="New password"
-          type="password"
-          id="newPassword"
-        />
-      </Grid>
-    </Grid>
-    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 5 }}>
-      Change password
-    </Button>
-  </Box>
-);
+    currentPasswordRef,
+    newPasswordRef
+}) => {
+    const isChangePasswordButtonDisabled =
+        !passwordFormValues.currentPassword ||
+        !passwordFormValues.newPassword
+    return (
+        <Box
+            component="form"
+            noValidate
+            onSubmit={changePasswordHandler}
+            sx={{mt: 3, mb: 2}}
+        >
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        fullWidth
+                        name="currentPassword"
+                        inputRef={currentPasswordRef}
+                        onChange={(e) =>
+                            setPasswordFormValues({
+                                ...passwordFormValues,
+                                currentPassword: e.target.value,
+                            })
+                        }
+                        label="Current password"
+                        type="password"
+                        id="currentPassword"
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        fullWidth
+                        name="password"
+                        inputRef={newPasswordRef}
+                        onChange={(e) =>
+                            setPasswordFormValues({
+                                ...passwordFormValues,
+                                newPassword: e.target.value,
+                            })
+                        }
+                        label="New password"
+                        type="password"
+                        id="newPassword"
+                    />
+                </Grid>
+            </Grid>
+            <Button type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{mt: 3, mb: 5}}
+                    disabled={isChangePasswordButtonDisabled}>
+                Change password
+            </Button>
+        </Box>
+    )
+};
 
-const AccountSettings = ({ userData }) => {
-  console.log('userData === ', userData);
-  const { auth, setAuth } = useAuth();
+
+const AccountSettings = ({ userData, snackbar, updatePassword, updateUserInfo }) => {
   const [formValues, setFormValues] = useState({
     firstName: userData.firstName,
     lastName: userData.lastName,
@@ -240,82 +253,63 @@ const AccountSettings = ({ userData }) => {
     newPassword: '',
   });
 
+    const currentPasswordRef = useRef(null);
+    const newPasswordRef = useRef(null);
+
   const [isHovered, setIsHovered] = useState(false);
+  const [confirmAccountDelete, setConfirmAccountDelete] = useState(false);
 
-  const changeProfileInfoHandler = useCallback(
-    async (event) => {
+  const updateUserInfoHandler = useCallback((event) => {
       event.preventDefault();
-      const payload = {
-        firstname: formValues.firstName,
-        lastname: formValues.lastName,
-        email: formValues.email,
-      };
+      updateUserInfo(formValues, passwordFormValues);
+      currentPasswordRef.current.value = '';
+      newPasswordRef.current.value = '';
+    }, [formValues, passwordFormValues]);
 
-      const url = `${port}/api/v1/updateuser`;
-      const options = {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      };
-
-      try {
-        const response = await fetch(url, options);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            data.message || 'Failed to update account information'
-          );
-        }
-        setAuth({
-          ...auth,
-          firstName: formValues.firstName,
-          lastName: formValues.lastName,
-          email: formValues.email,
-        });
-
-        console.log('Account information updated successfully');
-      } catch (error) {
-        console.error('Error updating account information:', error.message);
-      }
-    },
-    [formValues, setAuth]
-  );
-  const changePasswordHandler = useCallback(async (event) => {
+  const updatePasswordHandler = useCallback((event) => {
       event.preventDefault();
-      const payload = {
-        currentPassword: passwordFormValues.currentPassword,
-        newPassword: passwordFormValues.newPassword,
-      };
+      updatePassword(passwordFormValues);
+      currentPasswordRef.current.value = '';
+      newPasswordRef.current.value = '';
+    }, [passwordFormValues, currentPasswordRef, newPasswordRef]);
 
-      const url = `${port}/api/v1/updateuser`;
-      const options = {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      };
+  const handleDeleteAccount = useCallback(async () => {
+        if (confirmAccountDelete) {
+            const url = `${port}/api/v1/deleteuser`;
+            const options = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            }
 
-      try {
-        const response = await fetch(url, options);
-        const data = await response.json();
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(
-            data.message || 'Failed to update account information'
-          );
+                if (!response.ok) {
+                        snackbar({
+                            isOpened: true,
+                            severity: 'error',
+                            message: 'An error occurred while deleting your account.',
+                        });
+                    throw new Error(data.message || 'Failed to delete account');
+                }
+
+                localStorage.clear();
+
+                snackbar({
+                        isOpened: true,
+                        severity: 'success',
+                        message: 'The account was successfully deleted. We hope to see you again!',
+                    });
+
+            } catch (error) {
+                throw new Error(`Error deleting account:, ${error.message}`)
+            }
         }
-
-        console.log('Account information updated successfully');
-      } catch (error) {
-        console.error('Error updating account information:', error.message);
-      }
-    }, [passwordFormValues]);
+    }, [confirmAccountDelete]);
 
   const handleFileChange = useCallback((event) => {
       const file = event.target.files[0];
@@ -324,10 +318,10 @@ const AccountSettings = ({ userData }) => {
 
         reader.onloadend = () => {
           const userAvatar = reader.result;
-          setFormValues({
+         /* setFormValues({
             ...formValues,
             avatarURL: userAvatar,
-          });
+          });*/
 
           localStorage.setItem('profilePicture', userAvatar);
         };
@@ -343,10 +337,10 @@ const AccountSettings = ({ userData }) => {
   const handleDelete = useCallback(() => {
     localStorage.removeItem('profilePicture');
     // Update the state to remove the avatarURL
-    setFormValues({
+    /*setFormValues({
       ...formValues,
       avatarURL: '',
-    });
+       });*/
     const fileInput = document.getElementById('avatar-upload');
     if (fileInput) {
       fileInput.value = ''; // This will clear the file input value
@@ -354,12 +348,12 @@ const AccountSettings = ({ userData }) => {
   }, []);
   React.useEffect(() => {
     const storedProfilePicture = localStorage.getItem('profilePicture');
-    if (storedProfilePicture) {
+    /*if (storedProfilePicture) {
       setFormValues((prevValues) => ({
         ...prevValues,
         avatarURL: storedProfilePicture,
       }));
-    }
+    }*/
   }, []);
 
   return (
@@ -399,34 +393,50 @@ const AccountSettings = ({ userData }) => {
             <UserInfoSection
               formValues={formValues}
               setFormValues={setFormValues}
-              changeProfileInfoHandler={changeProfileInfoHandler}
+              changeProfileInfoHandler={updateUserInfoHandler}
             />
             <PasswordSection
               passwordFormValues={passwordFormValues}
               setPasswordFormValues={setPasswordFormValues}
-              changePasswordHandler={changePasswordHandler}
+              changePasswordHandler={updateUserInfoHandler}
+              currentPasswordRef={currentPasswordRef}
+              newPasswordRef={newPasswordRef}
             />
           </Box>
           <Grid textAlign={'justify'}>
             <FormControlLabel
               control={
-                <Checkbox value="confirmProgressReset" color="primary" />
+                <Checkbox
+                    value="confirmProgressReset"
+                    color="primary" />
               }
               label="I want to reset account progress and I understand that it can't be reverted."
             />
           </Grid>
-          <Button fullWidth variant="contained" sx={{ mt: 1, mb: 4 }}>
+          <Button fullWidth variant="contained"
+                  sx={{ mt: 1,
+                      mb: 4 }}
+          >
             Reset account progress
           </Button>
           <Grid item>
             <FormControlLabel
               control={
-                <Checkbox value="confirmAccountDelete" color="primary" />
+                <Checkbox
+                    value="confirmAccountDelete"
+                    color="primary"
+                    checked={confirmAccountDelete}
+                    onChange={(e) => setConfirmAccountDelete(e.target.checked)}
+                />
               }
               label="I want to delete my account."
             />
           </Grid>
-          <Button fullWidth variant="contained" sx={{ mb: 2 }}>
+          <Button fullWidth variant="contained"
+                  sx={{ mb: 2 }}
+                  onClick={handleDeleteAccount}
+                  disabled={!confirmAccountDelete}
+          >
             Delete account
           </Button>
         </Container>

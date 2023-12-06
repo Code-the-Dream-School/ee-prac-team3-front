@@ -16,8 +16,6 @@ export default function ContactForm({ snackbar }) {
           message: 'Message successfully sent!',
         });
         e.target.reset();
-        /* //debugging code
-                console.log(res);*/
       })
       .catch((err) => {
         snackbar({
