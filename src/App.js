@@ -32,11 +32,11 @@ import Box from '@mui/material/Box';
 
 const PATH = {
   /*
-    // For further use:
-    UNAUTHORIZED: '/unauthorized',
-    CONFIRMATION: '/confirmation',
-    LOGOUT: '/logout',
-    */
+      // For further use:
+      UNAUTHORIZED: '/unauthorized',
+      CONFIRMATION: '/confirmation',
+      LOGOUT: '/logout',
+      */
   HOME: '/home',
   LOGIN: '/login',
   SIGNUP: '/signup',
@@ -88,9 +88,7 @@ const checkLoginStatus = async () => {
       const errorMessage = `Error: ${response.status} - ${response.statusText}`;
       throw new Error(errorMessage);
     }
-    /*console.log(data.user)*/
     return data.user;
-
   } catch (error) {
     throw error;
   }
@@ -162,7 +160,6 @@ export default function App() {
     lastName: auth.lastName,
     email: auth.email,
   };
-  //console.log('userData / APP === ', userData)
 
   const logoutUser = async () => {
     const options = {
@@ -312,19 +309,22 @@ export default function App() {
   );
 
   const updateUserInfo = async (formValues, passwordFormValues) => {
-    let payload = {}
+    let payload = {};
     if (formValues) {
-       payload = {
+      payload = {
         firstname: formValues.firstName,
         lastname: formValues.lastName,
         email: formValues.email,
-      }
+      };
     }
-    if (passwordFormValues) {
-        payload = {
+    if (
+      passwordFormValues.newPassword !== '' &&
+      passwordFormValues.currentPassword !== ''
+    ) {
+      payload = {
         currentPassword: passwordFormValues.currentPassword,
         newPassword: passwordFormValues.newPassword,
-      }
+      };
     }
 
     const url = `${port}/api/v1/updateuser`;
@@ -342,34 +342,29 @@ export default function App() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-            data.message || 'Failed to update account information'
-        );
+        throw new Error(data.message || 'Failed to update account information');
       }
-      console.log('Received backend user data:', data.data);
+
       if (formValues) {
-        setAuth(prevAuth => ({
+        setAuth((prevAuth) => ({
           ...prevAuth,
           firstName: formValues.firstName,
           lastName: formValues.lastName,
           email: formValues.email,
         }));
-      };
-      console.log('Updated auth state:', auth);
+      }
 
       setSnackbar({
         isOpened: true,
         severity: 'success',
         message: 'Your data was successfully updated.',
       });
-
     } catch (error) {
       setSnackbar({
         isOpened: true,
         severity: 'error',
         message: 'Error updating account information.',
       });
-      console.error('Error updating account information:', error.message);
     }
   };
 
@@ -377,7 +372,10 @@ export default function App() {
     const authenticateUser = async () => {
       try {
         const backendUserData = await checkLoginStatus();
-        /*console.log(backendUserData)*/
+        console.log(
+          'BACKEND DATA inside authenticateUser ==== ',
+          backendUserData
+        );
         setAuth({
           userId: backendUserData.userId,
           firstName: backendUserData.firstname,
@@ -389,9 +387,7 @@ export default function App() {
           accessToken: backendUserData.accessToken,
           isActive: backendUserData.isActive,
         });
-        setLoading(false);
-      }
-      catch (error) {
+      } catch (error) {
         throw new Error(error);
       } finally {
         setLoading(false);
@@ -399,47 +395,6 @@ export default function App() {
     };
     authenticateUser();
   }, [auth.loggedIn]);
-
-  const updatePassword = async (passwordFormValues) => {
-    /*const payload = {
-      currentPassword: passwordFormValues.currentPassword,
-      newPassword: passwordFormValues.newPassword,
-    };
-
-    const url = `${port}/api/v1/updateuser`;
-    const options = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(payload),
-    };
-
-    try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-            data.message || 'Failed to change password.'
-        );
-      }
-
-      setSnackbar({
-        isOpened: true,
-        severity: 'success',
-        message: 'Password was successfully changed.',
-      });
-
-    } catch (error) {
-      setSnackbar({
-        isOpened: true,
-        severity: 'error',
-        message: 'Your current password is incorrect. Try again.',
-      });
-    }*/
-  };
 
   return (
     <>
@@ -538,10 +493,9 @@ export default function App() {
                 element={
                   auth.loggedIn ? (
                     <AccountSettings
-                        userData={userData}
-                        snackbar={setSnackbar}
-                        updateUserInfo={updateUserInfo}
-                        updatePassword={updatePassword}
+                      userData={userData}
+                      snackbar={setSnackbar}
+                      updateUserInfo={updateUserInfo}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>

@@ -28,7 +28,7 @@ export const AuthContextProvider = ({ children }) => {
       },
     ],
   });
- // console.log('auth === ', auth)
+  // console.log('auth === ', auth)
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
       {children}

@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -14,7 +14,7 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 import s from './AccountSettings.module.css';
 import useAuth from '../auth/useAuth';
-import {port} from '../App';
+import { port } from '../App';
 
 const Delete = ({ onClick }) => (
   <div
@@ -62,33 +62,33 @@ const AvatarSection = ({
     >
       {/*{formValues.avatarURL ? (
         <>*/}
-          <Avatar
-            /*src={formValues.avatarURL}*/
-            src={'https://avatars.githubusercontent.com/u/111474106?v=4'}
-            alt={`${formValues.firstName} ${formValues.lastName}`}
-            style={{
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          />
-          {isHovered && (
-            <Box
-              sx={{
-                display: 'flex',
-                position: 'absolute',
-                justifyContent: 'center',
-                gap: '10px',
-                zIndex: 1,
-              }}
-            >
-              <Upload onClick={handleFileInputClick}/>
-              <Delete onClick={handleDelete} />
-            </Box>
-          )}
-       {/* </>
+      <Avatar
+        /*src={formValues.avatarURL}*/
+        src={'https://avatars.githubusercontent.com/u/111474106?v=4'}
+        alt={`${formValues.firstName} ${formValues.lastName}`}
+        style={{
+          width: '100%',
+          height: '100%',
+          borderRadius: '50%',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      {isHovered && (
+        <Box
+          sx={{
+            display: 'flex',
+            position: 'absolute',
+            justifyContent: 'center',
+            gap: '10px',
+            zIndex: 1,
+          }}
+        >
+          <Upload onClick={handleFileInputClick} />
+          <Delete onClick={handleDelete} />
+        </Box>
+      )}
+      {/* </>
       ) : (
         <>
           <AddAPhotoIcon
@@ -181,68 +181,68 @@ const PasswordSection = ({
   passwordFormValues,
   setPasswordFormValues,
   changePasswordHandler,
-    currentPasswordRef,
-    newPasswordRef
+  currentPasswordRef,
+  newPasswordRef,
 }) => {
-    const isChangePasswordButtonDisabled =
-        !passwordFormValues.currentPassword ||
-        !passwordFormValues.newPassword
-    return (
-        <Box
-            component="form"
-            noValidate
-            onSubmit={changePasswordHandler}
-            sx={{mt: 3, mb: 2}}
-        >
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        fullWidth
-                        name="currentPassword"
-                        inputRef={currentPasswordRef}
-                        onChange={(e) =>
-                            setPasswordFormValues({
-                                ...passwordFormValues,
-                                currentPassword: e.target.value,
-                            })
-                        }
-                        label="Current password"
-                        type="password"
-                        id="currentPassword"
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        fullWidth
-                        name="password"
-                        inputRef={newPasswordRef}
-                        onChange={(e) =>
-                            setPasswordFormValues({
-                                ...passwordFormValues,
-                                newPassword: e.target.value,
-                            })
-                        }
-                        label="New password"
-                        type="password"
-                        id="newPassword"
-                    />
-                </Grid>
-            </Grid>
-            <Button type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{mt: 3, mb: 5}}
-                    disabled={isChangePasswordButtonDisabled}>
-                Change password
-            </Button>
-        </Box>
-    )
+  const isChangePasswordButtonDisabled =
+    !passwordFormValues.currentPassword || !passwordFormValues.newPassword;
+  return (
+    <Box
+      component="form"
+      noValidate
+      onSubmit={changePasswordHandler}
+      sx={{ mt: 3, mb: 2 }}
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            required
+            fullWidth
+            name="currentPassword"
+            inputRef={currentPasswordRef}
+            onChange={(e) =>
+              setPasswordFormValues({
+                ...passwordFormValues,
+                currentPassword: e.target.value,
+              })
+            }
+            label="Current password"
+            type="password"
+            id="currentPassword"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            required
+            fullWidth
+            name="password"
+            inputRef={newPasswordRef}
+            onChange={(e) =>
+              setPasswordFormValues({
+                ...passwordFormValues,
+                newPassword: e.target.value,
+              })
+            }
+            label="New password"
+            type="password"
+            id="newPassword"
+          />
+        </Grid>
+      </Grid>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 5 }}
+        disabled={isChangePasswordButtonDisabled}
+      >
+        Change password
+      </Button>
+    </Box>
+  );
 };
 
-
-const AccountSettings = ({ userData, snackbar, updatePassword, updateUserInfo }) => {
+const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
   const [formValues, setFormValues] = useState({
     firstName: userData.firstName,
     lastName: userData.lastName,
@@ -253,72 +253,69 @@ const AccountSettings = ({ userData, snackbar, updatePassword, updateUserInfo })
     newPassword: '',
   });
 
-    const currentPasswordRef = useRef(null);
-    const newPasswordRef = useRef(null);
+  const currentPasswordRef = useRef(null);
+  const newPasswordRef = useRef(null);
 
   const [isHovered, setIsHovered] = useState(false);
   const [confirmAccountDelete, setConfirmAccountDelete] = useState(false);
 
-  const updateUserInfoHandler = useCallback((event) => {
+  const updateUserInfoHandler = useCallback(
+    (event) => {
       event.preventDefault();
       updateUserInfo(formValues, passwordFormValues);
       currentPasswordRef.current.value = '';
       newPasswordRef.current.value = '';
-    }, [formValues, passwordFormValues]);
-
-  const updatePasswordHandler = useCallback((event) => {
-      event.preventDefault();
-      updatePassword(passwordFormValues);
-      currentPasswordRef.current.value = '';
-      newPasswordRef.current.value = '';
-    }, [passwordFormValues, currentPasswordRef, newPasswordRef]);
+    },
+    [formValues, passwordFormValues, currentPasswordRef, newPasswordRef]
+  );
 
   const handleDeleteAccount = useCallback(async () => {
-        if (confirmAccountDelete) {
-            const url = `${port}/api/v1/deleteuser`;
-            const options = {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            }
+    if (confirmAccountDelete) {
+      const url = `${port}/api/v1/deleteuser`;
+      const options = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      };
 
-            try {
-                const response = await fetch(url, options);
-                const data = await response.json();
+      try {
+        const response = await fetch(url, options);
+        const data = await response.json();
 
-                if (!response.ok) {
-                        snackbar({
-                            isOpened: true,
-                            severity: 'error',
-                            message: 'An error occurred while deleting your account.',
-                        });
-                    throw new Error(data.message || 'Failed to delete account');
-                }
-
-                localStorage.clear();
-
-                snackbar({
-                        isOpened: true,
-                        severity: 'success',
-                        message: 'The account was successfully deleted. We hope to see you again!',
-                    });
-
-            } catch (error) {
-                throw new Error(`Error deleting account:, ${error.message}`)
-            }
+        if (!response.ok) {
+          snackbar({
+            isOpened: true,
+            severity: 'error',
+            message: 'An error occurred while deleting your account.',
+          });
+          throw new Error(data.message || 'Failed to delete account');
         }
-    }, [confirmAccountDelete]);
 
-  const handleFileChange = useCallback((event) => {
+        localStorage.clear();
+
+        snackbar({
+          isOpened: true,
+          severity: 'success',
+          message:
+            'The account was successfully deleted. We hope to see you again!',
+        });
+      } catch (error) {
+        throw new Error(`Error deleting account:, ${error.message}`);
+      }
+    }
+  }, [confirmAccountDelete]);
+
+  const handleFileChange = useCallback(
+    (event) => {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
 
         reader.onloadend = () => {
           const userAvatar = reader.result;
-         /* setFormValues({
+          /* setFormValues({
             ...formValues,
             avatarURL: userAvatar,
           });*/
@@ -328,7 +325,9 @@ const AccountSettings = ({ userData, snackbar, updatePassword, updateUserInfo })
 
         reader.readAsDataURL(file);
       }
-    }, [formValues]);
+    },
+    [formValues]
+  );
   const handleFileInputClick = useCallback((event) => {
     if (event.current.file) {
       event.current.file.click(); // Trigger click on file input
@@ -406,36 +405,33 @@ const AccountSettings = ({ userData, snackbar, updatePassword, updateUserInfo })
           <Grid textAlign={'justify'}>
             <FormControlLabel
               control={
-                <Checkbox
-                    value="confirmProgressReset"
-                    color="primary" />
+                <Checkbox value="confirmProgressReset" color="primary" />
               }
               label="I want to reset account progress and I understand that it can't be reverted."
             />
           </Grid>
-          <Button fullWidth variant="contained"
-                  sx={{ mt: 1,
-                      mb: 4 }}
-          >
+          <Button fullWidth variant="contained" sx={{ mt: 1, mb: 4 }}>
             Reset account progress
           </Button>
           <Grid item>
             <FormControlLabel
               control={
                 <Checkbox
-                    value="confirmAccountDelete"
-                    color="primary"
-                    checked={confirmAccountDelete}
-                    onChange={(e) => setConfirmAccountDelete(e.target.checked)}
+                  value="confirmAccountDelete"
+                  color="primary"
+                  checked={confirmAccountDelete}
+                  onChange={(e) => setConfirmAccountDelete(e.target.checked)}
                 />
               }
               label="I want to delete my account."
             />
           </Grid>
-          <Button fullWidth variant="contained"
-                  sx={{ mb: 2 }}
-                  onClick={handleDeleteAccount}
-                  disabled={!confirmAccountDelete}
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mb: 2 }}
+            onClick={handleDeleteAccount}
+            disabled={!confirmAccountDelete}
           >
             Delete account
           </Button>
