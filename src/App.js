@@ -10,6 +10,7 @@ import Footer from 'components/Footer';
 import Error from 'pages/Error';
 import Home from 'pages/Home/Home';
 import QuizContent from 'pages/QuizUi/QuizContent';
+import LogoutModal from 'components/LogoutModal';
 import highlight_1 from './assets/images/highlight_effective_knowledge_testing.svg';
 import highlight_2 from './assets/images/highlight_preparing_for_a_job_interview.svg';
 import highlight_3 from './assets/images/highlight_improving_coding_skills.svg';
@@ -31,6 +32,11 @@ import jsLogo from './assets/images/js.svg';
 import dataStructureLogo from './assets/images/hierarchical-structure-svgrepo-com.svg';
 // import Loading from './components/Loading';
 import Box from '@mui/material/Box';
+import {
+  backendApiCall,
+  authenticateUser,
+  handleLogout,
+} from './functions/exportFunctions';
 
 const PATH = {
   /*
@@ -69,32 +75,6 @@ export const {
 } = PATH;
 
 export const port = `http://localhost:8000`;
-
-const checkLoginStatus = async () => {
-  const options = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      //'Authorization':
-    },
-    credentials: 'include',
-  };
-
-  const url = `${port}/api/v1/login`; // API endpoint
-
-  try {
-    const response = await fetch(url, options);
-    const data = await response.json();
-
-    if (!response.ok) {
-      const errorMessage = `Error: ${response.status} - ${response.statusText}`;
-      throw new Error(errorMessage);
-    }
-    return data.user;
-  } catch (error) {
-    throw error;
-  }
-};
 
 export const highlights = [
   {
@@ -186,50 +166,11 @@ export default function App() {
     message: '',
   });
   const [loading, setLoading] = useState(true);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const userData = {
     firstName: auth.firstName,
     lastName: auth.lastName,
     email: auth.email,
-  };
-
-  const logoutUser = async () => {
-    const options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    };
-
-    const url = `${port}/api/v1/logout`; // API endpoint
-
-    try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-
-      if (!response.ok) {
-        const errorMessage = `Error: ${response.status} - ${response.statusText}`;
-        throw new Error(errorMessage);
-      } else {
-        setAuth({
-          userId: '',
-          firstName: '',
-          lastName: '',
-          email: '',
-          avatarURL: '',
-          role: [''],
-          loggedIn: false,
-          accessToken: '',
-          isActive: undefined,
-        });
-      }
-      return {
-        success: data.success,
-        message: data.message,
-      };
-    } catch (error) {
-      throw error;
-    }
   };
 
   const profileSettings = [
@@ -241,32 +182,13 @@ export default function App() {
     {
       title: 'Logout',
       icon: <LogoutRoundedIcon sx={{ color: customColors.blackLight }} />,
-      onClick: logoutUser,
+      onClick: () => handleLogout(backendApiCall, setAuth, setShowLogoutModal),
       path: HOME,
     },
   ];
 
   useEffect(() => {
-    const authenticateUser = async () => {
-      try {
-        const backendUserData = await checkLoginStatus();
-        setAuth({
-          userId: backendUserData.userId,
-          firstName: backendUserData.firstname,
-          lastName: backendUserData.lastname,
-          email: backendUserData.url,
-          role: backendUserData.role,
-          loggedIn: true,
-          accessToken: backendUserData.accessToken,
-          isActive: backendUserData.isActive,
-        });
-      } catch (error) {
-        throw new Error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    authenticateUser();
+    authenticateUser(backendApiCall, setAuth, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
 
@@ -489,6 +411,12 @@ export default function App() {
               <Route path={ERROR} element={<Error />} />
               <Route path="/*" element={<Navigate to={ERROR}></Navigate>} />
             </Routes>
+            {showLogoutModal && (
+              <LogoutModal
+                showLogoutModal={showLogoutModal}
+                setShowLogoutModal={setShowLogoutModal}
+              />
+            )}
             <Footer />
           </Box>
         )}
