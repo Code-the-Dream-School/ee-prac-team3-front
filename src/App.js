@@ -286,6 +286,8 @@ export default function App() {
     [setActiveFilter]
   );
 
+  console.log(auth);
+
   return (
     <>
       <ThemeProvider theme={defaultTheme}>

@@ -20,7 +20,7 @@ import {
 import useAuth from 'auth/useAuth';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { LOGIN, RESET_PASSWORD, SIGNUP, HOME, port } from 'App';
+import { LOGIN, RESET_PASSWORD, SIGNUP, HOME } from 'App';
 import { backendApiCall } from '../functions/exportFunctions';
 import customColors from 'assets/styles';
 import Copyright from '../components/Copyright';

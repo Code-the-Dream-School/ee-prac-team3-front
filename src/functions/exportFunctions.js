@@ -36,13 +36,14 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
   try {
     const backendUserData = await backendApiCall('GET', '/api/v1/login');
     setAuth({
-      userId: backendUserData.userId,
-      firstName: backendUserData.firstname,
-      lastName: backendUserData.lastname,
-      email: backendUserData.url,
-      role: backendUserData.role,
+      userId: backendUserData.user.userId,
+      firstName: backendUserData.user.firstname,
+      lastName: backendUserData.user.lastname,
+      email: backendUserData.user.url,
+      role: backendUserData.user.role,
       loggedIn: true,
-      accessToken: backendUserData.accessToken,
+      accessToken: backendUserData.user.accessToken,
+      avatarURL: backendUserData.user.avatarURL,
       isActive: backendUserData.isActive,
     });
   } catch (error) {
