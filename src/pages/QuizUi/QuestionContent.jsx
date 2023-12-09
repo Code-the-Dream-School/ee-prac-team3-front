@@ -62,22 +62,15 @@ export default function QuestionContent({
   };
 
   const handleSubmitTest = () => {
-    const hasUnansweredQuestions = userAnswers.includes(null);
+    console.log(userAnswers, length);
+    const hasUnansweredQuestions =
+      userAnswers.length === length - 1 || userAnswers.includes(undefined);
     if (hasUnansweredQuestions) {
       setShowFinalQModal(true);
     } else {
       setFinishQuiz(true);
     }
   };
-
-  console.log(
-    answer.toString(),
-    answeredQuestions,
-    questionId,
-    index,
-    selected,
-    isCurrentQuestionAnswered
-  );
 
   return (
     <Container>

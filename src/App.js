@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import useAuth from 'auth/useAuth';
+import useQuiz from 'quiz/useQuiz';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import customColors, { defaultTheme } from 'assets/styles';
 import Login from 'pages/Login';
@@ -29,13 +30,13 @@ import UserSettings from './pages/UserSettings';
 import useFilterState from './components/filterState';
 import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from './assets/images/js.svg';
-import dataStructureLogo from './assets/images/hierarchical-structure-svgrepo-com.svg';
 // import Loading from './components/Loading';
 import Box from '@mui/material/Box';
 import {
   backendApiCall,
   authenticateUser,
   handleLogout,
+  fetchAndTransformQuizzes,
 } from './functions/exportFunctions';
 
 const PATH = {
@@ -160,6 +161,7 @@ const quizProgress = [
 
 export default function App() {
   const { auth, setAuth } = useAuth();
+  const { quizzes, setQuizzes } = useQuiz();
   const [snackbar, setSnackbar] = useState({
     isOpened: false,
     severity: '',
@@ -188,76 +190,14 @@ export default function App() {
   ];
 
   useEffect(() => {
-    authenticateUser(backendApiCall, setAuth, setLoading);
+    async function fetchData() {
+      await authenticateUser(backendApiCall, setAuth, setLoading);
+      await fetchAndTransformQuizzes(backendApiCall, setQuizzes, auth);
+    }
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
 
-  const [quizzes] = useState([
-    {
-      id: 'react-basic',
-      title: 'React Basic',
-      category: 'react',
-      level: 'basic',
-      labels: ['frontend'],
-      image: reactJsLogo,
-    },
-    {
-      id: 'react-intermediate',
-      title: 'React Intermediate',
-      category: 'react',
-      level: 'intermediate',
-      labels: ['frontend'],
-      image: reactJsLogo,
-    },
-    {
-      id: 'js-basic',
-      title: 'JS Basic',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-    {
-      id: 'js-functions',
-      title: 'JS Functions',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-    {
-      id: 'js-intermediate',
-      title: 'JS Intermediate',
-      category: 'javascript',
-      level: 'intermediate',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-    {
-      id: 'data-structures',
-      title: 'Data structures',
-      category: 'data structure',
-      level: 'intermediate',
-      labels: ['frontend', 'backend'],
-      image: dataStructureLogo,
-    },
-    {
-      id: 'js-arrays',
-      title: 'JS Arrays',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-    {
-      id: 'js-promises',
-      title: 'JS Promises',
-      category: 'javascript',
-      level: 'intermediate',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-  ]);
   const [favoriteQuizzes] = useState([
     {
       id: 'react-intermediate',
@@ -285,8 +225,6 @@ export default function App() {
     },
     [setActiveFilter]
   );
-
-  console.log(auth);
 
   return (
     <>

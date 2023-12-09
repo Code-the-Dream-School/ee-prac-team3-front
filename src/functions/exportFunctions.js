@@ -1,4 +1,7 @@
 import { port } from 'App';
+import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
+import jsLogo from '../assets/images/js.svg';
+import dataStructureLogo from '../assets/images/hierarchical-structure-svgrepo-com.svg';
 
 export const backendApiCall = async (method, url, body) => {
   const options = {
@@ -69,4 +72,42 @@ export const handleLogout = async (
     // Handle any errors here, such as showing an error message
     console.error('Logout failed:', error);
   }
+};
+
+export const fetchAndTransformQuizzes = async (
+  backendApiCall,
+  setQuizzes,
+  auth
+) => {
+  if (!auth.loggedIn) return;
+  const imageMapping = {
+    react: reactJsLogo,
+    javascript: jsLogo,
+    'data structures': dataStructureLogo,
+  };
+  const apiQuizData = await backendApiCall('GET', '/api/v1/quiz');
+  const transformedQuizzes = apiQuizData.map((quiz) => {
+    const image = imageMapping[quiz.category] || jsLogo; // Default image or empty string
+
+    return {
+      id: quiz._id,
+      title: quiz.title,
+      category: quiz.category,
+      level: quiz.level,
+      labels: quiz.label,
+      image: image,
+      questions: quiz.questions.map((q) => ({
+        questionText: q.questionText,
+        type: q.type,
+        code: '',
+        resources: '',
+        options: q.options,
+        correctOption: q.correctOption,
+        id: q._id,
+      })),
+      createdDate: quiz.createdAt,
+    };
+  });
+
+  setQuizzes(transformedQuizzes);
 };
