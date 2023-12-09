@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import customColors, { defaultTheme } from 'assets/styles';
-import { LOGIN, RESET_PASSWORD, SIGNUP, port } from 'App';
+import { LOGIN, RESET_PASSWORD, SIGNUP } from 'App';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Copyright from '../components/Copyright';
 import { useLocation } from 'react-router-dom';
@@ -59,11 +59,7 @@ export default function SignUp() {
     try {
       event.preventDefault();
       setIsLoading(true);
-      const userInfo = await backendApiCall(
-        'POST',
-        '/api/v1/signup',
-        registrationData
-      );
+      await backendApiCall('POST', '/api/v1/signup', registrationData);
       setIsLoading(false);
       setUserData({
         firstName: '',
