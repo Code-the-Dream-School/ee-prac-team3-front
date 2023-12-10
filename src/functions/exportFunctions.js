@@ -1,6 +1,7 @@
 import { port } from 'App';
 import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from '../assets/images/js.svg';
+import nodeJsLogo from '../assets/images/nodejs.svg';
 import dataStructureLogo from '../assets/images/hierarchical-structure-svgrepo-com.svg';
 
 export const backendApiCall = async (method, url, body) => {
@@ -83,7 +84,8 @@ export const fetchAndTransformQuizzes = async (
   const imageMapping = {
     react: reactJsLogo,
     javascript: jsLogo,
-    'data structures': dataStructureLogo,
+    nodejs: nodeJsLogo,
+    datastructures: dataStructureLogo,
   };
   const apiQuizData = await backendApiCall('GET', '/api/v1/quiz');
   const transformedQuizzes = apiQuizData.map((quiz) => {

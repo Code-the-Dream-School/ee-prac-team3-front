@@ -7,6 +7,7 @@ import QuestionContent from './QuestionContent';
 import Loading from 'components/Loading';
 import { QUIZZES } from '../../App';
 import customColors from 'assets/styles';
+import { containerStyles, titleStyles } from '../Main';
 
 export default function QuizContent() {
   const { quizId } = useParams();
@@ -73,10 +74,8 @@ export default function QuizContent() {
       {!quiz ? (
         <Loading />
       ) : (
-        <Container maxWidth="md">
-          <Typography variant="h4" sx={{ pl: 4, pb: 2 }}>
-            {quizTitle}
-          </Typography>
+        <Container sx={containerStyles}>
+          <Typography sx={titleStyles}>{quizTitle}</Typography>
           <Container
             style={{
               display: 'flex',
@@ -127,10 +126,12 @@ export default function QuizContent() {
                 question={questions[currentQuestionIndex].questionText}
                 answer={questions[currentQuestionIndex].correctOption}
                 options={questions[currentQuestionIndex].options}
+                code={questions[currentQuestionIndex].code}
                 onAnswerSelected={handleAnswerSelected}
                 onSkipQuestion={handleSkipQuestion}
                 onBackQuestion={handleBackQuestion}
                 userAnswers={answersCorrectness}
+                type={questions[currentQuestionIndex].type}
                 setFinishQuiz={setQuizFinished}
               />
             ) : (

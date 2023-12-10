@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
   Container,
   Typography,
   RadioGroup,
-  FormControlLabel,
-  Radio,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormGroup,
 } from '@mui/material';
-import { Box } from '@mui/system';
-import Grid from '@mui/material/Unstable_Grid2';
+import checkRadioRender from './CheckRadioRender';
 
 export default function QuestionContent({
   question,
+  code,
   options,
   onAnswerSelected,
   onSkipQuestion,
@@ -24,11 +25,12 @@ export default function QuestionContent({
   index,
   length,
   answer,
+  type,
   userAnswers,
   questionId,
   setFinishQuiz,
 }) {
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState(type === `check-box` ? [] : '');
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showFeedbackCorrectModal, setShowFeedbackCorrectModal] =
@@ -64,7 +66,7 @@ export default function QuestionContent({
   const handleSubmitTest = () => {
     console.log(userAnswers, length);
     const hasUnansweredQuestions =
-      userAnswers.length === length - 1 || userAnswers.includes(undefined);
+      userAnswers.length !== length || userAnswers.includes(undefined);
     if (hasUnansweredQuestions) {
       setShowFinalQModal(true);
     } else {
@@ -77,43 +79,38 @@ export default function QuestionContent({
       <Typography variant="h5" align="left" sx={{ pl: 2, pb: 2 }}>
         {question}
       </Typography>
-      <RadioGroup
-        value={selected}
-        onChange={(e) => setSelected(e.target.value)}
-        disabled={isCurrentQuestionAnswered}
-        style={{
-          paddingLeft: '10px',
-        }}
-        id="answer-choices"
-      >
-        <Grid container spacing={2}>
-          {options && options.length > 0 ? (
-            options.map((option, index) => (
-              <Grid item xs={12} key={index}>
-                <Box
-                  component="div"
-                  sx={{
-                    pl: 2,
-                    border: '2px solid rgb(223, 221, 221)',
-                    width: '100%',
-                    borderRadius: 1,
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  <FormControlLabel
-                    key={index}
-                    value={option}
-                    control={<Radio />}
-                    label={option}
-                  />
-                </Box>
-              </Grid>
-            ))
-          ) : (
-            <div> </div>
+      {code && (
+        <SyntaxHighlighter language="javascript" style={atomDark}>
+          {code}
+        </SyntaxHighlighter>
+      )}
+      {type === 'check-box' ? (
+        <FormGroup>
+          {checkRadioRender(
+            options,
+            'check-box',
+            selected,
+            setSelected,
+            isCurrentQuestionAnswered
           )}
-        </Grid>
-      </RadioGroup>
+        </FormGroup>
+      ) : (
+        <RadioGroup
+          value={selected}
+          onChange={(e) => setSelected(e.target.value)}
+          disabled={isCurrentQuestionAnswered}
+          style={{ paddingLeft: '10px' }}
+          id="answer-choices"
+        >
+          {checkRadioRender(
+            options,
+            'radio',
+            selected,
+            setSelected,
+            isCurrentQuestionAnswered
+          )}
+        </RadioGroup>
+      )}
       <div
         style={{
           display: 'flex',
@@ -149,7 +146,7 @@ export default function QuestionContent({
         >
           Submit Answer
         </Button>
-        {(index === length - 1 || !userAnswers.includes(null)) && (
+        {(index === length - 1 || userAnswers.length === length) && (
           <Button
             variant="contained"
             onClick={handleSubmitTest}

@@ -4,14 +4,14 @@ import Quiz from './Quiz';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../assets/styles';
 
-const containerStyles = {
+export const containerStyles = {
   minHeight: '85vh',
   backgroundColor: customColors.backgroundLight,
   maxWidth: 'none !important',
   pt: 6,
   pb: 6,
 };
-const titleStyles = {
+export const titleStyles = {
   textTransform: 'uppercase',
   mb: 2,
   textAlign: 'center',
