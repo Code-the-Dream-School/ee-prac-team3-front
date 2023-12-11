@@ -168,6 +168,7 @@ export default function App() {
     firstName: auth.firstName,
     lastName: auth.lastName,
     email: auth.email,
+    avatar: auth.avatarURL
   };
 
   const profileSettings = [

@@ -43,7 +43,7 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
       userId: backendUserData.user.userId,
       firstName: backendUserData.user.firstname,
       lastName: backendUserData.user.lastname,
-      email: backendUserData.user.url,
+      email: backendUserData.user.email,
       role: backendUserData.user.role,
       loggedIn: true,
       accessToken: backendUserData.user.accessToken,
@@ -128,6 +128,7 @@ export async function fetchData(
   auth,
   setLoading
 ) {
+
   try {
     await fetchAndTransformQuizzes(backendApiCall, onSucess, setError, auth);
   } catch (err) {
@@ -136,3 +137,39 @@ export async function fetchData(
     setLoading(false);
   }
 }
+
+
+export const deleteUser = async (snackbar) => {
+  const url = `${port}/api/v1/deleteuser`;
+  const options = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    if (!response.ok) {
+      snackbar({
+        isOpened: true,
+        severity: 'error',
+        message: 'An error occurred while deleting your account.',
+      });
+      throw new Error(data.message || 'Failed to delete account');
+    }
+
+    localStorage.clear();
+
+    snackbar({
+      isOpened: true,
+      severity: 'success',
+      message: 'The account was successfully deleted. We hope to see you again!',
+    });
+  } catch (error) {
+    throw new Error(`Error deleting account: ${error.message}`);
+  }
+};
