@@ -41,7 +41,6 @@ const PATH = {
       // For further use:
       UNAUTHORIZED: '/unauthorized',
       CONFIRMATION: '/confirmation',
-      LOGOUT: '/logout',
       */
   HOME: '/home',
   LOGIN: '/login',
@@ -73,32 +72,6 @@ export const {
 } = PATH;
 
 export const port = `http://localhost:8000`;
-
-const checkLoginStatus = async () => {
-  const options = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      //'Authorization':
-    },
-    credentials: 'include',
-  };
-
-  const url = `${port}/api/v1/login`; // API endpoint
-
-  try {
-    const response = await fetch(url, options);
-    const data = await response.json();
-
-    if (!response.ok) {
-      const errorMessage = `Error: ${response.status} - ${response.statusText}`;
-      throw new Error(errorMessage);
-    }
-    return data.user;
-  } catch (error) {
-    throw error;
-  }
-};
 
 export const highlights = [
   {
@@ -197,45 +170,6 @@ export default function App() {
     email: auth.email,
   };
 
-  const logoutUser = async () => {
-    const options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    };
-
-    const url = `${port}/api/v1/logout`; // API endpoint
-
-    try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-
-      if (!response.ok) {
-        const errorMessage = `Error: ${response.status} - ${response.statusText}`;
-        throw new Error(errorMessage);
-      } else {
-        setAuth({
-          userId: '',
-          firstName: '',
-          lastName: '',
-          email: '',
-          role: [''],
-          loggedIn: false,
-          accessToken: '',
-          isActive: undefined,
-        });
-      }
-      return {
-        success: data.success,
-        message: data.message,
-      };
-    } catch (error) {
-      throw error;
-    }
-  };
-
   const profileSettings = [
     {
       title: 'Account',
@@ -249,7 +183,6 @@ export default function App() {
       path: HOME,
     },
   ];
-
 
   useEffect(() => {
     async function fetchData() {
@@ -348,34 +281,6 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-    const authenticateUser = async () => {
-      try {
-        const backendUserData = await checkLoginStatus();
-        console.log(
-          'BACKEND DATA inside authenticateUser ==== ',
-          backendUserData
-        );
-        setAuth({
-          userId: backendUserData.userId,
-          firstName: backendUserData.firstname,
-          lastName: backendUserData.lastname,
-          email: backendUserData.email,
-          avatarURL: backendUserData.avatarURL,
-          role: backendUserData.role,
-          loggedIn: true,
-          accessToken: backendUserData.accessToken,
-          isActive: backendUserData.isActive,
-        });
-      } catch (error) {
-        throw new Error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    authenticateUser();
-  }, [auth.loggedIn]);
-
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
@@ -413,7 +318,6 @@ export default function App() {
                 path={QUIZZES}
                 element={
                   auth.loggedIn ? (
-                    /* <Main quizzes={quizzes}/>*/
                     <Quizzes
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
