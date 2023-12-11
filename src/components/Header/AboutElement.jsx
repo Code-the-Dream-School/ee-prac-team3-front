@@ -22,11 +22,13 @@ const AboutElement = () => {
   });
 
   useEffect(() => {
+    const isQuizRoute = location.pathname.startsWith(QUIZ);
+
     setVisibility({
       link: location.pathname === HOME,
       icon:
         location.pathname === QUIZZES ||
-        location.pathname === QUIZ ||
+        isQuizRoute ||
         location.pathname === NOTES ||
         location.pathname === FAVORITES ||
         location.pathname === USER_SETTINGS ||

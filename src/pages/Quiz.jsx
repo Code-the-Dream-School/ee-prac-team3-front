@@ -13,6 +13,7 @@ import {
 import Labels from '../components/Labels';
 import Progress from '../components/Progress';
 import customColors from '../assets/styles';
+import { QUIZ } from 'App';
 
 const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
   const isFilterActive = (filterType, value) =>
@@ -23,7 +24,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
 
   return (
     <Grid item key={quiz.id} xs={12} sm={6} md={4}>
-      <Link to="/" style={{ textDecoration: 'none' }}>
+      <Link to={`${QUIZ}/${quiz.id}`} style={{ textDecoration: 'none' }}>
         <Card
           elevation={1}
           sx={{
