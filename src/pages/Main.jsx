@@ -1,11 +1,11 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Grid, Typography, Button } from '@mui/material';
+import { Box, Container, Grid, Typography } from '@mui/material';
 import useAuth from 'auth/useAuth';
 import useQuiz from 'quiz/useQuiz';
 import Quiz from './Quiz';
 import QuizLoadError from './QuizLoadError';
-import { LOGIN, HOME } from 'App';
+import { LOGIN } from 'App';
 import Loading from '../components/Loading';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../assets/styles';
@@ -61,7 +61,7 @@ const QuizzesContainer = ({
     } else {
       setLoading(false);
     }
-  }, [auth.loggedIn, quizzes.length]);
+  }, [auth, quizzes.length, navigate, setQuizzes]);
 
   const getProgressForQuiz = (quizId) => {
     const progressObj = quizProgress.find((p) => p.quizId === quizId);
