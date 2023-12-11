@@ -77,39 +77,62 @@ export const handleLogout = async (
 
 export const fetchAndTransformQuizzes = async (
   backendApiCall,
-  setQuizzes,
+  onSuccess,
+  onError,
   auth
 ) => {
   if (!auth.loggedIn) return;
+
   const imageMapping = {
     react: reactJsLogo,
     javascript: jsLogo,
     nodejs: nodeJsLogo,
     datastructures: dataStructureLogo,
   };
-  const apiQuizData = await backendApiCall('GET', '/api/v1/quiz');
-  const transformedQuizzes = apiQuizData.map((quiz) => {
-    const image = imageMapping[quiz.category] || jsLogo; // Default image or empty string
 
-    return {
-      id: quiz._id,
-      title: quiz.title,
-      category: quiz.category,
-      level: quiz.level,
-      labels: quiz.label,
-      image: image,
-      questions: quiz.questions.map((q) => ({
-        questionText: q.questionText,
-        type: q.type,
-        code: '',
-        resources: '',
-        options: q.options,
-        correctOption: q.correctOption,
-        id: q._id,
-      })),
-      createdDate: quiz.createdAt,
-    };
-  });
+  try {
+    const apiQuizData = await backendApiCall('GET', '/api/v1/quiz');
+    const transformedQuizzes = apiQuizData.map((quiz) => {
+      const image = imageMapping[quiz.category] || jsLogo;
 
-  setQuizzes(transformedQuizzes);
+      return {
+        id: quiz._id,
+        title: quiz.title,
+        category: quiz.category,
+        level: quiz.level,
+        labels: quiz.label,
+        image: image,
+        questions: quiz.questions.map((q) => ({
+          questionText: q.questionText,
+          type: q.type,
+          code: '',
+          resources: '',
+          options: q.options,
+          correctOption: q.correctOption,
+          id: q._id,
+        })),
+        createdDate: quiz.createdAt,
+      };
+    });
+
+    onSuccess(transformedQuizzes);
+  } catch (err) {
+    onError(err);
+  }
 };
+
+export async function fetchData(
+  backendApiCall,
+  onSucess,
+  setError,
+  auth,
+  setLoading
+) {
+  try {
+    await fetchAndTransformQuizzes(backendApiCall, onSucess, setError, auth);
+  } catch (err) {
+    setError(err);
+  } finally {
+    setLoading(false);
+  }
+}

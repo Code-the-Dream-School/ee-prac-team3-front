@@ -3,30 +3,33 @@ import { FormControlLabel, Radio, Checkbox } from '@mui/material';
 import { Box } from '@mui/system';
 import Grid from '@mui/material/Unstable_Grid2';
 
-export default function renderOptions(
+export default function checkRadioRender(
   options,
   questionType,
   selected,
   setSelected,
   isCurrentQuestionAnswered
 ) {
+  const checkbox = 'check-box';
+  const handleOptionClick = (option) => {
+    if (!isCurrentQuestionAnswered) {
+      if (questionType === checkbox) {
+        setSelected((prevSelected) =>
+          prevSelected.includes(option)
+            ? prevSelected.filter((item) => item !== option)
+            : [...prevSelected, option]
+        );
+      } else {
+        setSelected(option);
+      }
+    }
+  };
+
   return options.map((option, index) => (
     <Grid item xs={12} key={index}>
       <Box
         component="div"
-        onClick={() => {
-          if (!isCurrentQuestionAnswered) {
-            if (questionType === 'check-box') {
-              setSelected((prevSelected) =>
-                prevSelected.includes(option)
-                  ? prevSelected.filter((item) => item !== option)
-                  : [...prevSelected, option]
-              );
-            } else {
-              setSelected(option);
-            }
-          }
-        }}
+        onClick={() => handleOptionClick(option)}
         sx={{
           pl: 2,
           border: '2px solid rgb(223, 221, 221)',
@@ -38,7 +41,7 @@ export default function renderOptions(
       >
         <FormControlLabel
           control={
-            questionType === 'check-box' ? (
+            questionType === checkbox ? (
               <Checkbox
                 checked={selected.includes(option)}
                 value={option}

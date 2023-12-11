@@ -55,6 +55,7 @@ export default function QuestionContent({
 
   const handleSubmitAnswer = () => {
     const isCorrect = selected === answer.toString();
+    //if user submits an answer questionId is add to Set used for tracking answered questions
     setAnsweredQuestions((prev) => new Set(prev).add(questionId));
     if (isCorrect) {
       setShowFeedbackCorrectModal(true);
@@ -64,7 +65,6 @@ export default function QuestionContent({
   };
 
   const handleSubmitTest = () => {
-    console.log(userAnswers, length);
     const hasUnansweredQuestions =
       userAnswers.length !== length || userAnswers.includes(undefined);
     if (hasUnansweredQuestions) {
@@ -73,6 +73,8 @@ export default function QuestionContent({
       setFinishQuiz(true);
     }
   };
+
+  const checkbox = 'check-box';
 
   return (
     <Container>
@@ -84,11 +86,11 @@ export default function QuestionContent({
           {code}
         </SyntaxHighlighter>
       )}
-      {type === 'check-box' ? (
+      {type === checkbox ? (
         <FormGroup>
           {checkRadioRender(
             options,
-            'check-box',
+            checkbox,
             selected,
             setSelected,
             isCurrentQuestionAnswered
