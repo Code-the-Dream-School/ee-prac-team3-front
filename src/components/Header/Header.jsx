@@ -50,6 +50,8 @@ export default function Header({ profileSettings, userData, auth }) {
   } = headerState;
 
   useEffect(() => {
+    const isQuizRoute = location.pathname.startsWith(QUIZ);
+
     setHeaderState((prevState) => ({
       ...prevState,
       isLoginButtonVisible: location.pathname === HOME,
@@ -65,7 +67,7 @@ export default function Header({ profileSettings, userData, auth }) {
         ERROR,
         ABOUT,
         LIBRARY,
-      ].includes(location.pathname),
+      ].includes(location.pathname) || isQuizRoute,
       isUserMenuVisible: [
         QUIZZES,
         QUIZ,
@@ -73,7 +75,7 @@ export default function Header({ profileSettings, userData, auth }) {
         NOTES,
         ACCOUNT_SETTINGS,
         LIBRARY,
-      ].includes(location.pathname),
+      ].includes(location.pathname) || isQuizRoute,
     }));
   }, [location.pathname]);
 

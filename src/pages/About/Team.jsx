@@ -43,11 +43,11 @@ const projectTeam = [
     id: '4',
     name: 'David Greenslade',
     imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
+      'https://static1.squarespace.com/static/59b0473fa9db0934a50d87d5/t/5a80b1a3e4966bd4a4338071/1518383524092/David1.jpg',
     role: FRONTEND_TEAM,
     gitHub: 'https://github.com/DavidGslade86',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Malesuada fames ac turpis egestas integer. Et malesuada fames ac turpis egestas sed.',
+      'David hails from the great state of North Carolina, where the tea is sweet, and the people are sweeter. After receiving his degree in Biology, David was awarded a fellowship through Princeton to teach English and study Mandarin at the Dalian University of Technology in Dong Bei, China. After nearly 20 years in the education sector David is excited to bring his drive, humor, and humanity to the world or programming and web development.',
   },
   {
     id: '5',

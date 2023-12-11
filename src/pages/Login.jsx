@@ -20,7 +20,8 @@ import {
 import useAuth from 'auth/useAuth';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { LOGIN, RESET_PASSWORD, SIGNUP, HOME, port } from 'App';
+import { LOGIN, RESET_PASSWORD, SIGNUP, HOME } from 'App';
+import { backendApiCall } from '../functions/exportFunctions';
 import customColors from 'assets/styles';
 import Copyright from '../components/Copyright';
 import backgroundAuth from '../assets/images/background-auth.svg';
@@ -44,46 +45,6 @@ export default function Login() {
   });
   const navigate = useNavigate();
 
-  //signs user in with credentials
-  const loginUser = async (newUserData) => {
-    const loginData = {
-      email: newUserData.email,
-      password: newUserData.password,
-    };
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        //'Authorization': `Bearer YOUR_TOKEN`
-      },
-      body: JSON.stringify(loginData),
-      credentials: 'include',
-    };
-
-    const url = `${port}/api/v1/login`; // API endpoint here
-
-    try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 400) {
-          throw new Error(data.message || 'Invalid request');
-        } else {
-          throw new Error('Server error. Please try again later.');
-        }
-      }
-
-      return {
-        success: data.success,
-        message: data.message,
-      };
-    } catch (error) {
-      throw error;
-    }
-  };
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -96,9 +57,13 @@ export default function Login() {
   const handleSubmit = async (event, loginData) => {
     event.preventDefault();
     setIsLoading(true);
+    const bodyData = {
+      email: loginData.email,
+      password: loginData.password,
+    };
 
     try {
-      const apiStatus = await loginUser(loginData);
+      const apiStatus = await backendApiCall('POST', '/api/v1/login', bodyData);
       if (apiStatus.success === true) {
         setIsLoading(false);
         setLoginData({

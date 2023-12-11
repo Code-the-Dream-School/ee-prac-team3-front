@@ -1,17 +1,24 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Container, Grid, Typography } from '@mui/material';
+import useAuth from 'auth/useAuth';
+import useQuiz from 'quiz/useQuiz';
 import Quiz from './Quiz';
+import QuizLoadError from './QuizLoadError';
+import { LOGIN } from 'App';
+import Loading from '../components/Loading';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../assets/styles';
+import { backendApiCall, fetchData } from '../functions/exportFunctions';
 
-const containerStyles = {
+export const containerStyles = {
   minHeight: '85vh',
   backgroundColor: customColors.backgroundLight,
   maxWidth: 'none !important',
   pt: 6,
   pb: 6,
 };
-const titleStyles = {
+export const titleStyles = {
   textTransform: 'uppercase',
   mb: 2,
   textAlign: 'center',
@@ -32,12 +39,30 @@ const boxStyles = {
 
 const QuizzesContainer = ({
   title,
-  quizzes,
   activeFilters,
   changeFilter,
   message,
   quizProgress,
 }) => {
+  const { auth } = useAuth();
+  const { quizzes, setQuizzes } = useQuiz();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchData(backendApiCall, setQuizzes, setError, auth, setLoading);
+
+    if (auth.loggedIn && quizzes.length === 1) {
+      fetchData();
+    } else if (!auth.loggedIn) {
+      navigate(LOGIN);
+    } else {
+      setLoading(false);
+    }
+  }, [auth, quizzes.length, navigate, setQuizzes]);
+
   const getProgressForQuiz = (quizId) => {
     const progressObj = quizProgress.find((p) => p.quizId === quizId);
     return progressObj ? progressObj : 0;
@@ -59,37 +84,49 @@ const QuizzesContainer = ({
   }, [quizzes, activeFilters]);
 
   return (
-    <Container sx={containerStyles}>
-      <Typography variant="h5" sx={titleStyles}>
-        {title}
-      </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Box sx={boxStyles}>
-          {quizzes && <FilterButtonGroup changeFilter={changeFilter} />}
-          {filteredQuizzes.length === 0 && (
-            <Typography sx={messageStyles}>{message}</Typography>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Container sx={containerStyles}>
+          {error ? (
+            <QuizLoadError />
+          ) : (
+            <>
+              <Typography variant="h5" sx={titleStyles}>
+                {title}
+              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Box sx={boxStyles}>
+                  {quizzes && <FilterButtonGroup changeFilter={changeFilter} />}
+                  {filteredQuizzes.length === 0 && (
+                    <Typography sx={messageStyles}>{message}</Typography>
+                  )}
+                  {filteredQuizzes.length > 0 && (
+                    <Box sx={{ py: 3 }} maxWidth="lg" width="100%">
+                      <Grid
+                        container
+                        spacing={4}
+                        sx={{ display: 'flex', justifyContent: 'start' }}
+                      >
+                        {filteredQuizzes.map((q) => (
+                          <Quiz
+                            key={q.id}
+                            quiz={q}
+                            activeFilters={activeFilters}
+                            getProgressForQuiz={getProgressForQuiz}
+                          />
+                        ))}
+                      </Grid>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+            </>
           )}
-          {filteredQuizzes.length > 0 && (
-            <Box sx={{ py: 3 }} maxWidth="lg" width="100%">
-              <Grid
-                container
-                spacing={4}
-                sx={{ display: 'flex', justifyContent: 'start' }}
-              >
-                {filteredQuizzes.map((q) => (
-                  <Quiz
-                    key={q.id}
-                    quiz={q}
-                    activeFilters={activeFilters}
-                    getProgressForQuiz={getProgressForQuiz}
-                  />
-                ))}
-              </Grid>
-            </Box>
-          )}
-        </Box>
-      </Box>
-    </Container>
+        </Container>
+      )}
+    </>
   );
 };
 

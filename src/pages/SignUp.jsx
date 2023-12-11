@@ -16,13 +16,14 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import customColors, { defaultTheme } from 'assets/styles';
-import { LOGIN, RESET_PASSWORD, SIGNUP, port } from 'App';
+import { LOGIN, RESET_PASSWORD, SIGNUP } from 'App';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Copyright from '../components/Copyright';
 import { useLocation } from 'react-router-dom';
 import backgroundAuth from '../assets/images/background-auth.svg';
 import jsQuizLogo from '../assets/images/logo.svg';
 import Loading from '../components/Loading';
+import { backendApiCall } from '../functions/exportFunctions';
 
 export default function SignUp() {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -40,60 +41,25 @@ export default function SignUp() {
   });
   const navigate = useNavigate();
 
-  //updates API with new user registration data
-  const addUser = async (newUserData) => {
-    const registrationData = {
-      firstname: newUserData.firstName,
-      lastname: newUserData.lastName,
-      email: newUserData.email,
-      password: newUserData.password,
-      //'quizData' : {}
-    };
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(registrationData),
-    };
-
-    const url = `${port}/api/v1/signup`; // API endpoint here
-
-    try {
-      const response = await fetch(url, options);
-      const responseData = await response.json();
-      if (!response.ok) {
-        const errorMessage = `Error: ${response.status} - ${response.statusText}`;
-        throw new Error(errorMessage);
-      }
-      return {
-        firstName: responseData.data.firstname,
-        lastName: responseData.data.lastname,
-        email: responseData.data.email,
-        id: responseData.data._id,
-      };
-    } catch (error) {
-      throw new Error(error); // Re-throw to be caught in the calling function.
-    }
-  };
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
   const handleUserDataChange = (field) => (e) => {
     setUserData((prevData) => ({ ...prevData, [field]: e.target.value }));
   };
-
   const handleSubmitData = async (event, userData) => {
+    const registrationData = {
+      firstname: userData.firstName,
+      lastname: userData.lastName,
+      email: userData.email,
+      password: userData.password,
+      //'quizData' : {}
+    };
     try {
       event.preventDefault();
       setIsLoading(true);
-      const userInfo = await addUser(userData);
-      console.log(userInfo);
+      await backendApiCall('POST', '/api/v1/signup', registrationData);
       setIsLoading(false);
       setUserData({
         firstName: '',

@@ -9,6 +9,8 @@ import ResetPassword from 'pages/ResetPassword';
 import Footer from 'components/Footer';
 import Error from 'pages/Error';
 import Home from 'pages/Home/Home';
+import QuizContent from 'pages/QuizUi/QuizContent';
+import LogoutModal from 'components/LogoutModal';
 import highlight_1 from './assets/images/highlight_effective_knowledge_testing.svg';
 import highlight_2 from './assets/images/highlight_preparing_for_a_job_interview.svg';
 import highlight_3 from './assets/images/highlight_improving_coding_skills.svg';
@@ -27,8 +29,12 @@ import AccountSettings from './pages/AccountSettings';
 import useFilterState from './components/filterState';
 import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from './assets/images/js.svg';
-import dataStructureLogo from './assets/images/hierarchical-structure-svgrepo-com.svg';
 import Box from '@mui/material/Box';
+import {
+  backendApiCall,
+  authenticateUser,
+  handleLogout,
+} from './functions/exportFunctions';
 
 const PATH = {
   /*
@@ -93,6 +99,7 @@ const checkLoginStatus = async () => {
     throw error;
   }
 };
+
 export const highlights = [
   {
     id: 'highlight 1',
@@ -125,7 +132,35 @@ const quizProgress = [
     progress: 50,
   },
   {
-    quizId: 'react-middle',
+    quizId: 'react-intermediate',
+    attemptsCount: 4,
+    bestScore: 50,
+    lastScore: 50,
+    progress: 10,
+  },
+  {
+    quizId: 'js-basic',
+    attemptsCount: 3,
+    bestScore: 90,
+    lastScore: 30,
+    progress: 80,
+  },
+  {
+    quizId: 'js-functions',
+    attemptsCount: 1,
+    bestScore: 20,
+    lastScore: 20,
+    progress: 100,
+  },
+  {
+    quizId: 'react-basic',
+    attemptsCount: 1,
+    bestScore: 80,
+    lastScore: 50,
+    progress: 50,
+  },
+  {
+    quizId: 'react-intermediate',
     attemptsCount: 4,
     bestScore: 50,
     lastScore: 50,
@@ -155,6 +190,7 @@ export default function App() {
     message: '',
   });
   const [loading, setLoading] = useState(true);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const userData = {
     firstName: auth.firstName,
     lastName: auth.lastName,
@@ -209,80 +245,24 @@ export default function App() {
     {
       title: 'Logout',
       icon: <LogoutRoundedIcon sx={{ color: customColors.blackLight }} />,
-      onClick: logoutUser,
+      onClick: () => handleLogout(backendApiCall, setAuth, setShowLogoutModal),
       path: HOME,
     },
   ];
 
-  const [quizzes] = useState([
-    {
-      id: 'react-basic',
-      title: 'React Basic',
-      category: 'react',
-      level: 'basic',
-      labels: ['frontend'],
-      image: reactJsLogo,
-    },
-    {
-      id: 'react-middle',
-      title: 'React Intermediate',
-      category: 'react',
-      level: 'intermediate',
-      labels: ['frontend'],
-      image: reactJsLogo,
-    },
-    {
-      id: 'js-basic',
-      title: 'JS Basic',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-    {
-      id: 'js-functions',
-      title: 'JS Functions',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-    {
-      id: 'js-middle',
-      title: 'JS Intermediate',
-      category: 'javascript',
-      level: 'intermediate',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-    {
-      id: 'data-structures',
-      title: 'Data structures',
-      category: 'data structure',
-      level: 'intermediate',
-      labels: ['frontend', 'backend'],
-      image: dataStructureLogo,
-    },
-    {
-      id: 'js-arrays',
-      title: 'JS Arrays',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-    {
-      id: 'js-promises',
-      title: 'JS Promises',
-      category: 'javascript',
-      level: 'intermediate',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-  ]);
+
+  useEffect(() => {
+    async function fetchData() {
+      await authenticateUser(backendApiCall, setAuth, setLoading);
+    }
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.loggedIn]);
+
+
   const [favoriteQuizzes] = useState([
     {
-      id: 'react-middle',
+      id: 'react-intermediate',
       title: 'React Intermediate',
       category: 'react',
       level: 'intermediate',
@@ -435,11 +415,20 @@ export default function App() {
                   auth.loggedIn ? (
                     /* <Main quizzes={quizzes}/>*/
                     <Quizzes
-                      quizzes={quizzes}
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       quizProgress={quizProgress}
                     />
+                  ) : (
+                    <Navigate to={LOGIN}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path={`${QUIZ}/:quizId`}
+                element={
+                  auth.loggedIn ? (
+                    <QuizContent />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
                   )
@@ -514,6 +503,12 @@ export default function App() {
               <Route path={ERROR} element={<Error />} />
               <Route path="/*" element={<Navigate to={ERROR}></Navigate>} />
             </Routes>
+            {showLogoutModal && (
+              <LogoutModal
+                showLogoutModal={showLogoutModal}
+                setShowLogoutModal={setShowLogoutModal}
+              />
+            )}
             <Footer />
           </Box>
         )}
