@@ -276,7 +276,7 @@ export default function App() {
       setSnackbar({
         isOpened: true,
         severity: 'error',
-        message: 'Error updating account information.',
+        message: 'Failed to update account information.',
       });
     }
   };
