@@ -138,8 +138,7 @@ export async function fetchData(
   }
 }
 
-
-export const deleteUser = async (snackbar) => {
+export const deleteUser = async (snackbar, setAuth) => {
   const url = `${port}/api/v1/deleteuser`;
   const options = {
     method: 'DELETE',
@@ -162,6 +161,9 @@ export const deleteUser = async (snackbar) => {
       throw new Error(data.message || 'Failed to delete account');
     }
 
+    setAuth({
+      loggedIn: false,
+    });
     localStorage.clear();
 
     snackbar({

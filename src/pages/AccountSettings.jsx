@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
     Avatar,
     Box,
@@ -10,48 +10,14 @@ import {
     TextField,
 } from '@mui/material';
 import customColors from '../assets/styles';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import DeleteIcon from '@mui/icons-material/Delete';
 import s from './AccountSettings.module.css';
-import {LOGIN, port} from '../App';
+import {LOGIN} from '../App';
 import {deleteUser} from "../functions/exportFunctions";
 import {useNavigate} from "react-router-dom";
+import useAuth from "../auth/useAuth";
 
-const Delete = ({onClick}) => (
-    <div
-        onClick={onClick}
-        style={{
-            color: customColors.white,
-            cursor: 'pointer',
-        }}
-    >
-        <DeleteIcon/>
-    </div>
-);
-const Upload = ({onClick}) => (
-    <div
-        onClick={onClick}
-        style={{
-            color: customColors.white,
-            cursor: 'pointer',
-        }}
-    >
-        <AddAPhotoIcon/>
-    </div>
-);
-
-const AvatarSection = ({
-                           formValues,
-                           isHovered,
-                           setIsHovered,
-                           handleFileChange,
-                           handleFileInputClick,
-                           handleDelete,
-                       }) => (
-    <label
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-    >
+const AvatarSection = ({formValues}) => (
+    <>
         <Avatar
             className={s.avatarBlock}
             sx={{
@@ -61,11 +27,9 @@ const AvatarSection = ({
                 bgcolor: customColors.grey,
             }}
         >
-            {/*{formValues.avatarURL ? (
-        <>*/}
+        {formValues.avatarURL && (
             <Avatar
-                /*src={formValues.avatarURL}*/
-                src={''}
+                src={formValues.avatarURL}
                 alt={`${formValues.firstName} ${formValues.lastName}`}
                 style={{
                     width: '100%',
@@ -75,40 +39,9 @@ const AvatarSection = ({
                     backgroundPosition: 'center',
                 }}
             />
-            {isHovered && (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        position: 'absolute',
-                        justifyContent: 'center',
-                        gap: '10px',
-                        zIndex: 1,
-                    }}
-                >
-                    <Upload onClick={handleFileInputClick}/>
-                    <Delete onClick={handleDelete}/>
-                </Box>
-            )}
-            {/* </>
-      ) : (
-        <>
-          <AddAPhotoIcon
-            sx={{
-              color: customColors.white,
-              zIndex: 1,
-            }}
-          />
-          <input
-            type="file"
-            id="avatar-upload"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-          />
-        </>
-      )}*/}
+        )}
         </Avatar>
-    </label>
+    </>
 );
 
 const UserInfoSection = ({
@@ -244,18 +177,16 @@ const AccountSettings = ({userData, snackbar, updateUserInfo}) => {
         firstName: userData.firstName,
         lastName: userData.lastName,
         email: userData.email,
+        avatarURL: userData.avatar
     });
     const [passwordFormValues, setPasswordFormValues] = useState({
         currentPassword: '',
         newPassword: '',
     });
-    const [avatarValue, setAvatarValue] = useState({
-            avatar: userData.avatar
-        }
-    )
-    const navigate = useNavigate();
 
-    const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
+    const { setAuth } = useAuth();
+
     const [confirmAccountDelete, setConfirmAccountDelete] = useState(false);
 
     const updateUserInfoHandler = useCallback(
@@ -274,61 +205,13 @@ const AccountSettings = ({userData, snackbar, updateUserInfo}) => {
     const handleDeleteAccount = useCallback(async () => {
         if (confirmAccountDelete) {
             try {
-                await deleteUser(snackbar);
+                await deleteUser(snackbar, setAuth);
                 navigate(LOGIN)
             } catch (error) {
                 console.error(error);
             }
         }
     }, [confirmAccountDelete]);
-
-    const handleFileChange = useCallback(
-        (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onloadend = () => {
-                    const userAvatar = reader.result;
-                    /* setFormValues({
-                      ...formValues,
-                      avatarURL: userAvatar,
-                    });*/
-
-                    localStorage.setItem('profilePicture', userAvatar);
-                };
-
-                reader.readAsDataURL(file);
-            }
-        },
-        [formValues]
-    );
-    const handleFileInputClick = useCallback((event) => {
-        if (event.current.file) {
-            event.current.file.click(); // Trigger click on file input
-        }
-    }, []);
-    const handleDelete = useCallback(() => {
-        localStorage.removeItem('profilePicture');
-        // Update the state to remove the avatarURL
-        /*setFormValues({
-          ...formValues,
-          avatarURL: '',
-           });*/
-        const fileInput = document.getElementById('avatar-upload');
-        if (fileInput) {
-            fileInput.value = ''; // This will clear the file input value
-        }
-    }, []);
-    React.useEffect(() => {
-        const storedProfilePicture = localStorage.getItem('profilePicture');
-        /*if (storedProfilePicture) {
-          setFormValues((prevValues) => ({
-            ...prevValues,
-            avatarURL: storedProfilePicture,
-          }));
-        }*/
-    }, []);
 
     return (
         <Container
@@ -358,11 +241,6 @@ const AccountSettings = ({userData, snackbar, updateUserInfo}) => {
                     >
                         <AvatarSection
                             formValues={formValues}
-                            isHovered={isHovered}
-                            setIsHovered={setIsHovered}
-                            handleFileChange={handleFileChange}
-                            handleFileInputClick={handleFileInputClick}
-                            handleDelete={handleDelete}
                         />
                         <UserInfoSection
                             formValues={formValues}
