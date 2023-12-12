@@ -5,7 +5,7 @@ import {
   BottomNavigation,
   BottomNavigationAction,
 } from '@mui/material';
-import { FAVORITES, LIBRARY, NOTES, QUIZZES, USER_SETTINGS } from 'App';
+import { FAVORITES, LIBRARY, NOTES, QUIZZES, ACCOUNT_SETTINGS } from 'App';
 import SchoolIcon from '@mui/icons-material/School';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
@@ -63,7 +63,7 @@ export default function NavBar() {
               location.pathname === NOTES ||
               location.pathname === FAVORITES ||
               location.pathname === LIBRARY ||
-              location.pathname === USER_SETTINGS
+              location.pathname === ACCOUNT_SETTINGS
                 ? 'flex'
                 : 'none',
           }}

@@ -29,7 +29,7 @@ import {
   ERROR,
   LIBRARY,
   ABOUT,
-  USER_SETTINGS,
+  ACCOUNT_SETTINGS,
   QUIZ,
 } from '../../App';
 
@@ -58,9 +58,10 @@ export default function Header({ profileSettings, userData, auth }) {
       isLogoVisible:
         [
           QUIZZES,
+          QUIZ,
           FAVORITES,
           NOTES,
-          USER_SETTINGS,
+          ACCOUNT_SETTINGS,
           LOGIN,
           SIGNUP,
           RESET_PASSWORD,
@@ -69,7 +70,7 @@ export default function Header({ profileSettings, userData, auth }) {
           LIBRARY,
         ].includes(location.pathname) || isQuizRoute,
       isUserMenuVisible:
-        [QUIZZES, FAVORITES, NOTES, USER_SETTINGS, LIBRARY].includes(
+        [QUIZZES, QUIZ, FAVORITES, NOTES, ACCOUNT_SETTINGS, LIBRARY].includes(
           location.pathname
         ) || isQuizRoute,
     }));
