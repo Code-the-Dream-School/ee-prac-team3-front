@@ -44,7 +44,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const SearchComponent = () => {
+const SearchComponent = ({ onSearchChange }) => {
+  const handleSearchTermChange = (newSearchTerm) => {
+    onSearchChange(newSearchTerm);
+  };
   const location = useLocation();
   return (
     <Search
@@ -64,6 +67,7 @@ const SearchComponent = () => {
       <StyledInputBase
         placeholder="Search…"
         inputProps={{ 'aria-label': 'search' }}
+        onChange={(e) => handleSearchTermChange(e.target.value)}
       />
     </Search>
   );

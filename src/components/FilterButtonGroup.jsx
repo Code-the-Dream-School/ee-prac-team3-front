@@ -38,7 +38,7 @@ const filterOptions = {
   categories: [
     { value: 'react', label: 'react' },
     { value: 'javascript', label: 'javascript' },
-    { value: 'data structure', label: 'data structure' },
+    { value: 'nodejs', label: 'node.js' },
   ],
   labels: [
     { value: 'frontend', label: 'frontend' },

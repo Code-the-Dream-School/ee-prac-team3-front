@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import jsQuizLogo from '../../assets/images/logo.svg';
 import customColors, { defaultTheme } from 'assets/styles';
-import Search from './Search';
+import SearchComponent from './Search';
 import AboutElement from './AboutElement';
 import {
   HOME,
@@ -33,7 +33,12 @@ import {
   QUIZ,
 } from '../../App';
 
-export default function Header({ profileSettings, userData, auth }) {
+export default function Header({
+  profileSettings,
+  userData,
+  auth,
+  onSearchChange,
+}) {
   const [headerState, setHeaderState] = useState({
     anchorElUser: null,
     isLoginButtonVisible: false,
@@ -55,27 +60,24 @@ export default function Header({ profileSettings, userData, auth }) {
     setHeaderState((prevState) => ({
       ...prevState,
       isLoginButtonVisible: location.pathname === HOME,
-      isLogoVisible: [
-        QUIZZES,
-        QUIZ,
-        FAVORITES,
-        NOTES,
-        ACCOUNT_SETTINGS,
-        LOGIN,
-        SIGNUP,
-        RESET_PASSWORD,
-        ERROR,
-        ABOUT,
-        LIBRARY,
-      ].includes(location.pathname) || isQuizRoute,
-      isUserMenuVisible: [
-        QUIZZES,
-        QUIZ,
-        FAVORITES,
-        NOTES,
-        ACCOUNT_SETTINGS,
-        LIBRARY,
-      ].includes(location.pathname) || isQuizRoute,
+      isLogoVisible:
+        [
+          QUIZZES,
+          QUIZ,
+          FAVORITES,
+          NOTES,
+          ACCOUNT_SETTINGS,
+          LOGIN,
+          SIGNUP,
+          RESET_PASSWORD,
+          ERROR,
+          ABOUT,
+          LIBRARY,
+        ].includes(location.pathname) || isQuizRoute,
+      isUserMenuVisible:
+        [QUIZZES, QUIZ, FAVORITES, NOTES, ACCOUNT_SETTINGS, LIBRARY].includes(
+          location.pathname
+        ) || isQuizRoute,
     }));
   }, [location.pathname]);
 
@@ -151,7 +153,7 @@ export default function Header({ profileSettings, userData, auth }) {
               },
             }}
           >
-            <Search />
+            <SearchComponent onSearchChange={onSearchChange} />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <AboutElement />

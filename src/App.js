@@ -37,11 +37,6 @@ import {
 } from './functions/exportFunctions';
 
 const PATH = {
-  /*
-      // For further use:
-      UNAUTHORIZED: '/unauthorized',
-      CONFIRMATION: '/confirmation',
-      */
   HOME: '/home',
   LOGIN: '/login',
   SIGNUP: '/signup',
@@ -168,8 +163,9 @@ export default function App() {
     firstName: auth.firstName,
     lastName: auth.lastName,
     email: auth.email,
-    avatar: auth.avatarURL
+    avatar: auth.avatarURL,
   };
+  const [searchTerm, setSearchTerm] = useState('');
 
   const profileSettings = [
     {
@@ -192,7 +188,6 @@ export default function App() {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
-
 
   const [favoriteQuizzes] = useState([
     {
@@ -221,6 +216,10 @@ export default function App() {
     },
     [setActiveFilter]
   );
+
+  const onSearchChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
+  };
 
   const updateUserInfo = async (formValues, passwordFormValues) => {
     let payload = {};
@@ -303,6 +302,7 @@ export default function App() {
           profileSettings={profileSettings}
           userData={userData}
           auth={auth}
+          onSearchChange={onSearchChange}
         />
         <NavBar />
         {!loading && (
@@ -323,6 +323,7 @@ export default function App() {
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       quizProgress={quizProgress}
+                      searchValue={searchTerm}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
@@ -364,6 +365,7 @@ export default function App() {
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       quizProgress={quizProgress}
+                      searchValue={searchTerm}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
