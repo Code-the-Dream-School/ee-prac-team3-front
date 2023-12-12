@@ -243,7 +243,7 @@ const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
       currentPassword: '',
       newPassword: '',
     });
-  }, [formValues, passwordFormValues]);
+  }, [formValues, passwordFormValues, updateUserInfo]);
 
   const handleDeleteAccount = useCallback(async () => {
     if (confirmAccountDelete) {
@@ -254,7 +254,7 @@ const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
         console.error(error);
       }
     }
-  }, [confirmAccountDelete]);
+  }, [confirmAccountDelete, navigate, snackbar, setAuth]);
 
   return (
     <Container
