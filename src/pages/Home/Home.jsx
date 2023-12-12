@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import jsQuizLogo from '../../assets/images/logo.svg';
 import s from './Home.module.css';
@@ -8,10 +8,58 @@ import { NOTES, QUIZZES } from '../../App';
 import { Link } from 'react-router-dom';
 import ContactForm from './ContactForm';
 import HighlightsSection from './Highlights';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 export default function Home({ highlights, snackbar }) {
+  const [scrollToTopVisible, setScrollToTopVisible] = useState(false);
+  const handleScroll = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    setScrollToTopVisible(scrollTop > 200);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <>
+      {/* Add a "Scroll to Top" button */}
+      {scrollToTopVisible && (
+        <Button
+          onClick={scrollToTop}
+          variant="contained"
+          sx={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            zIndex: '1000',
+            backgroundColor: customColors.backgroundLight,
+            '&:hover': {
+              backgroundColor: 'primary',
+              '& svg': {
+                color: customColors.white, // Change to your preferred hover color for the icon
+              },
+            },
+          }}
+        >
+          <KeyboardArrowUpIcon
+            sx={{
+              fontSize: 32,
+              color: customColors.greyMedium,
+            }}
+          />
+        </Button>
+      )}
       {/*Home section*/}
       <Box className={s.homeBackground}>
         <img alt="JSQuiz logo" className={s.logoImage} src={jsQuizLogo} />
