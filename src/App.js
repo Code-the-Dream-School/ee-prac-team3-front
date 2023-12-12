@@ -37,11 +37,6 @@ import {
 } from './functions/exportFunctions';
 
 const PATH = {
-  /*
-      // For further use:
-      UNAUTHORIZED: '/unauthorized',
-      CONFIRMATION: '/confirmation',
-      */
   HOME: '/home',
   LOGIN: '/login',
   SIGNUP: '/signup',
@@ -168,7 +163,7 @@ export default function App() {
     firstName: auth.firstName,
     lastName: auth.lastName,
     email: auth.email,
-    avatar: auth.avatarURL
+    avatar: auth.avatarURL,
   };
 
   const profileSettings = [
@@ -192,7 +187,6 @@ export default function App() {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
-
 
   const [favoriteQuizzes] = useState([
     {
@@ -277,7 +271,7 @@ export default function App() {
       setSnackbar({
         isOpened: true,
         severity: 'error',
-        message: 'Error updating account information.',
+        message: 'Failed to update account information.',
       });
     }
   };

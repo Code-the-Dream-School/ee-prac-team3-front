@@ -55,27 +55,24 @@ export default function Header({ profileSettings, userData, auth }) {
     setHeaderState((prevState) => ({
       ...prevState,
       isLoginButtonVisible: location.pathname === HOME,
-      isLogoVisible: [
-        QUIZZES,
-        QUIZ,
-        FAVORITES,
-        NOTES,
-        ACCOUNT_SETTINGS,
-        LOGIN,
-        SIGNUP,
-        RESET_PASSWORD,
-        ERROR,
-        ABOUT,
-        LIBRARY,
-      ].includes(location.pathname) || isQuizRoute,
-      isUserMenuVisible: [
-        QUIZZES,
-        QUIZ,
-        FAVORITES,
-        NOTES,
-        ACCOUNT_SETTINGS,
-        LIBRARY,
-      ].includes(location.pathname) || isQuizRoute,
+      isLogoVisible:
+        [
+          QUIZZES,
+          QUIZ,
+          FAVORITES,
+          NOTES,
+          ACCOUNT_SETTINGS,
+          LOGIN,
+          SIGNUP,
+          RESET_PASSWORD,
+          ERROR,
+          ABOUT,
+          LIBRARY,
+        ].includes(location.pathname) || isQuizRoute,
+      isUserMenuVisible:
+        [QUIZZES, QUIZ, FAVORITES, NOTES, ACCOUNT_SETTINGS, LIBRARY].includes(
+          location.pathname
+        ) || isQuizRoute,
     }));
   }, [location.pathname]);
 

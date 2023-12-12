@@ -128,7 +128,6 @@ export async function fetchData(
   auth,
   setLoading
 ) {
-
   try {
     await fetchAndTransformQuizzes(backendApiCall, onSucess, setError, auth);
   } catch (err) {
@@ -169,7 +168,8 @@ export const deleteUser = async (snackbar, setAuth) => {
     snackbar({
       isOpened: true,
       severity: 'success',
-      message: 'The account was successfully deleted. We hope to see you again!',
+      message:
+        'The account was successfully deleted. We hope to see you again!',
     });
   } catch (error) {
     throw new Error(`Error deleting account: ${error.message}`);
