@@ -5,6 +5,7 @@ JSQuiz is for learning developers to test their knowledge and understanding of c
 ## Table of Contents
 
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Usage](#usage)
 - [Credits](#credits)
 
@@ -12,7 +13,7 @@ JSQuiz is for learning developers to test their knowledge and understanding of c
 
 To run JSQuiz on your local machine, follow these steps for installation:
 
-Backend:
+Back-end:
 
 1. Clone the repository: `https://github.com/Code-the-Dream-School/ee-prac-team3-back`
 2. Run `npm install` to install dependencies
@@ -25,6 +26,10 @@ Front-end:
 2. Run `npm install` to install dependencies
 3. Pull the latest version of the `main` branch (when needed)
 4. Run `npm start` to start the development server
+
+## Configuration
+
+JSQuiz can be configured using environment variables. Create a `.env` file in the root directory like the example file in the back-end. Copy .env.example to your .env and ask your coworkers to share the secrets with you.
 
 ## Usage
 
