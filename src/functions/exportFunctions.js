@@ -70,8 +70,7 @@ export const handleLogout = async (
     });
     setShowLogoutModal(true);
   } catch (error) {
-    // Handle any errors here, such as showing an error message
-    console.error('Logout failed:', error);
+    throw new Error(error);
   }
 };
 
@@ -121,7 +120,7 @@ export const fetchAndTransformQuizzes = async (
   }
 };
 
-export async function fetchData(
+export async function fetchQuizData(
   backendApiCall,
   onSucess,
   setError,

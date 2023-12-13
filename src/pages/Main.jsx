@@ -9,7 +9,7 @@ import { LOGIN } from 'App';
 import Loading from '../components/Loading';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../assets/styles';
-import { backendApiCall, fetchData } from '../functions/exportFunctions';
+import { backendApiCall, fetchQuizData } from '../functions/exportFunctions';
 
 export const containerStyles = {
   minHeight: '85vh',
@@ -52,10 +52,8 @@ const QuizzesContainer = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchData(backendApiCall, setQuizzes, setError, auth, setLoading);
-
     if (auth.loggedIn && quizzes.length === 1) {
-      fetchData();
+      fetchQuizData(backendApiCall, setQuizzes, setError, auth, setLoading);
     } else if (!auth.loggedIn) {
       navigate(LOGIN);
     } else {
