@@ -32,9 +32,7 @@ import {
   backendApiCall,
   authenticateUser,
   handleLogout,
-  fetchData,
 } from './functions/exportFunctions';
-import useQuiz from './quiz/useQuiz';
 
 const PATH = {
   HOME: '/home',
