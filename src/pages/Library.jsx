@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Typography } from '@mui/material';
+import {Alert, Box, Container, Typography} from '@mui/material';
 import customColors, { defaultTheme } from '../assets/styles';
 
 const Library = () => {
@@ -17,7 +17,7 @@ const Library = () => {
         variant={'h5'}
         sx={{
           textTransform: 'uppercase',
-          mb: 2,
+          mb: 4,
           textAlign: 'center',
           fontWeight: 'bold',
           [defaultTheme.breakpoints.down('md')]: {
@@ -29,8 +29,10 @@ const Library = () => {
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box
-          sx={{ maxWidth: '1200px', display: 'flex', flexDirection: 'column' }}
-        ></Box>
+          sx={{ maxWidth: '1200px', display: 'flex', flexDirection: 'column', width: '100%'}}
+        >
+            <Alert severity="warning">This section is under development.</Alert>
+        </Box>
       </Box>
     </Container>
   );
