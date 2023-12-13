@@ -144,7 +144,7 @@ export default function Login() {
             <Typography component="h1" variant="h5" mb={3}>
               Sign in
             </Typography>
-            {isLoading && <Loading />}
+            {isLoading && <Loading type="linear" />}
             <Box
               component="form"
               noValidate

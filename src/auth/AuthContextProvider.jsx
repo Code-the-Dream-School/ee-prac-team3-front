@@ -12,19 +12,13 @@ export const AuthContextProvider = ({ children }) => {
     role: [''],
     loggedIn: false,
     accessToken: '',
-    isActive: undefined,
+    favorites: [], //array quizzes IDs
     progress: [
       {
         quizId: '',
         attemptsCount: 1,
         bestScore: 50,
         lastScore: 30,
-        questions: [
-          {
-            correctQuestions: [''],
-            wrongQuestions: [''],
-          },
-        ],
       },
     ],
   });

@@ -54,7 +54,6 @@ export default function SignUp() {
       lastname: userData.lastName,
       email: userData.email,
       password: userData.password,
-      //'quizData' : {}
     };
     try {
       event.preventDefault();
@@ -150,7 +149,7 @@ export default function SignUp() {
               onSubmit={(e) => handleSubmitData(e, userData)}
               sx={{ mt: 3 }}
             >
-              {isLoading && <Loading />}
+              {isLoading && <Loading type="linear" />}
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Card,
@@ -17,8 +17,9 @@ import Labels from '../components/Labels';
 import Progress from '../components/Progress';
 import customColors from '../assets/styles';
 import { QUIZ } from 'App';
+import { addFavorite, removeFavorite } from '../functions/exportFunctions';
 
-const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
+const Quiz = ({ quiz, activeFilters, getProgressForQuiz, auth }) => {
   const isFilterActive = (filterType, value) =>
     activeFilters[filterType].length > 0 &&
     activeFilters[filterType].includes(value);
@@ -26,6 +27,11 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const [anchorEl, setAnchorEl] = useState(null);
   const [cardClickable, setCardClickable] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    setIsFavorite(auth.favorites.includes(quiz.id));
+  }, [auth.favorites, quiz.id]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,10 +43,25 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
     setCardClickable(true);
   };
 
-  const handleAddToFavorites = () => {
-    console.log('Quiz was added to favorites!');
-    handleClose();
+  const handleAddFavorite = async (quizId) => {
+    try {
+      await addFavorite(quizId);
+      setIsFavorite(true);
+      handleClose();
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+    }
   };
+
+  const handleRemoveFavorite = async (quizId) => {
+    try {
+      await removeFavorite(quizId);
+      setIsFavorite(false);
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+    }
+  };
+
   const handleResetProgress = () => {
     console.log('Quiz progress was reset!');
     handleClose();
@@ -208,11 +229,15 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
                 <MenuItem
                   onClick={(event) => {
                     event.stopPropagation();
-                    handleAddToFavorites();
+                    if (isFavorite) {
+                      handleRemoveFavorite(quiz.id);
+                    } else {
+                      handleAddFavorite(quiz.id);
+                    }
                     handleClose();
                   }}
                 >
-                  Add to Favorites
+                  {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
                 </MenuItem>
                 <MenuItem
                   onClick={(event) => {

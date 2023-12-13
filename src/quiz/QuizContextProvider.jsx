@@ -1,30 +1,45 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
+import useAuth from '../auth/useAuth';
 
 const QuizContext = createContext();
 
 export const QuizContextProvider = ({ children }) => {
+  const { auth } = useAuth();
   const [quizzes, setQuizzes] = useState([
     {
-      id: '', //
-      title: '', // React Basic, JS Advanced etc.
-      category: '', // react, javascript, html, css, data structures etc.
-      level: 'basic', // basic, intermediate, advanced
-      labels: [''], // frontend, backend
+      id: '',
+      title: '',
+      category: '',
+      level: 'basic',
+      labels: [''],
       image: null,
+      isFavorite: false,
       questions: [
         {
           questionText: '',
-          options: ['', '', '', ''], // all answers
-          correctOption: '', // correct answer
-          type: 'radio', //radio or checkbox
+          options: ['', '', '', ''],
+          correctOption: '',
+          type: 'radio',
           _id: '',
           code: '', //
-          resources: '', //here we can add some info about the question after the user chose wrong/correct question
+          resources: '',
         },
       ],
-      createdDate: '', // createdAt
+      createdDate: '',
     },
   ]);
+  useEffect(() => {
+    const updateFavorites = () => {
+      const updatedQuizzes = quizzes.map((quiz) => ({
+        ...quiz,
+        isFavorite: auth.favorites.includes(quiz.id),
+      }));
+      console.log('updatedQuizzes ==== ', updatedQuizzes);
+      setQuizzes(updatedQuizzes);
+    };
+
+    updateFavorites();
+  }, [auth.favorites]);
 
   return (
     <QuizContext.Provider value={{ quizzes, setQuizzes }}>

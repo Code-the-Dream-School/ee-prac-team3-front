@@ -39,6 +39,10 @@ export const backendApiCall = async (method, url, body) => {
 export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
   try {
     const backendUserData = await backendApiCall('GET', '/api/v1/login');
+    console.log(
+      `USER'S FAVORITES FROM BACKEND ==== `,
+      backendUserData.user.favorites
+    );
     setAuth({
       userId: backendUserData.user.userId,
       firstName: backendUserData.user.firstname,
@@ -48,7 +52,7 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
       loggedIn: true,
       accessToken: backendUserData.user.accessToken,
       avatarURL: backendUserData.user.avatarURL,
-      isActive: backendUserData.isActive,
+      favorites: backendUserData.user.favorites,
     });
   } catch (error) {
     throw new Error(error);
@@ -75,6 +79,13 @@ export const handleLogout = async (
   }
 };
 
+const imageMapping = {
+  react: reactJsLogo,
+  javascript: jsLogo,
+  nodejs: nodeJsLogo,
+  datastructures: dataStructureLogo,
+};
+
 export const fetchAndTransformQuizzes = async (
   backendApiCall,
   onSuccess,
@@ -82,13 +93,6 @@ export const fetchAndTransformQuizzes = async (
   auth
 ) => {
   if (!auth.loggedIn) return;
-
-  const imageMapping = {
-    react: reactJsLogo,
-    javascript: jsLogo,
-    nodejs: nodeJsLogo,
-    datastructures: dataStructureLogo,
-  };
 
   try {
     const apiQuizData = await backendApiCall('GET', '/api/v1/quiz');
@@ -136,6 +140,28 @@ export async function fetchData(
     setLoading(false);
   }
 }
+
+export const addFavorite = async (quizId) => {
+  try {
+    await backendApiCall('POST', '/api/v1/favorites/add', {
+      quizId,
+    });
+  } catch (error) {
+    console.error('Error adding favorite:', error);
+    throw error;
+  }
+};
+
+export const removeFavorite = async (quizId) => {
+  try {
+    await backendApiCall('POST', '/api/v1/favorites/remove', {
+      quizId,
+    });
+  } catch (error) {
+    console.error('Error removing favorite:', error);
+    throw error;
+  }
+};
 
 export const deleteUser = async (snackbar, setAuth) => {
   const url = `${port}/api/v1/deleteuser`;

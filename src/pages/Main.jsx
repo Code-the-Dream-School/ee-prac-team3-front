@@ -12,7 +12,7 @@ import customColors, { defaultTheme } from '../assets/styles';
 import { backendApiCall, fetchData } from '../functions/exportFunctions';
 
 export const containerStyles = {
-  minHeight: '85vh',
+  minHeight: '95vh',
   backgroundColor: customColors.backgroundLight,
   maxWidth: 'none !important',
   pt: 6,
@@ -43,83 +43,127 @@ const QuizzesContainer = ({
   changeFilter,
   message,
   quizzesForFiltering,
+  auth,
   quizProgress,
   searchValue,
   loading,
   error,
   quizzesLength,
 }) => {
-  const getProgressForQuiz = (quizId) => {
-    const progressObj = quizProgress.find((p) => p.quizId === quizId);
-    return progressObj ? progressObj : 0;
-  };
-  const filteredQuizzes = useMemo(() => {
-    return quizzesForFiltering.filter(({ level, category, labels, title }) => {
-      const levelFilter =
-        activeFilters.levels.length === 0 ||
-        activeFilters.levels.includes(level);
-      const categoryFilter =
-        activeFilters.categories.length === 0 ||
-        activeFilters.categories.includes(category);
-      const labelsFilter =
-        activeFilters.labels.length === 0 ||
-        activeFilters.labels.some((label) => labels.includes(label));
+  const getProgressForQuiz = useMemo(
+    () => (quizId) => {
+      const progressObj = quizProgress.find((p) => p.quizId === quizId);
+      return progressObj || 0;
+    },
+    [quizProgress]
+  );
 
-      const searchFilter =
-        searchValue === '' ||
-        title.toLowerCase().includes(searchValue.toLowerCase());
+  const filteredQuizzes = useMemo(
+    () =>
+      quizzesForFiltering.filter(({ level, category, labels, title }) => {
+        const levelFilter =
+          activeFilters.levels.length === 0 ||
+          activeFilters.levels.includes(level);
+        const categoryFilter =
+          activeFilters.categories.length === 0 ||
+          activeFilters.categories.includes(category);
+        const labelsFilter =
+          activeFilters.labels.length === 0 ||
+          activeFilters.labels.some((label) => labels.includes(label));
 
-      return levelFilter && categoryFilter && labelsFilter && searchFilter;
-    });
-  }, [quizzesForFiltering, activeFilters, searchValue]);
+        const searchFilter =
+          searchValue === '' ||
+          title.toLowerCase().includes(searchValue.toLowerCase());
+
+        return levelFilter && categoryFilter && labelsFilter && searchFilter;
+      }),
+    [quizzesForFiltering, activeFilters, searchValue]
+  );
 
   return (
     <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Container sx={containerStyles}>
-          {error ? (
-            <QuizLoadError />
-          ) : (
-            <>
-              <Typography variant="h5" sx={titleStyles}>
-                {title}
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Box sx={boxStyles}>
-                  {quizzesLength > 0 && (
-                    <FilterButtonGroup changeFilter={changeFilter} />
-                  )}
-                  {filteredQuizzes.length === 0 && (
-                    <Typography sx={messageStyles}>{message}</Typography>
-                  )}
-                  {filteredQuizzes.length > 0 && (
-                    <Box sx={{ py: 3 }} maxWidth="lg" width="100%">
-                      <Grid
-                        container
-                        spacing={4}
-                        sx={{ display: 'flex', justifyContent: 'start' }}
-                      >
-                        {filteredQuizzes.map((q) => (
-                          <Quiz
-                            key={q.id}
-                            quiz={q}
-                            activeFilters={activeFilters}
-                            getProgressForQuiz={getProgressForQuiz}
-                          />
-                        ))}
-                      </Grid>
-                    </Box>
-                  )}
-                </Box>
+      <Container sx={containerStyles}>
+        {error ? (
+          <QuizLoadError />
+        ) : (
+          <>
+            <Typography variant="h5" sx={titleStyles}>
+              {title}
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Box sx={boxStyles}>
+                {quizzesLength > 0 && (
+                  <FilterButtonGroup changeFilter={changeFilter} />
+                )}
+                {loading ? (
+                  <Loading type="circular" />
+                ) : (
+                  <>
+                    {filteredQuizzes.length === 0 && (
+                      <Typography sx={messageStyles}>{message}</Typography>
+                    )}
+                    {filteredQuizzes.length > 0 && (
+                      <Box sx={{ py: 3 }} maxWidth="lg" width="100%">
+                        <Grid
+                          container
+                          spacing={4}
+                          sx={{ display: 'flex', justifyContent: 'start' }}
+                        >
+                          {filteredQuizzes.map((q) => (
+                            <Quiz
+                              key={q.id}
+                              quiz={q}
+                              activeFilters={activeFilters}
+                              getProgressForQuiz={getProgressForQuiz}
+                              auth={auth}
+                            />
+                          ))}
+                        </Grid>
+                      </Box>
+                    )}
+                  </>
+                )}
               </Box>
-            </>
-          )}
-        </Container>
-      )}
+            </Box>
+          </>
+        )}
+      </Container>
     </>
   );
+};
+
+const useQuizzes = () => {
+  const { quizzes, setQuizzes } = useQuiz();
+  const { auth } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      try {
+        if (auth.loggedIn && quizzes.length === 1) {
+          await fetchData(
+            backendApiCall,
+            setQuizzes,
+            setError,
+            auth,
+            setLoading
+          );
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+
+    fetchQuizzes();
+  }, [auth, quizzes.length, navigate, setQuizzes]);
+
+  return { loading, error };
 };
 
 export const Quizzes = ({
@@ -128,29 +172,16 @@ export const Quizzes = ({
   quizProgress,
   searchValue,
 }) => {
-  const { quizzes, setQuizzes } = useQuiz();
+  const { loading, error } = useQuizzes();
+  const { quizzes } = useQuiz();
   const { auth } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchData(backendApiCall, setQuizzes, setError, auth, setLoading);
-
-    if (auth.loggedIn && quizzes.length === 1) {
-      fetchData();
-    } else if (!auth.loggedIn) {
-      navigate(LOGIN);
-    } else {
-      setLoading(false);
-    }
-  }, [auth, quizzes.length, navigate, setQuizzes]);
   return (
     <QuizzesContainer
       title="Choose a quiz"
       quizzesForFiltering={quizzes}
       quizzesLength={quizzes.length}
+      auth={auth}
       loading={loading}
       error={error}
       activeFilters={activeFilters}
@@ -163,20 +194,36 @@ export const Quizzes = ({
 };
 
 export const Favorites = ({
-  favoriteQuizzes,
   changeFilter,
   activeFilters,
   quizProgress,
   searchValue,
-}) => (
-  <QuizzesContainer
-    title="Your favorite quizzes"
-    quizzesForFiltering={favoriteQuizzes}
-    quizzesLength={favoriteQuizzes.length}
-    activeFilters={activeFilters}
-    changeFilter={changeFilter}
-    quizProgress={quizProgress}
-    searchValue={searchValue}
-    message="Save your favorite quizzes so they are here."
-  />
-);
+}) => {
+  const { loading, error } = useQuizzes();
+  const { quizzes } = useQuiz();
+  const { auth } = useAuth();
+  const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
+
+  useEffect(() => {
+    const updatedFavoriteQuizzes = quizzes.filter((quiz) =>
+      auth.favorites.includes(quiz.id)
+    );
+    setFavoriteQuizzes(updatedFavoriteQuizzes);
+  }, [quizzes, auth.favorites]);
+
+  return (
+    <QuizzesContainer
+      title="Your favorite quizzes"
+      quizzesForFiltering={favoriteQuizzes}
+      auth={auth}
+      loading={loading}
+      error={error}
+      quizzesLength={favoriteQuizzes.length}
+      activeFilters={activeFilters}
+      changeFilter={changeFilter}
+      quizProgress={quizProgress}
+      searchValue={searchValue}
+      message="Save your favorite quizzes so they are here."
+    />
+  );
+};

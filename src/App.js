@@ -27,14 +27,14 @@ import Notes from './pages/Notes';
 import Library from './pages/Library';
 import AccountSettings from './pages/AccountSettings';
 import useFilterState from './components/filterState';
-import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
-import jsLogo from './assets/images/js.svg';
 import Box from '@mui/material/Box';
 import {
   backendApiCall,
   authenticateUser,
   handleLogout,
+  fetchData,
 } from './functions/exportFunctions';
+import useQuiz from './quiz/useQuiz';
 
 const PATH = {
   HOME: '/home',
@@ -166,7 +166,6 @@ export default function App() {
     avatar: auth.avatarURL,
   };
   const [searchTerm, setSearchTerm] = useState('');
-
   const profileSettings = [
     {
       title: 'Account',
@@ -188,25 +187,6 @@ export default function App() {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
-
-  const [favoriteQuizzes] = useState([
-    {
-      id: 'react-intermediate',
-      title: 'React Intermediate',
-      category: 'react',
-      level: 'intermediate',
-      labels: ['frontend'],
-      image: reactJsLogo,
-    },
-    {
-      id: 'js-arrays',
-      title: 'JS Arrays',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-  ]);
 
   const { activeFilters, setActiveFilter } = useFilterState();
 
@@ -361,11 +341,11 @@ export default function App() {
                 element={
                   auth.loggedIn ? (
                     <Favorites
-                      favoriteQuizzes={favoriteQuizzes}
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       quizProgress={quizProgress}
                       searchValue={searchTerm}
+                      favoriteIds={auth.favorites}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
