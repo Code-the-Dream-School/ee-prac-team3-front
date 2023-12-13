@@ -53,11 +53,11 @@ const projectTeam = [
     id: '5',
     name: 'Eva Weisneck',
     imageURL:
-      'https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png',
+      'https://avatars.githubusercontent.com/u/106546645?s=400&u=b196d06a5d415e18b439b89a9303c92f64cedea8&v=4',
     role: FRONTEND_TEAM,
     gitHub: 'https://github.com/evaw277',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Malesuada fames ac turpis egestas integer. Et malesuada fames ac turpis egestas sed.',
+      'Eva is an aspiring software developer with a love for learning new things and embracing challenges. With excitement, curiosity, and commitment, she continues learning on her coding journey for her personal and professional growth.',
   },
   {
     id: '6',
