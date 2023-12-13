@@ -165,6 +165,7 @@ export default function App() {
     email: auth.email,
     avatar: auth.avatarURL,
   };
+  const [searchTerm, setSearchTerm] = useState('');
 
   const profileSettings = [
     {
@@ -215,6 +216,10 @@ export default function App() {
     },
     [setActiveFilter]
   );
+
+  const onSearchChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
+  };
 
   const updateUserInfo = async (formValues, passwordFormValues) => {
     let payload = {};
@@ -297,6 +302,7 @@ export default function App() {
           profileSettings={profileSettings}
           userData={userData}
           auth={auth}
+          onSearchChange={onSearchChange}
         />
         <NavBar />
         {!loading && (
@@ -317,6 +323,7 @@ export default function App() {
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       quizProgress={quizProgress}
+                      searchValue={searchTerm}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
@@ -358,6 +365,7 @@ export default function App() {
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       quizProgress={quizProgress}
+                      searchValue={searchTerm}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>

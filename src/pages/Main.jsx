@@ -42,33 +42,19 @@ const QuizzesContainer = ({
   activeFilters,
   changeFilter,
   message,
+  quizzesForFiltering,
   quizProgress,
+  searchValue,
+  loading,
+  error,
+  quizzesLength,
 }) => {
-  const { auth } = useAuth();
-  const { quizzes, setQuizzes } = useQuiz();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchData(backendApiCall, setQuizzes, setError, auth, setLoading);
-
-    if (auth.loggedIn && quizzes.length === 1) {
-      fetchData();
-    } else if (!auth.loggedIn) {
-      navigate(LOGIN);
-    } else {
-      setLoading(false);
-    }
-  }, [auth, quizzes.length, navigate, setQuizzes]);
-
   const getProgressForQuiz = (quizId) => {
     const progressObj = quizProgress.find((p) => p.quizId === quizId);
     return progressObj ? progressObj : 0;
   };
   const filteredQuizzes = useMemo(() => {
-    return quizzes.filter(({ level, category, labels }) => {
+    return quizzesForFiltering.filter(({ level, category, labels, title }) => {
       const levelFilter =
         activeFilters.levels.length === 0 ||
         activeFilters.levels.includes(level);
@@ -79,9 +65,13 @@ const QuizzesContainer = ({
         activeFilters.labels.length === 0 ||
         activeFilters.labels.some((label) => labels.includes(label));
 
-      return levelFilter && categoryFilter && labelsFilter;
+      const searchFilter =
+        searchValue === '' ||
+        title.toLowerCase().includes(searchValue.toLowerCase());
+
+      return levelFilter && categoryFilter && labelsFilter && searchFilter;
     });
-  }, [quizzes, activeFilters]);
+  }, [quizzesForFiltering, activeFilters, searchValue]);
 
   return (
     <>
@@ -98,7 +88,9 @@ const QuizzesContainer = ({
               </Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Box sx={boxStyles}>
-                  {quizzes && <FilterButtonGroup changeFilter={changeFilter} />}
+                  {quizzesLength > 0 && (
+                    <FilterButtonGroup changeFilter={changeFilter} />
+                  )}
                   {filteredQuizzes.length === 0 && (
                     <Typography sx={messageStyles}>{message}</Typography>
                   )}
@@ -131,33 +123,60 @@ const QuizzesContainer = ({
 };
 
 export const Quizzes = ({
-  quizzes,
   changeFilter,
   activeFilters,
   quizProgress,
-}) => (
-  <QuizzesContainer
-    title="Choose a quiz"
-    quizzes={quizzes}
-    activeFilters={activeFilters}
-    changeFilter={changeFilter}
-    quizProgress={quizProgress}
-    message="No quizzes were found."
-  />
-);
+  searchValue,
+}) => {
+  const { quizzes, setQuizzes } = useQuiz();
+  const { auth } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchData(backendApiCall, setQuizzes, setError, auth, setLoading);
+
+    if (auth.loggedIn && quizzes.length === 1) {
+      fetchData();
+    } else if (!auth.loggedIn) {
+      navigate(LOGIN);
+    } else {
+      setLoading(false);
+    }
+  }, [auth, quizzes.length, navigate, setQuizzes]);
+  return (
+    <QuizzesContainer
+      title="Choose a quiz"
+      quizzesForFiltering={quizzes}
+      quizzesLength={quizzes.length}
+      loading={loading}
+      error={error}
+      activeFilters={activeFilters}
+      changeFilter={changeFilter}
+      quizProgress={quizProgress}
+      searchValue={searchValue}
+      message="No quizzes were found."
+    />
+  );
+};
 
 export const Favorites = ({
   favoriteQuizzes,
   changeFilter,
   activeFilters,
   quizProgress,
+  searchValue,
 }) => (
   <QuizzesContainer
     title="Your favorite quizzes"
-    quizzes={favoriteQuizzes}
+    quizzesForFiltering={favoriteQuizzes}
+    quizzesLength={favoriteQuizzes.length}
     activeFilters={activeFilters}
     changeFilter={changeFilter}
     quizProgress={quizProgress}
+    searchValue={searchValue}
     message="Save your favorite quizzes so they are here."
   />
 );

@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import jsQuizLogo from '../../assets/images/logo.svg';
 import customColors, { defaultTheme } from 'assets/styles';
-import Search from './Search';
+import SearchComponent from './Search';
 import AboutElement from './AboutElement';
 import {
   HOME,
@@ -33,7 +33,12 @@ import {
   QUIZ,
 } from '../../App';
 
-export default function Header({ profileSettings, userData, auth }) {
+export default function Header({
+  profileSettings,
+  userData,
+  auth,
+  onSearchChange,
+}) {
   const [headerState, setHeaderState] = useState({
     anchorElUser: null,
     isLoginButtonVisible: false,
@@ -148,7 +153,7 @@ export default function Header({ profileSettings, userData, auth }) {
               },
             }}
           >
-            <Search />
+            <SearchComponent onSearchChange={onSearchChange} />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <AboutElement />
