@@ -3,7 +3,7 @@ import { alpha, styled } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useLocation } from 'react-router-dom';
-import { FAVORITES, NOTES, QUIZZES } from '../../App';
+import { FAVORITES, QUIZZES } from '../../App';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -31,7 +31,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -54,9 +53,7 @@ const SearchComponent = ({ onSearchChange }) => {
       id="search"
       sx={{
         display:
-          location.pathname === QUIZZES ||
-          location.pathname === NOTES ||
-          location.pathname === FAVORITES
+          location.pathname === QUIZZES || location.pathname === FAVORITES
             ? 'flex'
             : 'none',
       }}
