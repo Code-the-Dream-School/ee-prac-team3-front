@@ -53,8 +53,7 @@ const SearchComponent = ({ onSearchChange }) => {
       id="search"
       sx={{
         display:
-          location.pathname === QUIZZES ||
-          location.pathname === FAVORITES
+          location.pathname === QUIZZES || location.pathname === FAVORITES
             ? 'flex'
             : 'none',
       }}

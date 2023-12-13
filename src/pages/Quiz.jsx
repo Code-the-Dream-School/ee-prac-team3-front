@@ -64,7 +64,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
           minWidth: '270px',
           position: 'relative',
           transition: 'transform 0.2s',
-            cursor: 'pointer',
+          cursor: 'pointer',
           '&:hover': {
             transform: 'scale(1.05)',
             backgroundColor: customColors.hover,
