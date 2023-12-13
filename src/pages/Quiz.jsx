@@ -228,7 +228,6 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
           </CardContent>
         </Grid>
       </Card>
-      {/*  </div>*/}
     </Grid>
   );
 };
