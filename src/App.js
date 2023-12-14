@@ -67,7 +67,7 @@ export const {
   QUIZ,
 } = PATH;
 
-export const port = `http://localhost:8000`;
+export const port = `${process.env.REACT_APP_BACKEND_URL}`;
 
 export const highlights = [
   {
@@ -241,7 +241,7 @@ export default function App() {
       };
     }
 
-    const url = `${process.env.BACKEND_URL}/api/v1/updateuser`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/v1/updateuser`;
     const options = {
       method: 'PUT',
       headers: {
