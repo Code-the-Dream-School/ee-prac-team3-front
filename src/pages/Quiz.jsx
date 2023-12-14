@@ -112,7 +112,20 @@ const Quiz = ({ quiz, activeFilters, quizProgress }) => {
                 </Box>
                 <Box>
                   <Typography
-                    sx={{ marginTop: '10px', color: customColors.greyMedium }}
+                    sx={{
+                      marginTop: '10px',
+                      color: customColors.greyDark,
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {progress.bestScore && `Best Score: ${progress.bestScore}%`}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      marginTop: '10px',
+                      color: customColors.greyDark,
+                      fontWeight: 'bold',
+                    }}
                   >
                     {progress.attemptsCount
                       ? `Attempts: ${progress.attemptsCount}`

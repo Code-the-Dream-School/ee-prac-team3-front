@@ -103,7 +103,7 @@ export default function QuizContent() {
     userQuizzesUpdated,
   ]);
 
-  //reset userQuizUpdated when starting a new quiz
+  //reset userQuizUpdated state variable when starting a new quiz
   useEffect(() => {
     setUserQuizzesUpdated(false);
   }, [quizId]);

@@ -82,6 +82,16 @@ export default function checkRadioRender(
             sx={{
               width: '100%',
               userSelect: 'none',
+              '.MuiFormControlLabel-label': {
+                fontWeight:
+                  isCurrentQuestionAnswered && isOptionSelected
+                    ? 'bold'
+                    : 'normal',
+                color: isCurrentQuestionAnswered ? 'darkslategray' : '',
+              },
+              '&.Mui-disabled .MuiFormControlLabel-label': {
+                color: 'darkslategray', // Ensure label color is dark even when disabled
+              },
             }}
           />
         </Box>
