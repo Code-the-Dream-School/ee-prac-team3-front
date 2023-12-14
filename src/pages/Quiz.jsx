@@ -17,7 +17,6 @@ import Labels from '../components/Labels';
 import Progress from '../components/Progress';
 import customColors from '../assets/styles';
 import { QUIZ } from 'App';
-import { addFavorite, removeFavorite } from '../functions/exportFunctions';
 
 const Quiz = ({
   quiz,
@@ -36,6 +35,7 @@ const Quiz = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [cardClickable, setCardClickable] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
+    console.log('isFavorite === ', isFavorite)
 
   useEffect(() => {
     favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
@@ -76,15 +76,11 @@ const Quiz = ({
     );
   };
 
-  const handleAddFavorite = async (quizId) => {
-    try {
-      await addFavorite(quizId);
-      await addIdToFavoritesHandler(quizId);
+  const handleAddFavorite =  (quizId) => {
+      addIdToFavoritesHandler(quizId);
       setIsFavorite(true);
       handleClose();
-    } catch (error) {
-      console.error('Error adding favorite:', error);
-    }
+      console.log('Added to favorite');
   };
 
   const handleRemoveFavorite = async (quizId) => {

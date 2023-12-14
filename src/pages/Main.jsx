@@ -10,6 +10,7 @@ import Loading from '../components/Loading';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../assets/styles';
 import {
+  addFavorite,
   backendApiCall,
   fetchData,
   fetchFavorites,
@@ -152,7 +153,29 @@ export const Quizzes = ({
   const { auth } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [favoritesIds, setFavoritesIds] = useState([]);
   const navigate = useNavigate();
+
+  const addIdToFavoritesHandler = (quizId) => {
+    try {
+      const addToFavorites = async () => {
+        await addFavorite(quizId);
+        setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
+      }
+      addToFavorites();
+    } catch (error) {
+      console.error('Error adding to favorites:', error);
+    }
+  };
+
+  const removeFavoritesIdsHandler = async (quizId) => {
+    try {
+      await removeFavorite(quizId);
+      setFavoritesIds((prevFavoriteQuizzesIds) => prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId));
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -186,9 +209,12 @@ export const Quizzes = ({
       quizzesLength={quizzes.length}
       loading={loading}
       error={error}
+      favoritesId={auth.favorites}
       activeFilters={activeFilters}
       changeFilter={changeFilter}
       quizProgress={quizProgress}
+      addIdToFavoritesHandler={addIdToFavoritesHandler}
+      removeFavoritesIdsHandler={removeFavoritesIdsHandler}
       searchValue={searchValue}
       message="No quizzes were found."
     />
@@ -207,16 +233,10 @@ export const Favorites = ({
   const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
   const [favoritesIds, setFavoritesIds] = useState([]);
 
-  const addIdToFavoritesHandler = (quizId) => {
-    setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
-  };
-
   const removeFavoritesIdsHandler = async (quizId) => {
     try {
       await removeFavorite(quizId);
-      setFavoritesIds((prevFavoritesIds) =>
-        prevFavoritesIds.filter((id) => id !== quizId)
-      );
+      setFavoriteQuizzes((prevFavoriteQuizzes) => prevFavoriteQuizzes.filter((quiz) => quiz.id !== quizId));
     } catch (error) {
       console.error('Error removing favorite:', error);
     }
@@ -257,7 +277,6 @@ export const Favorites = ({
       favoritesIds={favoritesIds}
       quizzesLength={favoriteQuizzes.length}
       activeFilters={activeFilters}
-      addIdToFavoritesHandler={addIdToFavoritesHandler}
       removeFavoritesIdsHandler={removeFavoritesIdsHandler}
       changeFilter={changeFilter}
       quizProgress={quizProgress}
