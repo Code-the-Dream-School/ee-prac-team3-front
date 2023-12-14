@@ -24,7 +24,6 @@ export default function QuestionContent({
   onBackQuestion,
   index,
   length,
-  answer,
   selectedOption,
   setSelectedOption,
   type,

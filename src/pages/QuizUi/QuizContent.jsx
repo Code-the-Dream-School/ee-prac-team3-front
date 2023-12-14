@@ -71,7 +71,7 @@ export default function QuizContent() {
       const totalCount = questions.length;
       setUserPerformance({ correctCount, totalCount });
       const finalScore = Math.round((correctCount / totalCount) * 100);
-  
+
       updateUserProgress(quiz.id, finalScore.toString(), auth.userId, setError)
         .then((response) => {
           if (response && response.message === 'Attempt added successfully') {
@@ -98,7 +98,7 @@ export default function QuizContent() {
     quiz,
     auth.userId,
     setError,
-    userQuizzesUpdated
+    userQuizzesUpdated,
   ]);
 
   //reset userQuizUpdated when starting a new quiz
