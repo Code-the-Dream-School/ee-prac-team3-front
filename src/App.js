@@ -33,6 +33,7 @@ import {
   authenticateUser,
   handleLogout,
 } from './functions/exportFunctions';
+import {BASE_URL} from "./config";
 
 const PATH = {
   HOME: '/home',
@@ -64,7 +65,7 @@ export const {
   QUIZ,
 } = PATH;
 
-export const port = `http://localhost:8000`;
+/*export const port = `http://localhost:8000`;*/
 
 export const highlights = [
   {
@@ -220,7 +221,7 @@ export default function App() {
       };
     }
 
-    const url = `${port}/api/v1/updateuser`;
+    const url = `${BASE_URL}/updateuser`;
     const options = {
       method: 'PUT',
       headers: {

@@ -1,8 +1,9 @@
-import { port } from 'App';
+
 import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from '../assets/images/js.svg';
 import nodeJsLogo from '../assets/images/nodejs.svg';
 import dataStructureLogo from '../assets/images/hierarchical-structure-svgrepo-com.svg';
+import {BASE_URL} from "../config";
 
 export const backendApiCall = async (method, url, body) => {
   const options = {
@@ -18,7 +19,7 @@ export const backendApiCall = async (method, url, body) => {
   }
 
   try {
-    const response = await fetch(`${port}${url}`, options);
+    const response = await fetch(`${BASE_URL}${url}`, options);
 
     if (!response.ok) {
       const errorMessage = `Error: ${response.status} - ${response.statusText}`;
@@ -38,7 +39,7 @@ export const backendApiCall = async (method, url, body) => {
 
 export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
   try {
-    const backendUserData = await backendApiCall('GET', '/api/v1/login');
+    const backendUserData = await backendApiCall('GET', '/login');
     setAuth((prevState) => ({
       ...prevState,
       userId: backendUserData.user.userId,
@@ -64,7 +65,7 @@ export const handleLogout = async (
   setShowLogoutModal
 ) => {
   try {
-    await backendApiCall('GET', '/api/v1/logout');
+    await backendApiCall('GET', '/logout');
 
     setAuth({
       loggedIn: false,
@@ -92,7 +93,7 @@ export const fetchAndTransformQuizzes = async (
   if (!auth.loggedIn) return;
 
   try {
-    const apiQuizData = await backendApiCall('GET', '/api/v1/quiz');
+    const apiQuizData = await backendApiCall('GET', '/quiz');
     const transformedQuizzes = apiQuizData.map((quiz) => {
       const image = imageMapping[quiz.category] || jsLogo;
 
@@ -148,7 +149,7 @@ export const fetchAndTransformFavoriteQuizzes = async (
   if (!auth.loggedIn) return;
 
   try {
-    const apiQuizData = await backendApiCall('GET', '/api/v1/quiz');
+    const apiQuizData = await backendApiCall('GET', '/quiz');
     const favoriteQuizIds = await getFavorites();
 
     const favoriteQuizzes = apiQuizData
@@ -206,7 +207,7 @@ export async function fetchFavorites(
 
 export const getFavorites = async () => {
   try {
-    const response = await backendApiCall('GET', '/api/v1/favorites');
+    const response = await backendApiCall('GET', '/favorites');
     return response.favorites;
   } catch (error) {
     console.error('Error getting favorites:', error);
@@ -216,7 +217,7 @@ export const getFavorites = async () => {
 
 export const addFavorite = async (quizId) => {
   try {
-    await backendApiCall('POST', '/api/v1/favorites/add', {
+    await backendApiCall('POST', '/favorites/add', {
       quizId,
     });
   } catch (error) {
@@ -227,7 +228,7 @@ export const addFavorite = async (quizId) => {
 
 export const removeFavorite = async (quizId) => {
   try {
-    await backendApiCall('POST', '/api/v1/favorites/remove', {
+    await backendApiCall('POST', '/favorites/remove', {
       quizId,
     });
   } catch (error) {
@@ -237,7 +238,7 @@ export const removeFavorite = async (quizId) => {
 };
 
 export const deleteUser = async (snackbar, setAuth) => {
-  const url = `${port}/api/v1/deleteuser`;
+  const url = `${BASE_URL}/deleteuser`;
   const options = {
     method: 'DELETE',
     headers: {
