@@ -9,7 +9,12 @@ import Loading from 'components/Loading';
 import QuizLoadError from '../QuizLoadError';
 import { QUIZZES, ERROR } from '../../App';
 import { containerStyles, titleStyles } from '../Main';
-import { backendApiCall, fetchQuizData } from '../../functions/exportFunctions';
+import {
+  backendApiCall,
+  fetchQuizData,
+  updateUserProgress,
+  fetchAndAddUserQuizzes,
+} from '../../functions/exportFunctions';
 
 export default function QuizContent() {
   //context variables
@@ -27,6 +32,7 @@ export default function QuizContent() {
     correctCount: 0,
     totalCount: 0,
   });
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
 
   const navigate = useNavigate();
 
@@ -58,14 +64,47 @@ export default function QuizContent() {
 
   //updates user performance if user finishes quiz
   useEffect(() => {
-    if (quizFinished) {
+    if (quizFinished && !userQuizzesUpdated) {
       const correctCount = answersCorrectness.filter(
         (answer) => answer && answer.isCorrect
       ).length;
       const totalCount = questions.length;
       setUserPerformance({ correctCount, totalCount });
+      const finalScore = Math.round((correctCount / totalCount) * 100);
+  
+      updateUserProgress(quiz.id, finalScore.toString(), auth.userId, setError)
+        .then((response) => {
+          if (response && response.message === 'Attempt added successfully') {
+            fetchAndAddUserQuizzes(
+              backendApiCall,
+              quizzes,
+              setQuizzes,
+              setError,
+              setUserQuizzesUpdated,
+              auth
+            ).then(() => {
+              setUserQuizzesUpdated(true);
+            });
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
     }
-  }, [quizFinished, answersCorrectness, questions.length]);
+  }, [
+    quizFinished,
+    answersCorrectness,
+    questions.length,
+    quiz,
+    auth.userId,
+    setError,
+    userQuizzesUpdated
+  ]);
+
+  //reset userQuizUpdated when starting a new quiz
+  useEffect(() => {
+    setUserQuizzesUpdated(false);
+  }, [quizId]);
 
   const handleSetSelectedOption = (option) => {
     const newSelectedOptions = [...selectedOptions];

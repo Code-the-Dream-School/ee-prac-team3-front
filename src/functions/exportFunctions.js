@@ -110,11 +110,56 @@ export const fetchAndTransformQuizzes = async (
           correctOption: q.correctOption,
           id: q._id,
         })),
+        quizProgress: {
+          attemptsCount: 0,
+          bestScore: 0,
+          lastScore: 0,
+        },
         createdDate: quiz.createdAt,
       };
     });
 
     onSuccess(transformedQuizzes);
+  } catch (err) {
+    onError(err);
+  }
+};
+
+export const fetchAndAddUserQuizzes = async (
+  backendApiCall,
+  quizzes,
+  onSuccess,
+  onError,
+  setUserQuizzesUpdated,
+  auth
+) => {
+  if (!auth.loggedIn) return;
+
+  try {
+    const userQuizDataArray = await backendApiCall(
+      'GET',
+      `/api/v1/progress/user?userId=${auth.userId}`
+    );
+
+    const updatedQuizzes = quizzes.map((quiz) => {
+      const userQuizData = userQuizDataArray.data.find(
+        (uqd) => uqd.test === quiz.id
+      );
+      if (userQuizData) {
+        return {
+          ...quiz,
+          quizProgress: {
+            attemptsCount: userQuizData.attemptNumber.toString(),
+            bestScore: userQuizData.maxScore,
+            lastScore: userQuizData.score,
+          },
+        };
+      }
+      return quiz;
+    });
+
+    onSuccess(updatedQuizzes);
+    setUserQuizzesUpdated(true);
   } catch (err) {
     onError(err);
   }
@@ -133,5 +178,15 @@ export async function fetchQuizData(
     setError(err);
   } finally {
     setLoading(false);
+  }
+}
+export async function updateUserProgress(quizId, score, userId, setError) {
+  const body = { test: quizId, score: score.toString(), user: userId };
+  const url = '/api/v1/progress/user';
+  try {
+    const api = await backendApiCall('POST', `${url}`, body);
+    return api;
+  } catch (err) {
+    setError(err);
   }
 }

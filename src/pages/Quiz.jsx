@@ -15,11 +15,11 @@ import Progress from '../components/Progress';
 import customColors from '../assets/styles';
 import { QUIZ } from 'App';
 
-const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
+const Quiz = ({ quiz, activeFilters, quizProgress }) => {
   const isFilterActive = (filterType, value) =>
     activeFilters[filterType].length > 0 &&
     activeFilters[filterType].includes(value);
-  const progress = getProgressForQuiz(quiz.id);
+  const progress = quizProgress;
   const isSmallScreen = useMediaQuery('(max-width:600px)');
 
   return (
@@ -147,7 +147,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
                     }}
                     image={quiz.image}
                   />
-                  <Progress progress={progress.progress} />
+                  <Progress progress={progress.bestScore} />
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
                   <Typography

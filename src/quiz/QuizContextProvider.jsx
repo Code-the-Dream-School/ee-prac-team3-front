@@ -22,6 +22,11 @@ export const QuizContextProvider = ({ children }) => {
           resources: '', //here we can add some info about the question after the user chose wrong/correct question
         },
       ],
+      quizProgress: {
+        attemptsCount: 0,
+        bestScore: 0,
+        lastScore: 0,
+      },
       createdDate: '', // createdAt
     },
   ]);

@@ -9,7 +9,11 @@ import { LOGIN } from 'App';
 import Loading from '../components/Loading';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../assets/styles';
-import { backendApiCall, fetchQuizData } from '../functions/exportFunctions';
+import {
+  backendApiCall,
+  fetchQuizData,
+  fetchAndAddUserQuizzes,
+} from '../functions/exportFunctions';
 
 export const containerStyles = {
   minHeight: '85vh',
@@ -37,34 +41,45 @@ const boxStyles = {
   maxWidth: '1200px',
 };
 
-const QuizzesContainer = ({
-  title,
-  activeFilters,
-  changeFilter,
-  message,
-  quizProgress,
-}) => {
+const QuizzesContainer = ({ title, activeFilters, changeFilter, message }) => {
   const { auth } = useAuth();
   const { quizzes, setQuizzes } = useQuiz();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (auth.loggedIn && quizzes.length === 1) {
+    if (auth.loggedIn && quizzes.length === 1 && !initialDataLoaded) {
       fetchQuizData(backendApiCall, setQuizzes, setError, auth, setLoading);
+      setInitialDataLoaded(true);
     } else if (!auth.loggedIn) {
       navigate(LOGIN);
     } else {
       setLoading(false);
     }
-  }, [auth, quizzes.length, navigate, setQuizzes]);
+  }, [auth, navigate, initialDataLoaded]);
 
-  const getProgressForQuiz = (quizId) => {
-    const progressObj = quizProgress.find((p) => p.quizId === quizId);
-    return progressObj ? progressObj : 0;
-  };
+  useEffect(() => {
+    if (
+      auth.loggedIn &&
+      initialDataLoaded &&
+      quizzes.length > 0 &&
+      !userQuizzesUpdated
+    ) {
+      fetchAndAddUserQuizzes(
+        backendApiCall,
+        quizzes,
+        setQuizzes,
+        setError,
+        setUserQuizzesUpdated,
+        auth
+      );
+    }
+  }, [auth, quizzes, backendApiCall, setError, userQuizzesUpdated]);
+
   const filteredQuizzes = useMemo(() => {
     return quizzes.filter(({ level, category, labels }) => {
       const levelFilter =
@@ -112,7 +127,7 @@ const QuizzesContainer = ({
                             key={q.id}
                             quiz={q}
                             activeFilters={activeFilters}
-                            getProgressForQuiz={getProgressForQuiz}
+                            quizProgress={q.quizProgress}
                           />
                         ))}
                       </Grid>
