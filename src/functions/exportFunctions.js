@@ -220,7 +220,7 @@ export const addFavorite = async (quizId) => {
     await backendApiCall('POST', '/favorites/add', {
       quizId,
     });
-    getFavorites();
+   // await getFavorites();
   } catch (error) {
     console.error('Error adding favorite:', error);
     throw error;
@@ -232,7 +232,7 @@ export const removeFavorite = async (quizId) => {
     await backendApiCall('POST', '/favorites/remove', {
       quizId,
     });
-    getFavorites();
+    //await getFavorites();
   } catch (error) {
     console.error('Error removing favorite:', error);
     throw error;

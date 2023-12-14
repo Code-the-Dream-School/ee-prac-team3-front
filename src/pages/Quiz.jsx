@@ -22,9 +22,8 @@ const Quiz = ({
   quiz,
   activeFilters,
   getProgressForQuiz,
-  favoritesIds,
-  addIdToFavoritesHandler,
-  removeFavoritesIdsHandler,
+  favoritesIds, addToFavoritesHandler,
+  removeFavoriteHandler,
   searchValue,
 }) => {
   const isFilterActive = (filterType, value) =>
@@ -35,9 +34,9 @@ const Quiz = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [cardClickable, setCardClickable] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
-    console.log('isFavorite === ', isFavorite)
 
   useEffect(() => {
+      console.log('Quiz favoritesIds === ', favoritesIds)
     favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
   }, [favoritesIds, quiz.id]);
 
@@ -77,19 +76,14 @@ const Quiz = ({
   };
 
   const handleAddFavorite =  (quizId) => {
-      addIdToFavoritesHandler(quizId);
+      addToFavoritesHandler(quizId);
       setIsFavorite(true);
       handleClose();
-      console.log('Added to favorite');
   };
 
-  const handleRemoveFavorite = async (quizId) => {
-    try {
-      await removeFavoritesIdsHandler(quizId);
-      setIsFavorite(false);
-    } catch (error) {
-      console.error('Error removing favorite:', error);
-    }
+  const handleRemoveFavorite = (quizId) => {
+     removeFavoriteHandler(quizId);
+     setIsFavorite(false);
   };
 
   const handleResetProgress = () => {

@@ -45,9 +45,8 @@ const QuizzesContainer = ({
   changeFilter,
   message,
   quizzesForFiltering,
-  favoritesIds,
-  addIdToFavoritesHandler,
-  removeFavoritesIdsHandler,
+  favoritesIds, addToFavoritesHandler,
+  removeFavoriteHandler,
   quizProgress,
   searchValue,
   loading,
@@ -123,9 +122,9 @@ const QuizzesContainer = ({
                               searchValue={searchValue}
                               getProgressForQuiz={getProgressForQuiz}
                               favoritesIds={favoritesIds}
-                              addIdToFavoritesHandler={addIdToFavoritesHandler}
-                              removeFavoritesIdsHandler={
-                                removeFavoritesIdsHandler
+                              addToFavoritesHandler={addToFavoritesHandler}
+                              removeFavoriteHandler={
+                                removeFavoriteHandler
                               }
                             />
                           ))}
@@ -156,19 +155,18 @@ export const Quizzes = ({
   const [favoritesIds, setFavoritesIds] = useState([]);
   const navigate = useNavigate();
 
-  const addIdToFavoritesHandler = (quizId) => {
+  console.log('Quizzes favoritesIds === ', favoritesIds)
+
+  const addToFavoritesHandler = async (quizId) => {
     try {
-      const addToFavorites = async () => {
         await addFavorite(quizId);
         setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
-      }
-      addToFavorites();
     } catch (error) {
       console.error('Error adding to favorites:', error);
     }
   };
 
-  const removeFavoritesIdsHandler = async (quizId) => {
+  const removeFavoriteHandler = async (quizId) => {
     try {
       await removeFavorite(quizId);
       setFavoritesIds((prevFavoriteQuizzesIds) => prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId));
@@ -179,8 +177,9 @@ export const Quizzes = ({
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      console.log('Fetching Quizzes');
       try {
+        const quizzesIds = await getFavorites();
+        setFavoritesIds(quizzesIds);
         if (auth.loggedIn && quizzes.length <= 1) {
           await fetchData(
             backendApiCall,
@@ -209,12 +208,12 @@ export const Quizzes = ({
       quizzesLength={quizzes.length}
       loading={loading}
       error={error}
-      favoritesId={auth.favorites}
+      favoritesId={favoritesIds}
       activeFilters={activeFilters}
       changeFilter={changeFilter}
       quizProgress={quizProgress}
-      addIdToFavoritesHandler={addIdToFavoritesHandler}
-      removeFavoritesIdsHandler={removeFavoritesIdsHandler}
+      addToFavoritesHandler={addToFavoritesHandler}
+      removeFavoriteHandler={removeFavoriteHandler}
       searchValue={searchValue}
       message="No quizzes were found."
     />
@@ -233,9 +232,12 @@ export const Favorites = ({
   const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
   const [favoritesIds, setFavoritesIds] = useState([]);
 
-  const removeFavoritesIdsHandler = async (quizId) => {
+  console.log('Favorites favoritesIds === ', favoritesIds)
+
+  const removeFavoriteHandler = async (quizId) => {
     try {
       await removeFavorite(quizId);
+      setFavoritesIds((prevFavoriteQuizzesIds) => prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId));
       setFavoriteQuizzes((prevFavoriteQuizzes) => prevFavoriteQuizzes.filter((quiz) => quiz.id !== quizId));
     } catch (error) {
       console.error('Error removing favorite:', error);
@@ -266,7 +268,7 @@ export const Favorites = ({
       }
     };
     fetchAndSetFavoriteQuizzes();
-  }, [auth.loggedIn]);
+  }, [auth.loggedIn, setFavoritesIds]);
 
   return (
     <QuizzesContainer
@@ -277,7 +279,7 @@ export const Favorites = ({
       favoritesIds={favoritesIds}
       quizzesLength={favoriteQuizzes.length}
       activeFilters={activeFilters}
-      removeFavoritesIdsHandler={removeFavoritesIdsHandler}
+      removeFavoriteHandler={removeFavoriteHandler}
       changeFilter={changeFilter}
       quizProgress={quizProgress}
       searchValue={searchValue}
