@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Grid, Typography } from '@mui/material';
+import { Alert, Box, Container, Grid, Typography } from '@mui/material';
 import useAuth from 'auth/useAuth';
 import useQuiz from 'quiz/useQuiz';
 import Quiz from './Quiz';
@@ -9,7 +9,13 @@ import { LOGIN } from 'App';
 import Loading from '../components/Loading';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../assets/styles';
-import { backendApiCall, fetchData } from '../functions/exportFunctions';
+import {
+  backendApiCall,
+  fetchData,
+  fetchFavorites,
+  getFavorites,
+  removeFavorite,
+} from '../functions/exportFunctions';
 
 export const containerStyles = {
   minHeight: '95vh',
@@ -27,11 +33,6 @@ export const titleStyles = {
     fontSize: '20px',
   },
 };
-const messageStyles = {
-  mt: 5,
-  textAlign: 'center',
-  color: customColors.greyDark,
-};
 const boxStyles = {
   width: '100%',
   maxWidth: '1200px',
@@ -43,7 +44,9 @@ const QuizzesContainer = ({
   changeFilter,
   message,
   quizzesForFiltering,
-  auth,
+  favoritesIds,
+  addIdToFavoritesHandler,
+  removeFavoritesIdsHandler,
   quizProgress,
   searchValue,
   loading,
@@ -100,7 +103,9 @@ const QuizzesContainer = ({
                 ) : (
                   <>
                     {filteredQuizzes.length === 0 && (
-                      <Typography sx={messageStyles}>{message}</Typography>
+                      <Alert sx={{ mt: 3 }} severity="info">
+                        {message}
+                      </Alert>
                     )}
                     {filteredQuizzes.length > 0 && (
                       <Box sx={{ py: 3 }} maxWidth="lg" width="100%">
@@ -114,8 +119,13 @@ const QuizzesContainer = ({
                               key={q.id}
                               quiz={q}
                               activeFilters={activeFilters}
+                              searchValue={searchValue}
                               getProgressForQuiz={getProgressForQuiz}
-                              auth={auth}
+                              favoritesIds={favoritesIds}
+                              addIdToFavoritesHandler={addIdToFavoritesHandler}
+                              removeFavoritesIdsHandler={
+                                removeFavoritesIdsHandler
+                              }
                             />
                           ))}
                         </Grid>
@@ -132,7 +142,12 @@ const QuizzesContainer = ({
   );
 };
 
-const useQuizzes = () => {
+export const Quizzes = ({
+  changeFilter,
+  activeFilters,
+  quizProgress,
+  searchValue,
+}) => {
   const { quizzes, setQuizzes } = useQuiz();
   const { auth } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -141,8 +156,9 @@ const useQuizzes = () => {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
+      console.log('Fetching Quizzes');
       try {
-        if (auth.loggedIn && quizzes.length === 1) {
+        if (auth.loggedIn && quizzes.length <= 1) {
           await fetchData(
             backendApiCall,
             setQuizzes,
@@ -161,27 +177,13 @@ const useQuizzes = () => {
     };
 
     fetchQuizzes();
-  }, [auth, quizzes.length, navigate, setQuizzes]);
-
-  return { loading, error };
-};
-
-export const Quizzes = ({
-  changeFilter,
-  activeFilters,
-  quizProgress,
-  searchValue,
-}) => {
-  const { loading, error } = useQuizzes();
-  const { quizzes } = useQuiz();
-  const { auth } = useAuth();
+  }, [auth.favorites, quizzes.length, navigate, setQuizzes]);
 
   return (
     <QuizzesContainer
       title="Choose a quiz"
       quizzesForFiltering={quizzes}
       quizzesLength={quizzes.length}
-      auth={auth}
       loading={loading}
       error={error}
       activeFilters={activeFilters}
@@ -199,27 +201,64 @@ export const Favorites = ({
   quizProgress,
   searchValue,
 }) => {
-  const { loading, error } = useQuizzes();
-  const { quizzes } = useQuiz();
   const { auth } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
+  const [favoritesIds, setFavoritesIds] = useState([]);
+
+  const addIdToFavoritesHandler = (quizId) => {
+    setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
+  };
+
+  const removeFavoritesIdsHandler = async (quizId) => {
+    try {
+      await removeFavorite(quizId);
+      setFavoritesIds((prevFavoritesIds) =>
+        prevFavoritesIds.filter((id) => id !== quizId)
+      );
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+    }
+  };
 
   useEffect(() => {
-    const updatedFavoriteQuizzes = quizzes.filter((quiz) =>
-      auth.favorites.includes(quiz.id)
-    );
-    setFavoriteQuizzes(updatedFavoriteQuizzes);
-  }, [quizzes, auth.favorites]);
+    const fetchAndSetFavoriteQuizzes = async () => {
+      console.log('Fetching Favorite quizzes');
+      try {
+        setLoading(true);
+        const quizzesIds = await getFavorites();
+        setFavoritesIds(quizzesIds);
+
+        // Fetch quizzes from the API
+        await fetchFavorites(
+          backendApiCall,
+          setFavoriteQuizzes,
+          setError,
+          auth,
+          setLoading
+        );
+
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+    fetchAndSetFavoriteQuizzes();
+  }, [auth.loggedIn]);
 
   return (
     <QuizzesContainer
       title="Your favorite quizzes"
       quizzesForFiltering={favoriteQuizzes}
-      auth={auth}
       loading={loading}
       error={error}
+      favoritesIds={favoritesIds}
       quizzesLength={favoriteQuizzes.length}
       activeFilters={activeFilters}
+      addIdToFavoritesHandler={addIdToFavoritesHandler}
+      removeFavoritesIdsHandler={removeFavoritesIdsHandler}
       changeFilter={changeFilter}
       quizProgress={quizProgress}
       searchValue={searchValue}

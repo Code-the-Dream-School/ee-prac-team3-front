@@ -19,7 +19,15 @@ import customColors from '../assets/styles';
 import { QUIZ } from 'App';
 import { addFavorite, removeFavorite } from '../functions/exportFunctions';
 
-const Quiz = ({ quiz, activeFilters, getProgressForQuiz, auth }) => {
+const Quiz = ({
+  quiz,
+  activeFilters,
+  getProgressForQuiz,
+  favoritesIds,
+  addIdToFavoritesHandler,
+  removeFavoritesIdsHandler,
+  searchValue,
+}) => {
   const isFilterActive = (filterType, value) =>
     activeFilters[filterType].length > 0 &&
     activeFilters[filterType].includes(value);
@@ -30,8 +38,8 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz, auth }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    setIsFavorite(auth.favorites.includes(quiz.id));
-  }, [auth.favorites, quiz.id]);
+    favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
+  }, [favoritesIds, quiz.id]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -43,9 +51,35 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz, auth }) => {
     setCardClickable(true);
   };
 
+  const highlightSearchTerm = (title, searchValue) => {
+    if (!searchValue) {
+      return [<span key="title">{title}</span>];
+    }
+
+    const regex = new RegExp(`(${searchValue})`, 'gi');
+    const parts = title.split(regex);
+
+    return parts.map((part, index) =>
+      regex.test(part) ? (
+        <span
+          key={index}
+          style={{
+            fontWeight: 'bold',
+            backgroundColor: `rgb(173, 216, 230, 0.5)`,
+          }}
+        >
+          {part}
+        </span>
+      ) : (
+        <span key={index}>{part}</span>
+      )
+    );
+  };
+
   const handleAddFavorite = async (quizId) => {
     try {
       await addFavorite(quizId);
+      await addIdToFavoritesHandler(quizId);
       setIsFavorite(true);
       handleClose();
     } catch (error) {
@@ -55,7 +89,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz, auth }) => {
 
   const handleRemoveFavorite = async (quizId) => {
     try {
-      await removeFavorite(quizId);
+      await removeFavoritesIdsHandler(quizId);
       setIsFavorite(false);
     } catch (error) {
       console.error('Error removing favorite:', error);
@@ -206,7 +240,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz, auth }) => {
                   fontWeight="bold"
                   lineHeight="22px"
                 >
-                  {quiz.title}
+                  {highlightSearchTerm(quiz.title, searchValue)}
                 </Typography>
               </Box>
             </Box>

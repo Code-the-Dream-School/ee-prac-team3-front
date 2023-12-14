@@ -179,10 +179,12 @@ export default function App() {
   ];
 
   useEffect(() => {
-    async function fetchData() {
-      await authenticateUser(backendApiCall, setAuth, setLoading);
-    }
+    const fetchData = async () => {
+      return await authenticateUser(backendApiCall, setAuth, setLoading);
+    };
+
     fetchData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
 
@@ -343,7 +345,6 @@ export default function App() {
                       activeFilters={activeFilters}
                       quizProgress={quizProgress}
                       searchValue={searchTerm}
-                      favoriteIds={auth.favorites}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>

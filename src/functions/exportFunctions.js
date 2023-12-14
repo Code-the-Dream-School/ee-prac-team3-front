@@ -39,11 +39,8 @@ export const backendApiCall = async (method, url, body) => {
 export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
   try {
     const backendUserData = await backendApiCall('GET', '/api/v1/login');
-    console.log(
-      `USER'S FAVORITES FROM BACKEND ==== `,
-      backendUserData.user.favorites
-    );
-    setAuth({
+    setAuth((prevState) => ({
+      ...prevState,
       userId: backendUserData.user.userId,
       firstName: backendUserData.user.firstname,
       lastName: backendUserData.user.lastname,
@@ -53,7 +50,7 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
       accessToken: backendUserData.user.accessToken,
       avatarURL: backendUserData.user.avatarURL,
       favorites: backendUserData.user.favorites,
-    });
+    }));
   } catch (error) {
     throw new Error(error);
   } finally {
@@ -121,6 +118,7 @@ export const fetchAndTransformQuizzes = async (
 
     onSuccess(transformedQuizzes);
   } catch (err) {
+    console.error('Error fetching and transforming quizzes:', err);
     onError(err);
   }
 };
@@ -140,6 +138,81 @@ export async function fetchData(
     setLoading(false);
   }
 }
+
+export const fetchAndTransformFavoriteQuizzes = async (
+  backendApiCall,
+  onSuccess,
+  onError,
+  auth
+) => {
+  if (!auth.loggedIn) return;
+
+  try {
+    const apiQuizData = await backendApiCall('GET', '/api/v1/quiz');
+    const favoriteQuizIds = await getFavorites();
+
+    const favoriteQuizzes = apiQuizData
+      .filter((quiz) => favoriteQuizIds.includes(quiz._id))
+      .map((quiz) => {
+        const image = imageMapping[quiz.category] || jsLogo;
+
+        return {
+          id: quiz._id,
+          title: quiz.title,
+          category: quiz.category,
+          level: quiz.level,
+          labels: quiz.label,
+          image: image,
+          questions: quiz.questions.map((q) => ({
+            questionText: q.questionText,
+            type: q.type,
+            code: '',
+            resources: '',
+            options: q.options,
+            correctOption: q.correctOption,
+            id: q._id,
+          })),
+          createdDate: quiz.createdAt,
+        };
+      });
+
+    onSuccess(favoriteQuizzes);
+  } catch (err) {
+    console.error('Error fetching and transforming favorite quizzes:', err);
+    onError(err);
+  }
+};
+
+export async function fetchFavorites(
+  backendApiCall,
+  onSuccess,
+  setError,
+  auth,
+  setLoading
+) {
+  try {
+    await fetchAndTransformFavoriteQuizzes(
+      backendApiCall,
+      onSuccess,
+      setError,
+      auth
+    );
+  } catch (err) {
+    setError(err);
+  } finally {
+    setLoading(false);
+  }
+}
+
+export const getFavorites = async () => {
+  try {
+    const response = await backendApiCall('GET', '/api/v1/favorites');
+    return response.favorites;
+  } catch (error) {
+    console.error('Error getting favorites:', error);
+    throw error;
+  }
+};
 
 export const addFavorite = async (quizId) => {
   try {
