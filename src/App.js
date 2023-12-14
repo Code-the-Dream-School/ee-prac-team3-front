@@ -35,6 +35,7 @@ import {
   authenticateUser,
   handleLogout,
 } from './functions/exportFunctions';
+// import { BASE_URL } from './config';
 
 const PATH = {
   HOME: '/home',
@@ -240,7 +241,7 @@ export default function App() {
       };
     }
 
-    const url = `${port}/api/v1/updateuser`;
+    const url = `${process.env.BACKEND_URL}/api/v1/updateuser`;
     const options = {
       method: 'PUT',
       headers: {
