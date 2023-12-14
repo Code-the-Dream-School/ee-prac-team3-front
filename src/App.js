@@ -25,11 +25,8 @@ import About from './pages/About/About';
 import NavBar from './components/NavBar';
 import Notes from './pages/Notes';
 import Library from './pages/Library';
-import UserSettings from './pages/UserSettings';
+import AccountSettings from './pages/AccountSettings';
 import useFilterState from './components/filterState';
-import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
-import jsLogo from './assets/images/js.svg';
-// import Loading from './components/Loading';
 import Box from '@mui/material/Box';
 import {
   backendApiCall,
@@ -38,17 +35,11 @@ import {
 } from './functions/exportFunctions';
 
 const PATH = {
-  /*
-    // For further use:
-    UNAUTHORIZED: '/unauthorized',
-    CONFIRMATION: '/confirmation',
-    LOGOUT: '/logout',
-    */
   HOME: '/home',
   LOGIN: '/login',
   SIGNUP: '/signup',
   RESET_PASSWORD: '/reset-password',
-  USER_SETTINGS: '/settings',
+  ACCOUNT_SETTINGS: '/settings',
   ABOUT: '/about',
   QUIZZES: '/quiz-app',
   ERROR: '/error',
@@ -64,7 +55,7 @@ export const {
   SIGNUP,
   RESET_PASSWORD,
   QUIZZES,
-  USER_SETTINGS,
+  ACCOUNT_SETTINGS,
   ABOUT,
   ERROR,
   FAVORITES,
@@ -111,13 +102,15 @@ export default function App() {
     firstName: auth.firstName,
     lastName: auth.lastName,
     email: auth.email,
+    avatar: auth.avatarURL,
   };
+  const [searchTerm, setSearchTerm] = useState('');
 
   const profileSettings = [
     {
       title: 'Account',
       icon: <SettingsRoundedIcon sx={{ color: customColors.blackLight }} />,
-      path: USER_SETTINGS,
+      path: ACCOUNT_SETTINGS,
     },
     {
       title: 'Logout',
@@ -135,25 +128,6 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
 
-  const [favoriteQuizzes] = useState([
-    {
-      id: 'react-intermediate',
-      title: 'React Intermediate',
-      category: 'react',
-      level: 'intermediate',
-      labels: ['frontend'],
-      image: reactJsLogo,
-    },
-    {
-      id: 'js-arrays',
-      title: 'JS Arrays',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-  ]);
-
   const { activeFilters, setActiveFilter } = useFilterState();
 
   const changeFilter = useCallback(
@@ -162,6 +136,70 @@ export default function App() {
     },
     [setActiveFilter]
   );
+
+  const onSearchChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
+  };
+
+  const updateUserInfo = async (formValues, passwordFormValues) => {
+    let payload = {};
+    if (formValues) {
+      payload = {
+        firstname: formValues.firstName,
+        lastname: formValues.lastName,
+        email: formValues.email,
+      };
+    }
+    if (
+      passwordFormValues.newPassword !== '' &&
+      passwordFormValues.currentPassword !== ''
+    ) {
+      payload = {
+        currentPassword: passwordFormValues.currentPassword,
+        newPassword: passwordFormValues.newPassword,
+      };
+    }
+
+    const url = `${port}/api/v1/updateuser`;
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    };
+
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update account information');
+      }
+
+      if (formValues) {
+        setAuth((prevAuth) => ({
+          ...prevAuth,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          email: formValues.email,
+        }));
+      }
+
+      setSnackbar({
+        isOpened: true,
+        severity: 'success',
+        message: 'Your data was successfully updated.',
+      });
+    } catch (error) {
+      setSnackbar({
+        isOpened: true,
+        severity: 'error',
+        message: 'Failed to update account information.',
+      });
+    }
+  };
 
   return (
     <>
@@ -184,6 +222,7 @@ export default function App() {
           profileSettings={profileSettings}
           userData={userData}
           auth={auth}
+          onSearchChange={onSearchChange}
         />
         <NavBar />
         {!loading && (
@@ -200,10 +239,10 @@ export default function App() {
                 path={QUIZZES}
                 element={
                   auth.loggedIn ? (
-                    /* <Main quizzes={quizzes}/>*/
                     <Quizzes
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
+                      searchValue={searchTerm}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
@@ -241,9 +280,9 @@ export default function App() {
                 element={
                   auth.loggedIn ? (
                     <Favorites
-                      favoriteQuizzes={favoriteQuizzes}
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
+                      searchValue={searchTerm}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
@@ -263,10 +302,14 @@ export default function App() {
                 }
               />
               <Route
-                path={USER_SETTINGS}
+                path={ACCOUNT_SETTINGS}
                 element={
                   auth.loggedIn ? (
-                    <UserSettings />
+                    <AccountSettings
+                      userData={userData}
+                      snackbar={setSnackbar}
+                      updateUserInfo={updateUserInfo}
+                    />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
                   )

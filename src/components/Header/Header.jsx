@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import jsQuizLogo from '../../assets/images/logo.svg';
 import customColors, { defaultTheme } from 'assets/styles';
-import Search from './Search';
+import SearchComponent from './Search';
 import AboutElement from './AboutElement';
 import {
   HOME,
@@ -29,11 +29,16 @@ import {
   ERROR,
   LIBRARY,
   ABOUT,
-  USER_SETTINGS,
+  ACCOUNT_SETTINGS,
   QUIZ,
 } from '../../App';
 
-export default function Header({ profileSettings, userData, auth }) {
+export default function Header({
+  profileSettings,
+  userData,
+  auth,
+  onSearchChange,
+}) {
   const [headerState, setHeaderState] = useState({
     anchorElUser: null,
     isLoginButtonVisible: false,
@@ -58,9 +63,10 @@ export default function Header({ profileSettings, userData, auth }) {
       isLogoVisible:
         [
           QUIZZES,
+          QUIZ,
           FAVORITES,
           NOTES,
-          USER_SETTINGS,
+          ACCOUNT_SETTINGS,
           LOGIN,
           SIGNUP,
           RESET_PASSWORD,
@@ -69,7 +75,7 @@ export default function Header({ profileSettings, userData, auth }) {
           LIBRARY,
         ].includes(location.pathname) || isQuizRoute,
       isUserMenuVisible:
-        [QUIZZES, FAVORITES, NOTES, USER_SETTINGS, LIBRARY].includes(
+        [QUIZZES, QUIZ, FAVORITES, NOTES, ACCOUNT_SETTINGS, LIBRARY].includes(
           location.pathname
         ) || isQuizRoute,
     }));
@@ -147,7 +153,7 @@ export default function Header({ profileSettings, userData, auth }) {
               },
             }}
           >
-            <Search />
+            <SearchComponent onSearchChange={onSearchChange} />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <AboutElement />
