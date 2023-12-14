@@ -96,7 +96,9 @@ export default function QuizContent() {
     answersCorrectness,
     questions.length,
     quiz,
-    auth.userId,
+    auth,
+    quizzes,
+    setQuizzes,
     setError,
     userQuizzesUpdated,
   ]);

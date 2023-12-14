@@ -60,7 +60,7 @@ const QuizzesContainer = ({ title, activeFilters, changeFilter, message }) => {
     } else {
       setLoading(false);
     }
-  }, [auth, navigate, initialDataLoaded]);
+  }, [auth, navigate, quizzes.length, setQuizzes, initialDataLoaded]);
 
   useEffect(() => {
     if (
@@ -78,7 +78,14 @@ const QuizzesContainer = ({ title, activeFilters, changeFilter, message }) => {
         auth
       );
     }
-  }, [auth, quizzes, backendApiCall, setError, userQuizzesUpdated]);
+  }, [
+    auth,
+    quizzes,
+    initialDataLoaded,
+    setQuizzes,
+    setError,
+    userQuizzesUpdated,
+  ]);
 
   const filteredQuizzes = useMemo(() => {
     return quizzes.filter(({ level, category, labels }) => {
