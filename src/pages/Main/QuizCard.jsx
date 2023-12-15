@@ -13,12 +13,12 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Labels from '../components/Labels';
-import Progress from '../components/Progress';
-import customColors from '../assets/styles';
+import Labels from '../../components/Labels';
+import Progress from '../../components/Progress';
+import customColors from '../../assets/styles';
 import { QUIZ } from 'App';
 
-const Quiz = ({
+const QuizCard = ({
   quiz,
   activeFilters,
   quizProgress,
@@ -36,6 +36,8 @@ const Quiz = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [cardClickable, setCardClickable] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
+
+    //console.log('quizProgress ==== ', quizProgress)
 
   useEffect(() => {
     favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
@@ -88,7 +90,7 @@ const Quiz = ({
   };
 
   const handleResetProgress = () => {
-    console.log('Quiz progress was reset!');
+    console.log('QuizCard progress was reset!');
     handleClose();
   };
 
@@ -294,4 +296,4 @@ const Quiz = ({
   );
 };
 
-export default Quiz;
+export default QuizCard;

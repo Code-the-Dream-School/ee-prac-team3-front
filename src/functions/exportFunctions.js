@@ -77,11 +77,12 @@ export const handleLogout = async (backendApiCall, setAuth, setShowLogoutModal) 
   }
 };
 
-export const fetchAndTransformQuizzes = async (backendApiCall, onSuccess, onError, auth) => {
+export const fetchAndTransformQuizzes = async (backendApiCall, setQuizzes, setError, auth) => {
   if (!auth.loggedIn) return;
 
   try {
     const apiQuizData = await backendApiCall('GET', '/quiz');
+    console.log('apiQuizData === ', apiQuizData)
     const transformedQuizzes = apiQuizData.map((quiz) => {
       const image = imageMapping[quiz.category] || jsLogo;
 
@@ -109,27 +110,26 @@ export const fetchAndTransformQuizzes = async (backendApiCall, onSuccess, onErro
         createdDate: quiz.createdAt,
       };
     });
-
-    onSuccess(transformedQuizzes);
+    console.log('transformedQuizzes === ', transformedQuizzes)
+    setQuizzes(transformedQuizzes);
   } catch (err) {
     console.error('Error fetching and transforming quizzes:', err);
-    onError(err);
+    setError(err);
   }
 };
 
-export const fetchAndAddUserQuizzes = async (backendApiCall, quizzes, onSuccess, onError, setUserQuizzesUpdated, auth) => {
+export const fetchAndAddUserQuizzes = async (backendApiCall, quizzes, setQuizzes, setError, auth, setUserQuizzesUpdated) => {
   if (!auth.loggedIn) return;
-
   try {
     const userQuizDataArray = await backendApiCall(
       'GET',
       `/progress/user?userId=${auth.userId}`
     );
-
     const updatedQuizzes = quizzes.map((quiz) => {
       const userQuizData = userQuizDataArray.data.find(
         (uqd) => uqd.quiz === quiz.id
       );
+      console.log('userQuizData ===', userQuizData)
       if (userQuizData) {
         return {
           ...quiz,
@@ -143,16 +143,16 @@ export const fetchAndAddUserQuizzes = async (backendApiCall, quizzes, onSuccess,
       return quiz;
     });
 
-    onSuccess(updatedQuizzes);
+    setQuizzes(updatedQuizzes);
     setUserQuizzesUpdated(true);
   } catch (err) {
-    onError(err);
+    setError(err);
   }
 };
 
-export async function fetchQuizData(backendApiCall, onSuccess, setError, auth, setLoading) {
+export async function fetchQuizData(backendApiCall, setQuizzes, setError, auth, setLoading) {
   try {
-    await fetchAndTransformQuizzes(backendApiCall, onSuccess, setError, auth);
+    await fetchAndTransformQuizzes(backendApiCall, setQuizzes, setError, auth);
   } catch (err) {
     setError(err);
   } finally {
@@ -183,7 +183,7 @@ export const getFavorites = async () => {
 
 export const fetchAndTransformFavoriteQuizzes = async (
   backendApiCall,
-  onSuccess,
+  setQuizzes,
   onError,
   auth
 ) => {
@@ -214,11 +214,16 @@ export const fetchAndTransformFavoriteQuizzes = async (
             correctOption: q.correctOption,
             id: q._id,
           })),
+          quizProgress: {
+            attemptsCount: 0,
+            bestScore: 0,
+            lastScore: 0,
+          },
           createdDate: quiz.createdAt,
         };
       });
 
-    onSuccess(favoriteQuizzes);
+    setQuizzes(favoriteQuizzes);
   } catch (err) {
     console.error('Error fetching and transforming favorite quizzes:', err);
     onError(err);
@@ -227,7 +232,7 @@ export const fetchAndTransformFavoriteQuizzes = async (
 
 export async function fetchFavorites(
   backendApiCall,
-  onSuccess,
+  setQuizzes,
   setError,
   auth,
   setLoading
@@ -235,7 +240,7 @@ export async function fetchFavorites(
   try {
     await fetchAndTransformFavoriteQuizzes(
       backendApiCall,
-      onSuccess,
+        setQuizzes,
       setError,
       auth
     );
