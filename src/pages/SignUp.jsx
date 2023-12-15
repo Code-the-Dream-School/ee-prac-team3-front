@@ -70,7 +70,7 @@ export default function SignUp() {
       navigate(LOGIN);
     } catch (error) {
       setIsLoading(false); // Ensure loading state is reset even on error.
-      console.error(error.message);
+      throw new Error(error.message);
       // TODO: Provide feedback to the user about the error.
     }
   };

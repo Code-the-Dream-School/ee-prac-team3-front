@@ -27,8 +27,6 @@ import Notes from './pages/Notes';
 import Library from './pages/Library';
 import AccountSettings from './pages/AccountSettings';
 import useFilterState from './components/filterState';
-import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
-import jsLogo from './assets/images/js.svg';
 import Box from '@mui/material/Box';
 import {
   backendApiCall,
@@ -91,65 +89,6 @@ export const highlights = [
   },
 ];
 
-const quizProgress = [
-  {
-    quizId: 'react-basic',
-    attemptsCount: 1,
-    bestScore: 80,
-    lastScore: 50,
-    progress: 50,
-  },
-  {
-    quizId: 'react-intermediate',
-    attemptsCount: 4,
-    bestScore: 50,
-    lastScore: 50,
-    progress: 10,
-  },
-  {
-    quizId: 'js-basic',
-    attemptsCount: 3,
-    bestScore: 90,
-    lastScore: 30,
-    progress: 80,
-  },
-  {
-    quizId: 'js-functions',
-    attemptsCount: 1,
-    bestScore: 20,
-    lastScore: 20,
-    progress: 100,
-  },
-  {
-    quizId: 'react-basic',
-    attemptsCount: 1,
-    bestScore: 80,
-    lastScore: 50,
-    progress: 50,
-  },
-  {
-    quizId: 'react-intermediate',
-    attemptsCount: 4,
-    bestScore: 50,
-    lastScore: 50,
-    progress: 10,
-  },
-  {
-    quizId: 'js-basic',
-    attemptsCount: 3,
-    bestScore: 90,
-    lastScore: 30,
-    progress: 80,
-  },
-  {
-    quizId: 'js-functions',
-    attemptsCount: 1,
-    bestScore: 20,
-    lastScore: 20,
-    progress: 100,
-  },
-];
-
 export default function App() {
   const { auth, setAuth } = useAuth();
   const [snackbar, setSnackbar] = useState({
@@ -188,25 +127,6 @@ export default function App() {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
-
-  const [favoriteQuizzes] = useState([
-    {
-      id: 'react-intermediate',
-      title: 'React Intermediate',
-      category: 'react',
-      level: 'intermediate',
-      labels: ['frontend'],
-      image: reactJsLogo,
-    },
-    {
-      id: 'js-arrays',
-      title: 'JS Arrays',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-  ]);
 
   const { activeFilters, setActiveFilter } = useFilterState();
 
@@ -322,7 +242,6 @@ export default function App() {
                     <Quizzes
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
-                      quizProgress={quizProgress}
                       searchValue={searchTerm}
                     />
                   ) : (
@@ -361,10 +280,8 @@ export default function App() {
                 element={
                   auth.loggedIn ? (
                     <Favorites
-                      favoriteQuizzes={favoriteQuizzes}
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
-                      quizProgress={quizProgress}
                       searchValue={searchTerm}
                     />
                   ) : (

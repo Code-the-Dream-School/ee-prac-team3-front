@@ -9,7 +9,13 @@ import { LOGIN } from 'App';
 import Loading from '../components/Loading';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../assets/styles';
-import { backendApiCall, fetchData } from '../functions/exportFunctions';
+import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
+import jsLogo from '../assets/images/js.svg';
+import {
+  backendApiCall,
+  fetchQuizData,
+  fetchAndAddUserQuizzes,
+} from '../functions/exportFunctions';
 
 export const containerStyles = {
   minHeight: '85vh',
@@ -43,16 +49,11 @@ const QuizzesContainer = ({
   changeFilter,
   message,
   quizzesForFiltering,
-  quizProgress,
   searchValue,
   loading,
   error,
   quizzesLength,
 }) => {
-  const getProgressForQuiz = (quizId) => {
-    const progressObj = quizProgress.find((p) => p.quizId === quizId);
-    return progressObj ? progressObj : 0;
-  };
   const filteredQuizzes = useMemo(() => {
     return quizzesForFiltering.filter(({ level, category, labels, title }) => {
       const levelFilter =
@@ -106,7 +107,7 @@ const QuizzesContainer = ({
                             key={q.id}
                             quiz={q}
                             activeFilters={activeFilters}
-                            getProgressForQuiz={getProgressForQuiz}
+                            quizProgress={q.quizProgress}
                           />
                         ))}
                       </Grid>
@@ -128,24 +129,51 @@ export const Quizzes = ({
   quizProgress,
   searchValue,
 }) => {
-  const { quizzes, setQuizzes } = useQuiz();
   const { auth } = useAuth();
+  const { quizzes, setQuizzes } = useQuiz();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchData(backendApiCall, setQuizzes, setError, auth, setLoading);
-
-    if (auth.loggedIn && quizzes.length === 1) {
-      fetchData();
+    if (auth.loggedIn && quizzes.length === 1 && !initialDataLoaded) {
+      fetchQuizData(backendApiCall, setQuizzes, setError, auth, setLoading);
+      setInitialDataLoaded(true);
     } else if (!auth.loggedIn) {
       navigate(LOGIN);
     } else {
       setLoading(false);
     }
-  }, [auth, quizzes.length, navigate, setQuizzes]);
+  }, [auth, navigate, quizzes.length, setQuizzes, initialDataLoaded]);
+
+  useEffect(() => {
+    if (
+      auth.loggedIn &&
+      initialDataLoaded &&
+      quizzes.length > 0 &&
+      !userQuizzesUpdated
+    ) {
+      fetchAndAddUserQuizzes(
+        backendApiCall,
+        quizzes,
+        setQuizzes,
+        setError,
+        setUserQuizzesUpdated,
+        auth
+      );
+    }
+  }, [
+    auth,
+    quizzes,
+    initialDataLoaded,
+    setQuizzes,
+    setError,
+    userQuizzesUpdated,
+  ]);
+
   return (
     <QuizzesContainer
       title="Choose a quiz"
@@ -163,20 +191,49 @@ export const Quizzes = ({
 };
 
 export const Favorites = ({
-  favoriteQuizzes,
   changeFilter,
   activeFilters,
   quizProgress,
   searchValue,
-}) => (
-  <QuizzesContainer
-    title="Your favorite quizzes"
-    quizzesForFiltering={favoriteQuizzes}
-    quizzesLength={favoriteQuizzes.length}
-    activeFilters={activeFilters}
-    changeFilter={changeFilter}
-    quizProgress={quizProgress}
-    searchValue={searchValue}
-    message="Save your favorite quizzes so they are here."
-  />
-);
+}) => {
+  const [favoriteQuizzes] = useState([
+    {
+      id: 'react-intermediate',
+      title: 'React Intermediate',
+      category: 'react',
+      level: 'intermediate',
+      labels: ['frontend'],
+      image: reactJsLogo,
+      quizProgress: {
+        attemptsCount: 0,
+        bestScore: 0,
+        lastScore: 0,
+      },
+    },
+    {
+      id: 'js-arrays',
+      title: 'JS Arrays',
+      category: 'javascript',
+      level: 'basic',
+      labels: ['frontend', 'backend'],
+      image: jsLogo,
+      quizProgress: {
+        attemptsCount: 2,
+        bestScore: 80,
+        lastScore: 80,
+      },
+    },
+  ]);
+  return (
+    <QuizzesContainer
+      title="Your favorite quizzes"
+      quizzesForFiltering={favoriteQuizzes}
+      quizzesLength={favoriteQuizzes.length}
+      activeFilters={activeFilters}
+      changeFilter={changeFilter}
+      quizProgress={quizProgress}
+      searchValue={searchValue}
+      message="Save your favorite quizzes so they are here."
+    />
+  );
+};

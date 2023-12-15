@@ -18,11 +18,11 @@ import Progress from '../components/Progress';
 import customColors from '../assets/styles';
 import { QUIZ } from 'App';
 
-const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
+const Quiz = ({ quiz, activeFilters, quizProgress }) => {
   const isFilterActive = (filterType, value) =>
     activeFilters[filterType].length > 0 &&
     activeFilters[filterType].includes(value);
-  const progress = getProgressForQuiz(quiz.id);
+  const progress = quizProgress;
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const [anchorEl, setAnchorEl] = useState(null);
   const [cardClickable, setCardClickable] = useState(true);
@@ -140,7 +140,20 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
               </Box>
               <Box>
                 <Typography
-                  sx={{ marginTop: '10px', color: customColors.greyMedium }}
+                  sx={{
+                    marginTop: '10px',
+                    color: customColors.greyDark,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {progress.bestScore && `Best Score: ${progress.bestScore}%`}
+                </Typography>
+                <Typography
+                  sx={{
+                    marginTop: '10px',
+                    color: customColors.greyDark,
+                    fontWeight: 'bold',
+                  }}
                 >
                   {progress.attemptsCount
                     ? `Attempts: ${progress.attemptsCount}`
@@ -148,7 +161,6 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
                 </Typography>
               </Box>
             </Box>
-
             {/* this is the content of the right side inside each card */}
             <Box
               sx={{
@@ -175,7 +187,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
                   }}
                   image={quiz.image}
                 />
-                <Progress progress={progress.progress} />
+                <Progress progress={progress.bestScore} />
               </Box>
               <Box sx={{ textAlign: 'center' }}>
                 <Typography
