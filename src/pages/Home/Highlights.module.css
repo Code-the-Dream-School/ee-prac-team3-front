@@ -22,7 +22,7 @@
 }
 
 @media screen and (max-width: 900px) {
-    .highlights img {
+  .highlights img {
     width: 70px;
   }
 }
