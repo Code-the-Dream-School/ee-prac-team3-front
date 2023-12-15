@@ -136,7 +136,7 @@ const QuizzesContainer = ({
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [handleScroll]);
+  }, [handleScroll, loadMoreQuizzes, loadMoreThreshold]);
 
   return (
     <>
