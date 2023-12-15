@@ -1,5 +1,6 @@
 import React from 'react';
-import { FormControlLabel, Radio, Checkbox,Box } from '@mui/material';
+import { FormControlLabel, Radio, Checkbox, Box } from '@mui/material';
+
 import Grid from '@mui/material/Unstable_Grid2';
 
 export default function checkRadioRender(
@@ -34,31 +35,31 @@ export default function checkRadioRender(
         ? selected.includes(option)
         : selected === option;
 
-      const isCorrect = isCurrentQuestionAnswered && correctnessInfo?.isCorrect;
-
-      const backgroundColor = isOptionSelected && isCorrect
-          ? isCorrect ? 'lightgreen' : 'pink'
-          : 'none';
-      console.log('backgroundColor === ', backgroundColor)
-
-      const border = isOptionSelected && isCorrect
-          ? isCorrect ? '2px solid green' : '2px solid red'
-          : '2px solid rgb(223, 221, 221)';
-      console.log('border === ', border)
+    const borderStyle =
+      correctnessInfo && isOptionSelected
+        ? correctnessInfo.isCorrect
+          ? '2px solid green'
+          : '2px solid red'
+        : '2px solid rgb(223, 221, 221)';
 
     return (
-      <Grid item xs={12} key={index}>
+      <Grid xs={12} key={index}>
         <Box
           component="div"
           onClick={() => handleOptionClick(option)}
           sx={{
             pl: 2,
-            border,
+            border: borderStyle,
             width: '100%',
             borderRadius: 1,
             boxSizing: 'border-box',
             cursor: 'pointer',
-            backgroundColor,
+            backgroundColor:
+              correctnessInfo && isOptionSelected
+                ? correctnessInfo.isCorrect
+                  ? 'lightgreen'
+                  : 'pink'
+                : 'none',
           }}
         >
           <FormControlLabel

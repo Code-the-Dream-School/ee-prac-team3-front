@@ -125,11 +125,11 @@ export const fetchAndAddUserQuizzes = async (backendApiCall, quizzes, setQuizzes
       'GET',
       `/progress/user?userId=${auth.userId}`
     );
+    console.log('userQuizDataArray === ', userQuizDataArray.data)
     const updatedQuizzes = quizzes.map((quiz) => {
       const userQuizData = userQuizDataArray.data.find(
         (uqd) => uqd.quiz === quiz.id
       );
-      console.log('userQuizData ===', userQuizData)
       if (userQuizData) {
         return {
           ...quiz,
@@ -183,11 +183,12 @@ export const getFavorites = async () => {
 
 export const fetchAndTransformFavoriteQuizzes = async (
   backendApiCall,
-  setQuizzes,
+  setFavoriteQuizzes,
   onError,
   auth
 ) => {
   if (!auth.loggedIn) return;
+  console.log('fetchAndTransformFavoriteQuizzes')
 
   try {
     const apiQuizData = await backendApiCall('GET', '/quiz');
@@ -223,7 +224,7 @@ export const fetchAndTransformFavoriteQuizzes = async (
         };
       });
 
-    setQuizzes(favoriteQuizzes);
+    setFavoriteQuizzes(favoriteQuizzes);
   } catch (err) {
     console.error('Error fetching and transforming favorite quizzes:', err);
     onError(err);
@@ -232,15 +233,16 @@ export const fetchAndTransformFavoriteQuizzes = async (
 
 export async function fetchFavorites(
   backendApiCall,
-  setQuizzes,
+  setFavoriteQuizzes,
   setError,
   auth,
   setLoading
 ) {
+  console.log('fetchFavorites')
   try {
     await fetchAndTransformFavoriteQuizzes(
       backendApiCall,
-        setQuizzes,
+        setFavoriteQuizzes,
       setError,
       auth
     );
@@ -250,6 +252,38 @@ export async function fetchFavorites(
     setLoading(false);
   }
 }
+
+export const fetchFavoritesAndAddUserQuizzes = async (backendApiCall, favoriteQuizzes, setFavoriteQuizzes, setError, auth, setUserQuizzesUpdated) => {
+  if (!auth.loggedIn) return;
+  try {
+    const userQuizDataArray = await backendApiCall(
+        'GET',
+        `/progress/user?userId=${auth.userId}`
+    );
+    //console.log('userQuizDataArray === ', userQuizDataArray.data)
+    const updatedQuizzes = favoriteQuizzes.map((quiz) => {
+      const userQuizData = userQuizDataArray.data.find(
+          (uqd) => uqd.quiz === quiz.id
+      );
+      if (userQuizData) {
+        return {
+          ...quiz,
+          quizProgress: {
+            attemptsCount: userQuizData.attemptNumber.toString(),
+            bestScore: userQuizData.maxScore,
+            lastScore: userQuizData.score,
+          },
+        };
+      }
+      return quiz;
+    });
+
+    setFavoriteQuizzes(updatedQuizzes);
+    setUserQuizzesUpdated(true);
+  } catch (err) {
+    setError(err);
+  }
+};
 
 export const addFavorite = async (quizId) => {
   try {

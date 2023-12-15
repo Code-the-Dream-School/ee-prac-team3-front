@@ -80,8 +80,8 @@ export default function QuizContent() {
               quizzes,
               setQuizzes,
               setError,
-              setUserQuizzesUpdated,
-              auth
+                auth,
+              setUserQuizzesUpdated
             ).then(() => {
               setUserQuizzesUpdated(true);
             });

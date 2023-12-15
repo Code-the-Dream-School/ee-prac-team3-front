@@ -1,6 +1,13 @@
-import React, {useState} from "react";
-import reactJsLogo from '../../assets/images/react-logo-svgrepo-com.svg';
-import jsLogo from '../../assets/images/js.svg';
+import useAuth from "../../auth/useAuth";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {
+    backendApiCall,
+    fetchFavorites, fetchFavoritesAndAddUserQuizzes,
+    getFavorites,
+    removeFavorite
+} from "../../functions/exportFunctions";
+import {LOGIN} from "../../App";
 import {QuizzesContainer} from "./Main";
 
 export const Favorites = ({
@@ -8,42 +15,16 @@ export const Favorites = ({
                               activeFilters,
                               searchValue,
                           }) => {
-   /* const { auth } = useAuth();
+    const { auth } = useAuth();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
     const [favoritesIds, setFavoritesIds] = useState([]);
-    const navigate = useNavigate();*/
+    const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+    const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
+    const navigate = useNavigate();
 
-    const [favoriteQuizzes] = useState([
-        {
-            id: 'react-intermediate',
-            title: 'React Intermediate',
-            category: 'react',
-            level: 'intermediate',
-            labels: ['frontend'],
-            image: reactJsLogo,
-            quizProgress: {
-                attemptsCount: 0,
-                bestScore: 0,
-                lastScore: 0,
-            },
-        },
-        {
-            id: 'js-arrays',
-            title: 'JS Arrays',
-            category: 'javascript',
-            level: 'basic',
-            labels: ['frontend', 'backend'],
-            image: jsLogo,
-            quizProgress: {
-                attemptsCount: 2,
-                bestScore: 80,
-                lastScore: 80,
-            },
-        },
-    ]);
-   /* const removeFavoriteHandler = async (quizId) => {
+    const removeFavoriteHandler = async (quizId) => {
         try {
             await removeFavorite(quizId);
             setFavoritesIds((prevFavoriteQuizzesIds) =>
@@ -63,8 +44,8 @@ export const Favorites = ({
                 setLoading(true);
                 const quizzesIds = await getFavorites();
                 setFavoritesIds(quizzesIds);
-
-                if (auth.loggedIn && favoriteQuizzes.length <= 1) {
+                if (auth.loggedIn && favoriteQuizzes.length === 0 && !initialDataLoaded) {
+                    console.log('fetchFavorites')
                     await fetchFavorites(
                         backendApiCall,
                         setFavoriteQuizzes,
@@ -72,6 +53,7 @@ export const Favorites = ({
                         auth,
                         setLoading
                     );
+                    setInitialDataLoaded(true);
                 } else if (!auth.loggedIn) {
                     navigate(LOGIN);
                 } else {
@@ -82,18 +64,48 @@ export const Favorites = ({
             }
         };
         fetchAndSetFavoriteQuizzes();
-    }, [auth.loggedIn, setFavoritesIds, auth, favoriteQuizzes.length, navigate]);*/
+    }, [auth.loggedIn, setFavoritesIds, auth, favoriteQuizzes.length, navigate]);
+
+
+    useEffect(() => {
+        const fetchQuizzes = async () => {
+            try {
+                if (auth.loggedIn &&
+                    initialDataLoaded &&
+                    favoriteQuizzes.length > 0 &&
+                    !userQuizzesUpdated) {
+                    await fetchFavoritesAndAddUserQuizzes(
+                        backendApiCall,
+                        favoriteQuizzes,
+                        setFavoriteQuizzes,
+                        setError,
+                        auth,
+                        setUserQuizzesUpdated
+                    );
+                } else if (!auth.loggedIn) {
+                    navigate(LOGIN);
+                } else {
+                    setLoading(false);
+                }
+
+            } catch (error) {
+                setError(error);
+            }
+        };
+        fetchQuizzes();
+    }, [auth.loggedIn, initialDataLoaded, favoriteQuizzes.length, userQuizzesUpdated]);
+
 
     return (
         <QuizzesContainer
             title="Your favorite quizzes"
             quizzesForFiltering={favoriteQuizzes}
-           /* loading={loading}
+            loading={loading}
             error={error}
-            favoritesIds={favoritesIds}*/
+            favoritesIds={favoritesIds}
             quizzesLength={favoriteQuizzes.length}
             activeFilters={activeFilters}
-            /*removeFavoriteHandler={removeFavoriteHandler}*/
+            removeFavoriteHandler={removeFavoriteHandler}
             changeFilter={changeFilter}
             searchValue={searchValue}
             message="Save your favorite quizzes so they are here."

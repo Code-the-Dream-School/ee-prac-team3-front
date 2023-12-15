@@ -51,7 +51,12 @@ export const Quizzes = ({
         const fetchQuizzes = async () => {
             try {
                 if (auth.loggedIn && quizzes.length === 1 && !initialDataLoaded) {
-                    await fetchQuizData(backendApiCall, setQuizzes, setError, auth, setLoading);
+                    await fetchQuizData(
+                        backendApiCall,
+                        setQuizzes,
+                        setError,
+                        auth,
+                        setLoading);
                     setInitialDataLoaded(true);
                 } else if (!auth.loggedIn) {
                     navigate(LOGIN);
@@ -87,8 +92,7 @@ export const Quizzes = ({
                 } else {
                     setLoading(false);
                 }
-                console.log('initialDataLoaded === ', initialDataLoaded);
-                console.log('userQuizzesUpdated === ', userQuizzesUpdated);
+
             } catch (error) {
                 setError(error);
             }

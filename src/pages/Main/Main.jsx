@@ -56,7 +56,7 @@ export const QuizzesContainer = ({
   itemsPerPage = 9,
   loadMoreThreshold = 100,
 }) => {
-  //console.log('quizzesForFiltering === ', quizzesForFiltering)
+  console.log('quizzesForFiltering === ', quizzesForFiltering)
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [displayedQuizzes, setDisplayedQuizzes] = useState([]);
