@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Box, Container, Grid, Typography } from '@mui/material';
 import useAuth from 'auth/useAuth';
@@ -98,7 +98,7 @@ const QuizzesContainer = ({
     }
   };
 
-  const loadMoreQuizzes = () => {
+  const loadMoreQuizzes = useCallback(() => {
     if (loadingMore) return;
 
     setLoadingMore(true);
@@ -116,7 +116,13 @@ const QuizzesContainer = ({
     setCurrentPage((prevPage) => prevPage + 1);
 
     setLoadingMore(false);
-  };
+  }, [
+    loadingMore,
+    currentPage,
+    itemsPerPage,
+    filteredQuizzes,
+    displayedQuizzes,
+  ]);
 
   useEffect(() => {
     setDisplayedQuizzes(filteredQuizzes.slice(0, itemsPerPage));
@@ -136,7 +142,7 @@ const QuizzesContainer = ({
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [handleScroll, loadMoreQuizzes, loadMoreThreshold]);
+  }, [loadMoreQuizzes, loadMoreThreshold]);
 
   return (
     <>
