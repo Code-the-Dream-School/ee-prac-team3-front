@@ -22,7 +22,8 @@ const Quiz = ({
   quiz,
   activeFilters,
   getProgressForQuiz,
-  favoritesIds, addToFavoritesHandler,
+  favoritesIds,
+  addToFavoritesHandler,
   removeFavoriteHandler,
   searchValue,
 }) => {
@@ -36,7 +37,6 @@ const Quiz = ({
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-      console.log('Quiz favoritesIds === ', favoritesIds)
     favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
   }, [favoritesIds, quiz.id]);
 
@@ -75,15 +75,15 @@ const Quiz = ({
     );
   };
 
-  const handleAddFavorite =  (quizId) => {
-      addToFavoritesHandler(quizId);
-      setIsFavorite(true);
-      handleClose();
+  const handleAddFavorite = (quizId) => {
+    addToFavoritesHandler(quizId);
+    setIsFavorite(true);
+    handleClose();
   };
 
   const handleRemoveFavorite = (quizId) => {
-     removeFavoriteHandler(quizId);
-     setIsFavorite(false);
+    removeFavoriteHandler(quizId);
+    setIsFavorite(false);
   };
 
   const handleResetProgress = () => {

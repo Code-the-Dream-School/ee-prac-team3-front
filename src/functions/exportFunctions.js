@@ -1,9 +1,8 @@
-
 import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from '../assets/images/js.svg';
 import nodeJsLogo from '../assets/images/nodejs.svg';
 import dataStructureLogo from '../assets/images/hierarchical-structure-svgrepo-com.svg';
-import {BASE_URL} from "../config";
+import { BASE_URL } from '../config';
 
 export const backendApiCall = async (method, url, body) => {
   const options = {
@@ -220,7 +219,7 @@ export const addFavorite = async (quizId) => {
     await backendApiCall('POST', '/favorites/add', {
       quizId,
     });
-   // await getFavorites();
+    // await getFavorites();
   } catch (error) {
     console.error('Error adding favorite:', error);
     throw error;

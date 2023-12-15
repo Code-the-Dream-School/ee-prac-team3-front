@@ -33,7 +33,7 @@ import {
   authenticateUser,
   handleLogout,
 } from './functions/exportFunctions';
-import {BASE_URL} from "./config";
+import { BASE_URL } from './config';
 
 const PATH = {
   HOME: '/home',

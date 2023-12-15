@@ -45,7 +45,8 @@ const QuizzesContainer = ({
   changeFilter,
   message,
   quizzesForFiltering,
-  favoritesIds, addToFavoritesHandler,
+  favoritesIds,
+  addToFavoritesHandler,
   removeFavoriteHandler,
   quizProgress,
   searchValue,
@@ -123,9 +124,7 @@ const QuizzesContainer = ({
                               getProgressForQuiz={getProgressForQuiz}
                               favoritesIds={favoritesIds}
                               addToFavoritesHandler={addToFavoritesHandler}
-                              removeFavoriteHandler={
-                                removeFavoriteHandler
-                              }
+                              removeFavoriteHandler={removeFavoriteHandler}
                             />
                           ))}
                         </Grid>
@@ -155,12 +154,10 @@ export const Quizzes = ({
   const [favoritesIds, setFavoritesIds] = useState([]);
   const navigate = useNavigate();
 
-  console.log('Quizzes favoritesIds === ', favoritesIds)
-
   const addToFavoritesHandler = async (quizId) => {
     try {
-        await addFavorite(quizId);
-        setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
+      await addFavorite(quizId);
+      setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
     } catch (error) {
       console.error('Error adding to favorites:', error);
     }
@@ -169,7 +166,9 @@ export const Quizzes = ({
   const removeFavoriteHandler = async (quizId) => {
     try {
       await removeFavorite(quizId);
-      setFavoritesIds((prevFavoriteQuizzesIds) => prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId));
+      setFavoritesIds((prevFavoriteQuizzesIds) =>
+        prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
+      );
     } catch (error) {
       console.error('Error removing favorite:', error);
     }
@@ -208,7 +207,7 @@ export const Quizzes = ({
       quizzesLength={quizzes.length}
       loading={loading}
       error={error}
-      favoritesId={favoritesIds}
+      favoritesIds={favoritesIds}
       activeFilters={activeFilters}
       changeFilter={changeFilter}
       quizProgress={quizProgress}
@@ -231,14 +230,17 @@ export const Favorites = ({
   const [error, setError] = useState(null);
   const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
   const [favoritesIds, setFavoritesIds] = useState([]);
-
-  console.log('Favorites favoritesIds === ', favoritesIds)
+  const navigate = useNavigate();
 
   const removeFavoriteHandler = async (quizId) => {
     try {
       await removeFavorite(quizId);
-      setFavoritesIds((prevFavoriteQuizzesIds) => prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId));
-      setFavoriteQuizzes((prevFavoriteQuizzes) => prevFavoriteQuizzes.filter((quiz) => quiz.id !== quizId));
+      setFavoritesIds((prevFavoriteQuizzesIds) =>
+        prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
+      );
+      setFavoriteQuizzes((prevFavoriteQuizzes) =>
+        prevFavoriteQuizzes.filter((quiz) => quiz.id !== quizId)
+      );
     } catch (error) {
       console.error('Error removing favorite:', error);
     }
@@ -246,25 +248,26 @@ export const Favorites = ({
 
   useEffect(() => {
     const fetchAndSetFavoriteQuizzes = async () => {
-      console.log('Fetching Favorite quizzes');
       try {
         setLoading(true);
         const quizzesIds = await getFavorites();
         setFavoritesIds(quizzesIds);
 
-        // Fetch quizzes from the API
-        await fetchFavorites(
-          backendApiCall,
-          setFavoriteQuizzes,
-          setError,
-          auth,
-          setLoading
-        );
-
-        setLoading(false);
+        if (auth.loggedIn && favoriteQuizzes.length <= 1) {
+          await fetchFavorites(
+            backendApiCall,
+            setFavoriteQuizzes,
+            setError,
+            auth,
+            setLoading
+          );
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        } else {
+          setLoading(false);
+        }
       } catch (error) {
         setError(error);
-        setLoading(false);
       }
     };
     fetchAndSetFavoriteQuizzes();
