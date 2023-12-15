@@ -113,7 +113,6 @@ const QuizzesContainer = ({
 
     setDisplayedQuizzes((prevQuizzes) => [...prevQuizzes, ...uniqueNewQuizzes]);
 
-    // Increment the current page
     setCurrentPage((prevPage) => prevPage + 1);
 
     setLoadingMore(false);
@@ -124,6 +123,14 @@ const QuizzesContainer = ({
   }, [filteredQuizzes, itemsPerPage]);
 
   useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+
+      if (scrollTop + clientHeight >= scrollHeight - loadMoreThreshold) {
+        loadMoreQuizzes();
+      }
+    };
     window.addEventListener('scroll', handleScroll);
 
     return () => {
