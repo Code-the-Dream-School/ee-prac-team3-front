@@ -21,16 +21,17 @@ import { QUIZ } from 'App';
 const Quiz = ({
   quiz,
   activeFilters,
-  getProgressForQuiz,
+  quizProgress,
   favoritesIds,
   addToFavoritesHandler,
   removeFavoriteHandler,
   searchValue,
 }) => {
+  const {bestScore, attemptsCount} = quizProgress;
   const isFilterActive = (filterType, value) =>
     activeFilters[filterType].length > 0 &&
     activeFilters[filterType].includes(value);
-  const progress = getProgressForQuiz(quiz.id);
+
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const [anchorEl, setAnchorEl] = useState(null);
   const [cardClickable, setCardClickable] = useState(true);
@@ -185,15 +186,27 @@ const Quiz = ({
               </Box>
               <Box>
                 <Typography
-                  sx={{ marginTop: '10px', color: customColors.greyMedium }}
+                  sx={{
+                    marginTop: '10px',
+                    color: customColors.greyDark,
+                    fontWeight: 'bold',
+                  }}
                 >
-                  {progress.attemptsCount
-                    ? `Attempts: ${progress.attemptsCount}`
+                  {bestScore && `Best Score: ${bestScore}%`}
+                </Typography>
+                <Typography
+                  sx={{
+                    marginTop: '10px',
+                    color: customColors.greyDark,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {attemptsCount
+                    ? `Attempts: ${attemptsCount}`
                     : 'Not Passed'}
                 </Typography>
               </Box>
             </Box>
-
             {/* this is the content of the right side inside each card */}
             <Box
               sx={{
@@ -220,7 +233,7 @@ const Quiz = ({
                   }}
                   image={quiz.image}
                 />
-                <Progress progress={progress.progress} />
+                <Progress progress={bestScore} />
               </Box>
               <Box sx={{ textAlign: 'center' }}>
                 <Typography

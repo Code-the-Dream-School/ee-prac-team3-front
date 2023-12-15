@@ -65,8 +65,6 @@ export const {
   QUIZ,
 } = PATH;
 
-/*export const port = `http://localhost:8000`;*/
-
 export const highlights = [
   {
     id: 'highlight 1',
@@ -87,65 +85,6 @@ export const highlights = [
     id: 'highlight 4',
     text: 'Notes for productive studying',
     image: highlight_4,
-  },
-];
-
-const quizProgress = [
-  {
-    quizId: 'react-basic',
-    attemptsCount: 1,
-    bestScore: 80,
-    lastScore: 50,
-    progress: 50,
-  },
-  {
-    quizId: 'react-intermediate',
-    attemptsCount: 4,
-    bestScore: 50,
-    lastScore: 50,
-    progress: 10,
-  },
-  {
-    quizId: 'js-basic',
-    attemptsCount: 3,
-    bestScore: 90,
-    lastScore: 30,
-    progress: 80,
-  },
-  {
-    quizId: 'js-functions',
-    attemptsCount: 1,
-    bestScore: 20,
-    lastScore: 20,
-    progress: 100,
-  },
-  {
-    quizId: 'react-basic',
-    attemptsCount: 1,
-    bestScore: 80,
-    lastScore: 50,
-    progress: 50,
-  },
-  {
-    quizId: 'react-intermediate',
-    attemptsCount: 4,
-    bestScore: 50,
-    lastScore: 50,
-    progress: 10,
-  },
-  {
-    quizId: 'js-basic',
-    attemptsCount: 3,
-    bestScore: 90,
-    lastScore: 30,
-    progress: 80,
-  },
-  {
-    quizId: 'js-functions',
-    attemptsCount: 1,
-    bestScore: 20,
-    lastScore: 20,
-    progress: 100,
   },
 ];
 
@@ -302,7 +241,6 @@ export default function App() {
                     <Quizzes
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
-                      quizProgress={quizProgress}
                       searchValue={searchTerm}
                     />
                   ) : (
@@ -343,7 +281,6 @@ export default function App() {
                     <Favorites
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
-                      quizProgress={quizProgress}
                       searchValue={searchTerm}
                     />
                   ) : (

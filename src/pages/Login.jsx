@@ -63,7 +63,7 @@ export default function Login() {
     };
 
     try {
-      const apiStatus = await backendApiCall('POST', '/api/v1/login', bodyData);
+      const apiStatus = await backendApiCall('POST', '/login', bodyData);
       if (apiStatus.success === true) {
         setIsLoading(false);
         setLoginData({

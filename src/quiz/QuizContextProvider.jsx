@@ -22,6 +22,11 @@ export const QuizContextProvider = ({ children }) => {
           resources: '',
         },
       ],
+      quizProgress: {
+        attemptsCount: 0,
+        bestScore: 0,
+        lastScore: 0,
+      },
       createdDate: '',
     },
   ]);

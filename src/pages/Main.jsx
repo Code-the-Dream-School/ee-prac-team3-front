@@ -12,10 +12,11 @@ import customColors, { defaultTheme } from '../assets/styles';
 import {
   addFavorite,
   backendApiCall,
-  fetchData,
   fetchFavorites,
   getFavorites,
   removeFavorite,
+  fetchQuizData,
+  fetchAndAddUserQuizzes,
 } from '../functions/exportFunctions';
 
 export const containerStyles = {
@@ -48,7 +49,6 @@ const QuizzesContainer = ({
   favoritesIds,
   addToFavoritesHandler,
   removeFavoriteHandler,
-  quizProgress,
   searchValue,
   loading,
   error,
@@ -56,17 +56,10 @@ const QuizzesContainer = ({
   itemsPerPage = 9,
   loadMoreThreshold = 100,
 }) => {
+
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [displayedQuizzes, setDisplayedQuizzes] = useState([]);
-
-  const getProgressForQuiz = useMemo(
-    () => (quizId) => {
-      const progressObj = quizProgress.find((p) => p.quizId === quizId);
-      return progressObj || 0;
-    },
-    [quizProgress]
-  );
 
   const filteredQuizzes = useMemo(
     () =>
@@ -173,7 +166,7 @@ const QuizzesContainer = ({
                               quiz={q}
                               activeFilters={activeFilters}
                               searchValue={searchValue}
-                              getProgressForQuiz={getProgressForQuiz}
+                              quizProgress={q.quizProgress}
                               favoritesIds={favoritesIds}
                               addToFavoritesHandler={addToFavoritesHandler}
                               removeFavoriteHandler={removeFavoriteHandler}
@@ -199,11 +192,14 @@ export const Quizzes = ({
   quizProgress,
   searchValue,
 }) => {
-  const { quizzes, setQuizzes } = useQuiz();
   const { auth } = useAuth();
+  const { quizzes, setQuizzes } = useQuiz();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [favoritesIds, setFavoritesIds] = useState([]);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
+
   const navigate = useNavigate();
 
   const addToFavoritesHandler = async (quizId) => {
@@ -227,17 +223,33 @@ export const Quizzes = ({
   };
 
   useEffect(() => {
+    if (auth.loggedIn && quizzes.length === 1 && !initialDataLoaded) {
+      fetchQuizData(backendApiCall, setQuizzes, setError, auth, setLoading);
+      setInitialDataLoaded(true);
+    } else if (!auth.loggedIn) {
+      navigate(LOGIN);
+    } else {
+      setLoading(false);
+    }
+  }, [
+    auth, navigate, quizzes.length, setQuizzes, initialDataLoaded
+  ]);
+
+  useEffect(() => {
     const fetchQuizzes = async () => {
       try {
         const quizzesIds = await getFavorites();
         setFavoritesIds(quizzesIds);
-        if (auth.loggedIn && quizzes.length <= 1) {
-          await fetchData(
+        if (auth.loggedIn &&
+            initialDataLoaded &&
+            quizzes.length > 0 &&
+            !userQuizzesUpdated) {
+          await fetchAndAddUserQuizzes(
             backendApiCall,
+              quizzes,
             setQuizzes,
             setError,
-            auth,
-            setLoading
+            auth, setUserQuizzesUpdated
           );
         } else if (!auth.loggedIn) {
           navigate(LOGIN);
@@ -249,8 +261,11 @@ export const Quizzes = ({
       }
     };
 
+    console.log('fetchQuizzes')
     fetchQuizzes();
-  }, [auth.favorites, quizzes.length, navigate, setQuizzes, auth]);
+  }, [auth.favorites, quizzes.length, navigate, setQuizzes, auth, quizzes,
+    initialDataLoaded, setError, userQuizzesUpdated,]);
+
 
   return (
     <QuizzesContainer
@@ -270,6 +285,7 @@ export const Quizzes = ({
     />
   );
 };
+
 
 export const Favorites = ({
   changeFilter,

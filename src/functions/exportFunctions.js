@@ -4,6 +4,13 @@ import nodeJsLogo from '../assets/images/nodejs.svg';
 import dataStructureLogo from '../assets/images/hierarchical-structure-svgrepo-com.svg';
 import { BASE_URL } from '../config';
 
+const imageMapping = {
+  react: reactJsLogo,
+  javascript: jsLogo,
+  nodejs: nodeJsLogo,
+  datastructures: dataStructureLogo,
+};
+
 export const backendApiCall = async (method, url, body) => {
   const options = {
     method: method,
@@ -39,8 +46,7 @@ export const backendApiCall = async (method, url, body) => {
 export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
   try {
     const backendUserData = await backendApiCall('GET', '/login');
-    setAuth((prevState) => ({
-      ...prevState,
+    setAuth({
       userId: backendUserData.user.userId,
       firstName: backendUserData.user.firstname,
       lastName: backendUserData.user.lastname,
@@ -50,7 +56,7 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
       accessToken: backendUserData.user.accessToken,
       avatarURL: backendUserData.user.avatarURL,
       favorites: backendUserData.user.favorites,
-    }));
+    });
   } catch (error) {
     throw new Error(error);
   } finally {
@@ -58,11 +64,7 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
   }
 };
 
-export const handleLogout = async (
-  backendApiCall,
-  setAuth,
-  setShowLogoutModal
-) => {
+export const handleLogout = async (backendApiCall, setAuth, setShowLogoutModal) => {
   try {
     await backendApiCall('GET', '/logout');
 
@@ -71,24 +73,11 @@ export const handleLogout = async (
     });
     setShowLogoutModal(true);
   } catch (error) {
-    // Handle any errors here, such as showing an error message
-    console.error('Logout failed:', error);
+    throw new Error(error);
   }
 };
 
-const imageMapping = {
-  react: reactJsLogo,
-  javascript: jsLogo,
-  nodejs: nodeJsLogo,
-  datastructures: dataStructureLogo,
-};
-
-export const fetchAndTransformQuizzes = async (
-  backendApiCall,
-  onSuccess,
-  onError,
-  auth
-) => {
+export const fetchAndTransformQuizzes = async (backendApiCall, onSuccess, onError, auth) => {
   if (!auth.loggedIn) return;
 
   try {
@@ -112,6 +101,11 @@ export const fetchAndTransformQuizzes = async (
           correctOption: q.correctOption,
           id: q._id,
         })),
+        quizProgress: {
+          attemptsCount: 0,
+          bestScore: 0,
+          lastScore: 0,
+        },
         createdDate: quiz.createdAt,
       };
     });
@@ -123,21 +117,69 @@ export const fetchAndTransformQuizzes = async (
   }
 };
 
-export async function fetchData(
-  backendApiCall,
-  onSucess,
-  setError,
-  auth,
-  setLoading
-) {
+export const fetchAndAddUserQuizzes = async (backendApiCall, quizzes, onSuccess, onError, setUserQuizzesUpdated, auth) => {
+  if (!auth.loggedIn) return;
+
   try {
-    await fetchAndTransformQuizzes(backendApiCall, onSucess, setError, auth);
+    const userQuizDataArray = await backendApiCall(
+      'GET',
+      `/progress/user?userId=${auth.userId}`
+    );
+
+    const updatedQuizzes = quizzes.map((quiz) => {
+      const userQuizData = userQuizDataArray.data.find(
+        (uqd) => uqd.quiz === quiz.id
+      );
+      if (userQuizData) {
+        return {
+          ...quiz,
+          quizProgress: {
+            attemptsCount: userQuizData.attemptNumber.toString(),
+            bestScore: userQuizData.maxScore,
+            lastScore: userQuizData.score,
+          },
+        };
+      }
+      return quiz;
+    });
+
+    onSuccess(updatedQuizzes);
+    setUserQuizzesUpdated(true);
+  } catch (err) {
+    onError(err);
+  }
+};
+
+export async function fetchQuizData(backendApiCall, onSuccess, setError, auth, setLoading) {
+  try {
+    await fetchAndTransformQuizzes(backendApiCall, onSuccess, setError, auth);
   } catch (err) {
     setError(err);
   } finally {
     setLoading(false);
   }
 }
+
+export async function updateUserProgress(quizId, score, userId, setError) {
+  const body = { quiz: quizId, score: score.toString(), user: userId };
+  const url = '/progress/user';
+  try {
+    const api = await backendApiCall('POST', `${url}`, body);
+    return api;
+  } catch (err) {
+    setError(err);
+  }
+}
+
+export const getFavorites = async () => {
+  try {
+    const response = await backendApiCall('GET', '/favorites');
+    return response.favorites;
+  } catch (error) {
+    console.error('Error getting favorites:', error);
+    throw error;
+  }
+};
 
 export const fetchAndTransformFavoriteQuizzes = async (
   backendApiCall,
@@ -203,16 +245,6 @@ export async function fetchFavorites(
     setLoading(false);
   }
 }
-
-export const getFavorites = async () => {
-  try {
-    const response = await backendApiCall('GET', '/favorites');
-    return response.favorites;
-  } catch (error) {
-    console.error('Error getting favorites:', error);
-    throw error;
-  }
-};
 
 export const addFavorite = async (quizId) => {
   try {

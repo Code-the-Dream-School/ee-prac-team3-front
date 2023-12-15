@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
@@ -24,20 +24,28 @@ export default function QuestionContent({
   onBackQuestion,
   index,
   length,
-  answer,
+  selectedOption,
+  setSelectedOption,
   type,
   userAnswers,
+  resources,
   questionId,
   setFinishQuiz,
 }) {
-  const [selected, setSelected] = useState(type === `check-box` ? [] : '');
+  const [selected, setSelected] = useState(
+    type === 'check-box'
+      ? Array.isArray(selectedOption)
+        ? selectedOption
+        : []
+      : selectedOption || ''
+  );
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
   const [showWarningModal, setShowWarningModal] = useState(false);
-  const [showFeedbackCorrectModal, setShowFeedbackCorrectModal] =
-    useState(false);
-  const [showFeedbackIncorrectModal, setShowFeedbackIncorrectModal] =
-    useState(false);
   const [showFinalQModal, setShowFinalQModal] = useState(false);
+
+  useEffect(() => {
+    setSelected(selectedOption);
+  }, [selectedOption]);
 
   const resetSelection = () => {
     setSelected('');
@@ -49,19 +57,14 @@ export default function QuestionContent({
     if (!selected && !isCurrentQuestionAnswered) {
       setShowWarningModal(true);
     } else {
-      onSkipQuestion(resetSelection);
+      onSkipQuestion(resetSelection, isCurrentQuestionAnswered);
     }
   };
 
   const handleSubmitAnswer = () => {
-    const isCorrect = selected === answer.toString();
     //if user submits an answer questionId is add to Set used for tracking answered questions
     setAnsweredQuestions((prev) => new Set(prev).add(questionId));
-    if (isCorrect) {
-      setShowFeedbackCorrectModal(true);
-    } else {
-      setShowFeedbackIncorrectModal(true);
-    }
+    onAnswerSelected(selected, index);
   };
 
   const handleSubmitTest = () => {
@@ -74,6 +77,7 @@ export default function QuestionContent({
     }
   };
 
+  const correctnessInfo = userAnswers[index];
   const checkbox = 'check-box';
 
   return (
@@ -93,7 +97,9 @@ export default function QuestionContent({
             checkbox,
             selected,
             setSelected,
-            isCurrentQuestionAnswered
+            isCurrentQuestionAnswered,
+            correctnessInfo,
+            setSelectedOption
           )}
         </FormGroup>
       ) : (
@@ -109,10 +115,27 @@ export default function QuestionContent({
             'radio',
             selected,
             setSelected,
-            isCurrentQuestionAnswered
+            isCurrentQuestionAnswered,
+            correctnessInfo,
+            setSelectedOption
           )}
         </RadioGroup>
       )}
+      {isCurrentQuestionAnswered &&
+        correctnessInfo &&
+        (correctnessInfo.isCorrect ? (
+          <Typography> Nice work! </Typography>
+        ) : (
+          <>
+            <Typography> Sorry, that is incorrect. </Typography>
+            {resources && (
+              <Typography>
+                You can learn more about this topic at the following links:
+                {resources}
+              </Typography>
+            )}
+          </>
+        ))}
       <div
         style={{
           display: 'flex',
@@ -124,7 +147,9 @@ export default function QuestionContent({
           {index > 0 && (
             <Button
               variant="outlined"
-              onClick={() => onBackQuestion(resetSelection)}
+              onClick={() =>
+                onBackQuestion(resetSelection, isCurrentQuestionAnswered)
+              }
               sx={{ mt: 5, ml: 1 }}
             >
               Previous Question
@@ -178,50 +203,6 @@ export default function QuestionContent({
               }}
             >
               Continue
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-      {showFeedbackCorrectModal && (
-        <Dialog
-          open={showFeedbackCorrectModal}
-          onClose={() => setShowFeedbackCorrectModal(false)}
-        >
-          <DialogContent>
-            <DialogContentText>
-              Nice work, {selected} is correct!
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                onAnswerSelected(selected, resetSelection);
-                setShowFeedbackCorrectModal(false);
-              }}
-            >
-              Next Question
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-      {showFeedbackIncorrectModal && (
-        <Dialog
-          open={showFeedbackIncorrectModal}
-          onClose={() => setShowFeedbackIncorrectModal(false)}
-        >
-          <DialogContent>
-            <DialogContentText>
-              Nice try, but {selected} is not correct
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                onAnswerSelected(selected, resetSelection);
-                setShowFeedbackIncorrectModal(false);
-              }}
-            >
-              Next Question
             </Button>
           </DialogActions>
         </Dialog>
