@@ -90,14 +90,6 @@ const QuizzesContainer = ({
     [quizzesForFiltering, activeFilters, searchValue]
   );
 
-  const handleScroll = () => {
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-
-    if (scrollTop + clientHeight >= scrollHeight - loadMoreThreshold) {
-      loadMoreQuizzes();
-    }
-  };
-
   const loadMoreQuizzes = useCallback(() => {
     if (loadingMore) return;
 
