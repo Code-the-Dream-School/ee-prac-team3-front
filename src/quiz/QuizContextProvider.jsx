@@ -1,5 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
-import useAuth from '../auth/useAuth';
+import { createContext, useState } from 'react';
 
 const QuizContext = createContext();
 

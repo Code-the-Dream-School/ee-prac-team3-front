@@ -53,7 +53,13 @@ const QuizzesContainer = ({
   loading,
   error,
   quizzesLength,
+  itemsPerPage = 9,
+  loadMoreThreshold = 100,
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [displayedQuizzes, setDisplayedQuizzes] = useState([]);
+
   const getProgressForQuiz = useMemo(
     () => (quizId) => {
       const progressObj = quizProgress.find((p) => p.quizId === quizId);
@@ -83,6 +89,47 @@ const QuizzesContainer = ({
       }),
     [quizzesForFiltering, activeFilters, searchValue]
   );
+
+  const handleScroll = () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+    if (scrollTop + clientHeight >= scrollHeight - loadMoreThreshold) {
+      loadMoreQuizzes();
+    }
+  };
+
+  const loadMoreQuizzes = () => {
+    if (loadingMore) return;
+
+    setLoadingMore(true);
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const newQuizzes = filteredQuizzes.slice(startIndex, endIndex);
+
+    const uniqueNewQuizzes = newQuizzes.filter(
+      (newQuiz) => !displayedQuizzes.some((quiz) => quiz.id === newQuiz.id)
+    );
+
+    setDisplayedQuizzes((prevQuizzes) => [...prevQuizzes, ...uniqueNewQuizzes]);
+
+    // Increment the current page
+    setCurrentPage((prevPage) => prevPage + 1);
+
+    setLoadingMore(false);
+  };
+
+  useEffect(() => {
+    setDisplayedQuizzes(filteredQuizzes.slice(0, itemsPerPage));
+  }, [filteredQuizzes, itemsPerPage]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
     <>
@@ -115,7 +162,7 @@ const QuizzesContainer = ({
                           spacing={4}
                           sx={{ display: 'flex', justifyContent: 'start' }}
                         >
-                          {filteredQuizzes.map((q) => (
+                          {displayedQuizzes.map((q) => (
                             <Quiz
                               key={q.id}
                               quiz={q}
@@ -198,7 +245,7 @@ export const Quizzes = ({
     };
 
     fetchQuizzes();
-  }, [auth.favorites, quizzes.length, navigate, setQuizzes]);
+  }, [auth.favorites, quizzes.length, navigate, setQuizzes, auth]);
 
   return (
     <QuizzesContainer
@@ -271,7 +318,7 @@ export const Favorites = ({
       }
     };
     fetchAndSetFavoriteQuizzes();
-  }, [auth.loggedIn, setFavoritesIds]);
+  }, [auth.loggedIn, setFavoritesIds, auth, favoriteQuizzes.length, navigate]);
 
   return (
     <QuizzesContainer
