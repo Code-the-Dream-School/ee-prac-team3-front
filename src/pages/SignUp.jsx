@@ -13,6 +13,9 @@ import {
   Typography,
   useMediaQuery,
   Container,
+  InputLabel,
+  OutlinedInput,
+  FormControl,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import customColors, { defaultTheme } from 'assets/styles';
@@ -24,6 +27,7 @@ import backgroundAuth from '../assets/images/background-auth.svg';
 import jsQuizLogo from '../assets/images/logo.svg';
 import Loading from '../components/Loading';
 import { backendApiCall } from '../functions/exportFunctions';
+import { useState } from 'react';
 
 export default function SignUp() {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -31,9 +35,9 @@ export default function SignUp() {
   const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
     location.pathname
   );
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [userData, setUserData] = React.useState({
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
     email: '',
@@ -65,16 +69,15 @@ export default function SignUp() {
         lastName: '',
         password: '',
         email: '',
-      }); // Resetting the user data to its initial state.
+      });
       navigate(LOGIN);
     } catch (error) {
-      setIsLoading(false); // Ensure loading state is reset even on error.
+      setIsLoading(false);
       throw new Error(error.message);
-      // TODO: Provide feedback to the user about the error.
     }
   };
 
-  const onRedirect = (event, nav) => {
+  const onRedirect = (event) => {
     event.preventDefault();
     setUserData({
       firstName: '',
@@ -82,7 +85,7 @@ export default function SignUp() {
       password: '',
       email: '',
     });
-    navigate(nav);
+    navigate(LOGIN);
   };
 
   return (
@@ -186,27 +189,38 @@ export default function SignUp() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    id="password"
-                    autoComplete="new-password"
-                    type={showPassword ? 'text' : 'password'}
-                    onChange={handleUserDataChange('password')}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
+                  <FormControl fullWidth variant="outlined" margin="normal">
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <OutlinedInput
+                      id="password"
+                      required
+                      fullWidth
+                      name="password"
+                      label="Password"
+                      type={showPassword ? 'text' : 'password'}
+                      onChange={handleUserDataChange('password')}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? (
+                              <Visibility
+                                sx={{ color: customColors.greyMedium }}
+                              />
+                            ) : (
+                              <VisibilityOff
+                                sx={{ color: customColors.greyMedium }}
+                              />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
               <Button
@@ -231,7 +245,7 @@ export default function SignUp() {
                 <Grid item>
                   <Link
                     href={LOGIN}
-                    onClick={(e, LOGIN) => onRedirect()}
+                    onClick={(event) => onRedirect()}
                     variant="body2"
                   >
                     Already have an account? Sign in
