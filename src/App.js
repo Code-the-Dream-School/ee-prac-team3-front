@@ -23,7 +23,7 @@ import { Quizzes } from './pages/Main';
 import { Favorites } from './pages/Main';
 import About from './pages/About/About';
 import NavBar from './components/NavBar';
-import Notes from './pages/Notes';
+// import Notes from './pages/Notes';
 import Library from './pages/Library';
 import AccountSettings from './pages/AccountSettings';
 import useFilterState from './components/filterState';
@@ -35,6 +35,7 @@ import {
   authenticateUser,
   handleLogout,
 } from './functions/exportFunctions';
+import Notes from 'pages/Notes/notesPage';
 
 const PATH = {
   HOME: '/home',

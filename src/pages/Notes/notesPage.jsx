@@ -1,61 +1,68 @@
-import { useState } from "react";
+import { useEffect, useState } from 'react';
+import Table from '@mui/material/Table';
+import Container from '@mui/material/Container';
+import TableBody from '@mui/material/TableBody';
+import TableContainer from '@mui/material/TableContainer';
+import TablePagination from '@mui/material/TablePagination';
+import TableNoData from './table-no-data';
+import NotesTableRow from './table-row';
+import NotesTableHead from './table-head';
+import TableEmptyRows from './table-empty-rows';
+import NotesTableToolbar from './table-toolbar';
+import { emptyRows, applyFilter, getComparator } from './utils';
+import { Box, Button } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import AddIcon from '@mui/icons-material/Add';
+import NewNoteForm from './NoteForm';
+import fetchNotes from 'functions/fetch-notes';
+import { message } from 'antd';
+import Loading from 'components/Loading';
 
-import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
-import Table from "@mui/material/Table";
-import Container from "@mui/material/Container";
-import TableBody from "@mui/material/TableBody";
-import Typography from "@mui/material/Typography";
-import TableContainer from "@mui/material/TableContainer";
-import TablePagination from "@mui/material/TablePagination";
-import TableNoData from "./table-no-data";
-import NotesTableRow from "./table-row";
-import NotesTableHead from "./table-head";
-import TableEmptyRows from "./table-empty-rows";
-import NotesTableToolbar from "./table-toolbar";
-import { emptyRows, applyFilter, getComparator } from "./utils";
-import { notes } from "helpers/fetch-notes-data";
-import { Box } from "@mui/material";
-
-// import Scrollbar from "src/components/scrollbar";
-
-// ----------------------------------------------------------------------
-
-export default function NotesPage() {
+export default function Notes() {
+  const [loadingNotes, setLoadingNotes] = useState(false);
   const [page, setPage] = useState(0);
+  const [notes, setNotes] = useState([]);
 
-  const [order, setOrder] = useState("asc");
+  const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState("title");
+  const [orderBy, setOrderBy] = useState('title');
 
-  const [filterQuestion, setFilterQuestion] = useState("");
+  const [filterQuestion, setFilterQuestion] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openPopup, setOpenPopup] = useState(false);
+  const [editNote, setEditNote] = useState('');
 
   const handleSort = (event, id) => {
-    const isAsc = orderBy === id && order === "asc";
-    if (id !== "") {
-      setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === id && order === 'asc';
+    if (id !== '') {
+      setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(id);
     }
   };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = notes.map((n) => n.title);
+      const newSelecteds = notes.map((n) => n._id);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, title) => {
-    const selectedIndex = selected.indexOf(title);
+  const handleEditNote = (event, noteId) => {
+    const selectedNote = notes.filter((note) => note._id === noteId);
+    setEditNote(selectedNote[0]);
+    setOpenPopup(true);
+  };
+
+  const handleClick = (event, notesid) => {
+    const selectedIndex = selected.indexOf(notesid);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, title);
+      newSelected = newSelected.concat(selected, notesid);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -89,76 +96,107 @@ export default function NotesPage() {
     filterQuestion,
   });
 
-  const notFound = !dataFiltered.length && !!filterQuestion;
+  const notFound = !dataFiltered?.length && !!filterQuestion;
+
+  useEffect(() => {
+    setLoadingNotes(true);
+    fetchNotes()
+      .then((data) => {
+        setNotes(data);
+        setLoadingNotes(false);
+      })
+      .catch((err) => {
+        setLoadingNotes(false);
+        message.error('Something went wrong, please try again later!');
+      });
+  }, []);
 
   return (
-    <Container>
-      <Box minHeight="100vh">
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={5}
-        >
-          <Typography variant="h4">Notes</Typography>
-        </Stack>
-
-        <Card>
-          <NotesTableToolbar
-            numSelected={selected.length}
-            filterQuestion={filterQuestion}
-            onFilterQuestion={handleFilterByQuestion}
+    <div style={{ background: '#F5F5F5' }}>
+      <Container>
+        <Box minHeight="100vh">
+          {loadingNotes && <Loading />}
+          <Button
+            variant="contained"
+            style={{ background: '#243153', textTransform: 'none' }}
+            startIcon={<AddIcon />}
+            onClick={() => {
+              setOpenPopup(true);
+              setEditNote([{ title: '', note: '' }]);
+            }}
+            sx={{ mt: 4, borderRadius: 35 }}
+          >
+            New Note
+          </Button>
+          <NewNoteForm
+            openPopup={openPopup}
+            setOpenPopup={setOpenPopup}
+            editNote={editNote}
+            notes={notes}
+            setNotes={setNotes}
           />
+          <TableContainer component={Paper} sx={{ mt: 4 }}>
+            <NotesTableToolbar
+              selected={selected}
+              numSelected={selected.length}
+              filterQuestion={filterQuestion}
+              onFilterQuestion={handleFilterByQuestion}
+              notes={notes}
+              setNotes={setNotes}
+            />
 
-          <TableContainer sx={{ overflow: "unset" }}>
             <Table sx={{ minWidth: 800 }}>
               <NotesTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={notes.length}
+                rowCount={notes?.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: "title", label: "Question" },
-                  { id: "note", label: "Answer" },
-                  // { id: "" },
+                  { id: 'title', label: 'Title' },
+                  { id: 'note', label: 'Content' },
+                  { id: '' },
                 ]}
               />
               <TableBody>
                 {dataFiltered
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((notes) => (
                     <NotesTableRow
-                      key={row.id}
-                      title={row.title}
-                      note={row.note}
-                      selected={selected.indexOf(row.title) !== -1}
-                      handleClick={(event) => handleClick(event, row.title)}
+                      key={notes._id}
+                      title={notes.title}
+                      note={notes.note}
+                      selected={selected.indexOf(notes._id) !== -1}
+                      handleClick={(event) => handleClick(event, notes._id)}
+                      handleEditNote={(event) =>
+                        handleEditNote(event, notes._id)
+                      }
+                      setSelected={setSelected}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, notes.length)}
+                  emptyRows={emptyRows(page, rowsPerPage, notes?.length)}
                 />
 
                 {notFound && <TableNoData query={filterQuestion} />}
               </TableBody>
             </Table>
-          </TableContainer>
 
-          <TablePagination
-            page={page}
-            component="div"
-            count={notes.length}
-            rowsPerPage={rowsPerPage}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
-      </Box>
-    </Container>
+            <TablePagination
+              page={page}
+              component="div"
+              count={notes?.length}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableContainer>
+        </Box>
+      </Container>
+    </div>
   );
 }

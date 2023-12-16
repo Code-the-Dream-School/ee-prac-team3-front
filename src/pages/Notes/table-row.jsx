@@ -1,11 +1,17 @@
-import PropTypes from "prop-types";
-import Stack from "@mui/material/Stack";
-import TableRow from "@mui/material/TableRow";
-import Checkbox from "@mui/material/Checkbox";
-import TableCell from "@mui/material/TableCell";
-import Typography from "@mui/material/Typography";
+import Stack from '@mui/material/Stack';
+import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
+import TableCell from '@mui/material/TableCell';
+import Typography from '@mui/material/Typography';
+import { Button } from '@mui/material';
 
-export default function NotesTableRow({ selected, title, note, handleClick }) {
+export default function NotesTableRow({
+  selected,
+  title,
+  note,
+  handleClick,
+  handleEditNote,
+}) {
   return (
     <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
       <TableCell padding="checkbox">
@@ -21,13 +27,11 @@ export default function NotesTableRow({ selected, title, note, handleClick }) {
       </TableCell>
 
       <TableCell>{note}</TableCell>
+      <TableCell align="right">
+        <Button style={{ textTransform: 'none' }} onClick={handleEditNote}>
+          Edit
+        </Button>
+      </TableCell>
     </TableRow>
   );
 }
-
-NotesTableRow.propTypes = {
-  note: PropTypes.any,
-  handleClick: PropTypes.func,
-  title: PropTypes.any,
-  selected: PropTypes.any,
-};

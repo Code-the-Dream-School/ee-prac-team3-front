@@ -1,30 +1,59 @@
-import PropTypes from "prop-types";
-
-import Tooltip from "@mui/material/Tooltip";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
-import Iconify from "assets/iconify/iconify";
-
-// ----------------------------------------------------------------------
+import Tooltip from '@mui/material/Tooltip';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
+import { useEffect } from 'react';
+import fetchNotes from 'functions/fetch-notes';
+import { message } from 'antd';
+import useDelete from 'functions/delete-notes';
+import { CircularProgress } from '@mui/material';
 
 export default function NotesTableToolbar({
+  selected,
   numSelected,
   filterQuestion,
   onFilterQuestion,
+  notes,
+  setNotes,
+  setSelected,
 }) {
+  const { isLoading, response, deleteNotes } = useDelete();
+  const handleDeleteNotes = () => {
+    deleteNotes(selected);
+    selected.length = 0;
+  };
+
+  useEffect(() => {
+    if (response) {
+      if (response.success) {
+        message.success(response.message);
+        fetchNotes()
+          .then((data) => {
+            setNotes(data);
+          })
+          .catch((err) => {
+            message.error(response.message);
+          });
+      } else {
+        message.error(response.message);
+      }
+    }
+  }, [response]);
+
   return (
     <Toolbar
       sx={{
         height: 96,
-        display: "flex",
-        justifyContent: "space-between",
+        display: 'flex',
+        justifyContent: 'space-between',
         p: (theme) => theme.spacing(0, 1, 0, 3),
         ...(numSelected > 0 && {
-          color: "primary.main",
-          bgcolor: "primary.lighter",
+          color: 'primary.main',
+          bgcolor: 'primary.lighter',
         }),
       }}
     >
@@ -36,12 +65,11 @@ export default function NotesTableToolbar({
         <OutlinedInput
           value={filterQuestion}
           onChange={onFilterQuestion}
-          placeholder="Search notes..."
+          placeholder="type to search..."
           startAdornment={
             <InputAdornment position="start">
-              <Iconify
-                icon="eva:search-fill"
-                sx={{ color: "text.disabled", width: 20, height: 20 }}
+              <SearchIcon
+                sx={{ color: 'text.disabled', width: 20, height: 20 }}
               />
             </InputAdornment>
           }
@@ -50,17 +78,12 @@ export default function NotesTableToolbar({
 
       {numSelected > 0 && (
         <Tooltip title="Delete">
-          <IconButton>
-            <Iconify icon="eva:trash-2-fill" />
+          <IconButton onClick={handleDeleteNotes} disabled={isLoading}>
+            {isLoading && <CircularProgress />}
+            <DeleteIcon />
           </IconButton>
         </Tooltip>
       )}
     </Toolbar>
   );
 }
-
-NotesTableToolbar.propTypes = {
-  numSelected: PropTypes.number,
-  filterQuestion: PropTypes.string,
-  onFilterQuestion: PropTypes.func,
-};
