@@ -82,6 +82,7 @@ export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
     setError,
     setLoading,
     navigate,
+    auth,
   ]);
 
   useEffect(() => {
@@ -123,6 +124,8 @@ export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
     setError,
     setLoading,
     navigate,
+    auth,
+    quizzes,
   ]);
 
   return useMemo(
@@ -151,6 +154,7 @@ export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
       favoritesIds,
       addToFavoritesHandler,
       removeFavoriteHandler,
+      error,
     ]
   );
 };

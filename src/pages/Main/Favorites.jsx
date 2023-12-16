@@ -64,7 +64,14 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
       }
     };
     fetchAndSetFavoriteQuizzes();
-  }, [auth.loggedIn, setFavoritesIds, auth, favoriteQuizzes.length, navigate]);
+  }, [
+    auth.loggedIn,
+    setFavoritesIds,
+    auth,
+    favoriteQuizzes.length,
+    navigate,
+    initialDataLoaded,
+  ]);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -98,6 +105,9 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
     initialDataLoaded,
     favoriteQuizzes.length,
     userQuizzesUpdated,
+    auth,
+    favoriteQuizzes,
+    navigate,
   ]);
 
   return useMemo(
@@ -124,6 +134,7 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
       favoriteQuizzes,
       favoritesIds,
       removeFavoriteHandler,
+      error,
     ]
   );
 };
