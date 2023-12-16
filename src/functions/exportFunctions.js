@@ -64,7 +64,11 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
   }
 };
 
-export const handleLogout = async (backendApiCall, setAuth, setShowLogoutModal) => {
+export const handleLogout = async (
+  backendApiCall,
+  setAuth,
+  setShowLogoutModal
+) => {
   try {
     await backendApiCall('GET', '/logout');
 
@@ -77,12 +81,17 @@ export const handleLogout = async (backendApiCall, setAuth, setShowLogoutModal) 
   }
 };
 
-export const fetchAndTransformQuizzes = async (backendApiCall, setQuizzes, setError, auth) => {
+export const fetchAndTransformQuizzes = async (
+  backendApiCall,
+  setQuizzes,
+  setError,
+  auth
+) => {
   if (!auth.loggedIn) return;
 
   try {
     const apiQuizData = await backendApiCall('GET', '/quiz');
-    console.log('apiQuizData === ', apiQuizData)
+    console.log('apiQuizData === ', apiQuizData);
     const transformedQuizzes = apiQuizData.map((quiz) => {
       const image = imageMapping[quiz.category] || jsLogo;
 
@@ -110,7 +119,7 @@ export const fetchAndTransformQuizzes = async (backendApiCall, setQuizzes, setEr
         createdDate: quiz.createdAt,
       };
     });
-    console.log('transformedQuizzes === ', transformedQuizzes)
+    console.log('transformedQuizzes === ', transformedQuizzes);
     setQuizzes(transformedQuizzes);
   } catch (err) {
     console.error('Error fetching and transforming quizzes:', err);
@@ -118,14 +127,21 @@ export const fetchAndTransformQuizzes = async (backendApiCall, setQuizzes, setEr
   }
 };
 
-export const fetchAndAddUserQuizzes = async (backendApiCall, quizzes, setQuizzes, setError, auth, setUserQuizzesUpdated) => {
+export const fetchAndAddUserQuizzes = async (
+  backendApiCall,
+  quizzes,
+  setQuizzes,
+  setError,
+  auth,
+  setUserQuizzesUpdated
+) => {
   if (!auth.loggedIn) return;
   try {
     const userQuizDataArray = await backendApiCall(
       'GET',
       `/progress/user?userId=${auth.userId}`
     );
-    console.log('userQuizDataArray === ', userQuizDataArray.data)
+    console.log('userQuizDataArray === ', userQuizDataArray.data);
     const updatedQuizzes = quizzes.map((quiz) => {
       const userQuizData = userQuizDataArray.data.find(
         (uqd) => uqd.quiz === quiz.id
@@ -150,7 +166,13 @@ export const fetchAndAddUserQuizzes = async (backendApiCall, quizzes, setQuizzes
   }
 };
 
-export async function fetchQuizData(backendApiCall, setQuizzes, setError, auth, setLoading) {
+export async function fetchQuizData(
+  backendApiCall,
+  setQuizzes,
+  setError,
+  auth,
+  setLoading
+) {
   try {
     await fetchAndTransformQuizzes(backendApiCall, setQuizzes, setError, auth);
   } catch (err) {
@@ -188,7 +210,7 @@ export const fetchAndTransformFavoriteQuizzes = async (
   auth
 ) => {
   if (!auth.loggedIn) return;
-  console.log('fetchAndTransformFavoriteQuizzes')
+  console.log('fetchAndTransformFavoriteQuizzes');
 
   try {
     const apiQuizData = await backendApiCall('GET', '/quiz');
@@ -238,11 +260,11 @@ export async function fetchFavorites(
   auth,
   setLoading
 ) {
-  console.log('fetchFavorites')
+  console.log('fetchFavorites');
   try {
     await fetchAndTransformFavoriteQuizzes(
       backendApiCall,
-        setFavoriteQuizzes,
+      setFavoriteQuizzes,
       setError,
       auth
     );
@@ -253,17 +275,24 @@ export async function fetchFavorites(
   }
 }
 
-export const fetchFavoritesAndAddUserQuizzes = async (backendApiCall, favoriteQuizzes, setFavoriteQuizzes, setError, auth, setUserQuizzesUpdated) => {
+export const fetchFavoritesAndAddUserQuizzes = async (
+  backendApiCall,
+  favoriteQuizzes,
+  setFavoriteQuizzes,
+  setError,
+  auth,
+  setUserQuizzesUpdated
+) => {
   if (!auth.loggedIn) return;
   try {
     const userQuizDataArray = await backendApiCall(
-        'GET',
-        `/progress/user?userId=${auth.userId}`
+      'GET',
+      `/progress/user?userId=${auth.userId}`
     );
     //console.log('userQuizDataArray === ', userQuizDataArray.data)
     const updatedQuizzes = favoriteQuizzes.map((quiz) => {
       const userQuizData = userQuizDataArray.data.find(
-          (uqd) => uqd.quiz === quiz.id
+        (uqd) => uqd.quiz === quiz.id
       );
       if (userQuizData) {
         return {

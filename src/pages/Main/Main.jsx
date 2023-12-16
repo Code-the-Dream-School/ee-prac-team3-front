@@ -56,7 +56,7 @@ export const QuizzesContainer = ({
   itemsPerPage = 9,
   loadMoreThreshold = 100,
 }) => {
-  console.log('quizzesForFiltering === ', quizzesForFiltering)
+  console.log('quizzesForFiltering === ', quizzesForFiltering);
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [displayedQuizzes, setDisplayedQuizzes] = useState([]);
@@ -161,19 +161,19 @@ export const QuizzesContainer = ({
                           sx={{ display: 'flex', justifyContent: 'start' }}
                         >
                           {displayedQuizzes.map((q) => {
-                               return ( <QuizCard
-                                    key={q.id}
-                                    quiz={q}
-                                    activeFilters={activeFilters}
-                                    searchValue={searchValue}
-                                    quizProgress={q.quizProgress}
-                                    favoritesIds={favoritesIds}
-                                    addToFavoritesHandler={addToFavoritesHandler}
-                                    removeFavoriteHandler={removeFavoriteHandler}
-                                />
-                               )
-                              }
-                          )}
+                            return (
+                              <QuizCard
+                                key={q.id}
+                                quiz={q}
+                                activeFilters={activeFilters}
+                                searchValue={searchValue}
+                                quizProgress={q.quizProgress}
+                                favoritesIds={favoritesIds}
+                                addToFavoritesHandler={addToFavoritesHandler}
+                                removeFavoriteHandler={removeFavoriteHandler}
+                              />
+                            );
+                          })}
                         </Grid>
                       </Box>
                     )}

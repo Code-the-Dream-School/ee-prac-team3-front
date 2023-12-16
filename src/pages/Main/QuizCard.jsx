@@ -27,7 +27,7 @@ const QuizCard = ({
   removeFavoriteHandler,
   searchValue,
 }) => {
-  const {bestScore, attemptsCount} = quizProgress;
+  const { bestScore, attemptsCount } = quizProgress;
   const isFilterActive = (filterType, value) =>
     activeFilters[filterType].length > 0 &&
     activeFilters[filterType].includes(value);
@@ -37,7 +37,7 @@ const QuizCard = ({
   const [cardClickable, setCardClickable] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
 
-    //console.log('quizProgress ==== ', quizProgress)
+  //console.log('quizProgress ==== ', quizProgress)
 
   useEffect(() => {
     favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
@@ -203,9 +203,7 @@ const QuizCard = ({
                     fontWeight: 'bold',
                   }}
                 >
-                  {attemptsCount
-                    ? `Attempts: ${attemptsCount}`
-                    : 'Not Passed'}
+                  {attemptsCount ? `Attempts: ${attemptsCount}` : 'Not Passed'}
                 </Typography>
               </Box>
             </Box>
