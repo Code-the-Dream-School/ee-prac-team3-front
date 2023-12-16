@@ -1,5 +1,5 @@
 import useAuth from '../../auth/useAuth';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   backendApiCall,
@@ -21,19 +21,22 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
   const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
   const navigate = useNavigate();
 
-  const removeFavoriteHandler = async (quizId) => {
-    try {
-      await removeFavorite(quizId);
-      setFavoritesIds((prevFavoriteQuizzesIds) =>
-        prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
-      );
-      setFavoriteQuizzes((prevFavoriteQuizzes) =>
-        prevFavoriteQuizzes.filter((quiz) => quiz.id !== quizId)
-      );
-    } catch (error) {
-      console.error('Error removing favorite:', error);
-    }
-  };
+  const removeFavoriteHandler = useCallback(
+    async (quizId) => {
+      try {
+        await removeFavorite(quizId);
+        setFavoritesIds((prevFavoriteQuizzesIds) =>
+          prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
+        );
+        setFavoriteQuizzes((prevFavoriteQuizzes) =>
+          prevFavoriteQuizzes.filter((quiz) => quiz.id !== quizId)
+        );
+      } catch (error) {
+        console.error('Error removing favorite:', error);
+      }
+    },
+    [setFavoritesIds, setFavoriteQuizzes]
+  );
 
   useEffect(() => {
     const fetchAndSetFavoriteQuizzes = async () => {
