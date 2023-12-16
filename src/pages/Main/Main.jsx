@@ -1,23 +1,10 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Alert, Box, Container, Grid, Typography } from '@mui/material';
-import useAuth from 'auth/useAuth';
-import useQuiz from 'quiz/useQuiz';
 import QuizCard from './QuizCard';
 import QuizLoadError from '../Quiz/QuizLoadError';
-import { LOGIN } from 'App';
 import Loading from '../../components/Loading';
 import FilterButtonGroup from '../../components/FilterButtonGroup';
 import customColors, { defaultTheme } from '../../assets/styles';
-import {
-  addFavorite,
-  backendApiCall,
-  fetchFavorites,
-  getFavorites,
-  removeFavorite,
-  fetchQuizData,
-  fetchAndAddUserQuizzes,
-} from '../../functions/exportFunctions';
 
 export const containerStyles = {
   minHeight: '95vh',

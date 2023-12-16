@@ -199,8 +199,7 @@ export async function updateUserProgress(quizId, score, userId, setError) {
   const body = { quiz: quizId, score: score.toString(), user: userId };
   const url = '/progress/user';
   try {
-    const api = await backendApiCall('POST', `${url}`, body);
-    return api;
+    return await backendApiCall('POST', `${url}`, body);
   } catch (err) {
     setError(err);
   }

@@ -36,7 +36,7 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
   };
 
   useEffect(() => {
-    const fetchAndSetFavoriteQuizzes = async () => {
+    const fetchAllFavoriteQuizzes = async () => {
       try {
         setLoading(true);
         const quizzesIds = await getFavorites();
@@ -63,11 +63,11 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
         setError(error);
       }
     };
-    fetchAndSetFavoriteQuizzes();
+    fetchAllFavoriteQuizzes();
   }, [auth.loggedIn, setFavoritesIds, auth, favoriteQuizzes.length, navigate]);
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
+    const fetchUserFavoriteQuizzes = async () => {
       try {
         if (
           auth.loggedIn &&
@@ -92,7 +92,7 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
         setError(error);
       }
     };
-    fetchQuizzes();
+    fetchUserFavoriteQuizzes();
   }, [
     auth.loggedIn,
     initialDataLoaded,
