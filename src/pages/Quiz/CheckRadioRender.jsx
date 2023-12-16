@@ -1,6 +1,6 @@
 import React from 'react';
-import { FormControlLabel, Radio, Checkbox } from '@mui/material';
-import { Box } from '@mui/system';
+import { FormControlLabel, Radio, Checkbox, Box } from '@mui/material';
+
 import Grid from '@mui/material/Unstable_Grid2';
 
 export default function checkRadioRender(
@@ -43,7 +43,7 @@ export default function checkRadioRender(
         : '2px solid rgb(223, 221, 221)';
 
     return (
-      <Grid item xs={12} key={index}>
+      <Grid xs={12} key={index}>
         <Box
           component="div"
           onClick={() => handleOptionClick(option)}

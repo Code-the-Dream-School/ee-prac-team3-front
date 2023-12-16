@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
@@ -8,41 +7,13 @@ import {
   FormControlLabel,
   Grid,
   TextField,
+  Typography,
 } from '@mui/material';
-import customColors from '../assets/styles';
-import s from './AccountSettings.module.css';
+import customColors, { defaultTheme } from '../assets/styles';
 import { LOGIN } from '../App';
 import { deleteUser } from '../functions/exportFunctions';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
-
-const AvatarSection = ({ formValues }) => (
-  <>
-    <Avatar
-      className={s.avatarBlock}
-      sx={{
-        m: 1,
-        width: '100px',
-        height: '100px',
-        bgcolor: customColors.grey,
-      }}
-    >
-      {formValues.avatarURL && (
-        <Avatar
-          src={formValues.avatarURL}
-          alt={`${formValues.firstName} ${formValues.lastName}`}
-          style={{
-            width: '100%',
-            height: '100%',
-            borderRadius: '50%',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-      )}
-    </Avatar>
-  </>
-);
 
 const UserInfoSection = ({
   formValues,
@@ -224,7 +195,6 @@ const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
     firstName: userData.firstName,
     lastName: userData.lastName,
     email: userData.email,
-    avatarURL: userData.avatar,
   });
   const [passwordFormValues, setPasswordFormValues] = useState({
     currentPassword: '',
@@ -266,6 +236,20 @@ const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
         pb: 2,
       }}
     >
+      <Typography
+        variant={'h5'}
+        sx={{
+          textTransform: 'uppercase',
+          mb: 4,
+          textAlign: 'center',
+          fontWeight: 'bold',
+          [defaultTheme.breakpoints.down('md')]: {
+            fontSize: '20px',
+          },
+        }}
+      >
+        Account Settings
+      </Typography>
       <Box
         sx={{
           display: 'flex',
@@ -282,7 +266,6 @@ const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
               alignItems: 'center',
             }}
           >
-            <AvatarSection formValues={formValues} />
             <UserInfoSection
               formValues={formValues}
               setFormValues={setFormValues}

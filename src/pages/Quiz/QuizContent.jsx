@@ -6,9 +6,9 @@ import { useParams } from 'react-router-dom';
 import { Button, Container, Typography, Grid } from '@mui/material';
 import QuestionContent from './QuestionContent';
 import Loading from 'components/Loading';
-import QuizLoadError from '../QuizLoadError';
+import QuizLoadError from './QuizLoadError';
 import { QUIZZES, ERROR } from '../../App';
-import { containerStyles, titleStyles } from '../Main';
+import { containerStyles, titleStyles } from '../Main/Main';
 import {
   backendApiCall,
   fetchQuizData,
@@ -80,8 +80,8 @@ export default function QuizContent() {
               quizzes,
               setQuizzes,
               setError,
-              setUserQuizzesUpdated,
-              auth
+              auth,
+              setUserQuizzesUpdated
             ).then(() => {
               setUserQuizzesUpdated(true);
             });
@@ -189,7 +189,7 @@ export default function QuizContent() {
                             : '#d32f2f'
                           : 'rgb(211, 209, 209)',
                         border: isCurrentQuestion
-                          ? '2px solid #1976d2'
+                          ? '2px solid #1976d2'.toString()
                           : 'none',
                         borderRadius: '50%',
                         width: 9,

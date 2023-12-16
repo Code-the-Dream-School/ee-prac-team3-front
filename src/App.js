@@ -9,7 +9,7 @@ import ResetPassword from 'pages/ResetPassword';
 import Footer from 'components/Footer';
 import Error from 'pages/Error';
 import Home from 'pages/Home/Home';
-import QuizContent from 'pages/QuizUi/QuizContent';
+import QuizContent from 'pages/Quiz/QuizContent';
 import LogoutModal from 'components/LogoutModal';
 import highlight_1 from './assets/images/highlight_effective_knowledge_testing.svg';
 import highlight_2 from './assets/images/highlight_preparing_for_a_job_interview.svg';
@@ -19,8 +19,8 @@ import CustomizedSnackbars from 'components/Snackbar';
 import Header from './components/Header/Header';
 import SettingsRoundedIcon from '@mui/icons-material/Settings';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { Quizzes } from './pages/Main';
-import { Favorites } from './pages/Main';
+import { Quizzes } from './pages/Main/Quizzes';
+import { Favorites } from './pages/Main/Favorites';
 import About from './pages/About/About';
 import NavBar from './components/NavBar';
 import Notes from './pages/Notes';
@@ -33,6 +33,7 @@ import {
   authenticateUser,
   handleLogout,
 } from './functions/exportFunctions';
+import { BASE_URL } from './config';
 
 const PATH = {
   HOME: '/home',
@@ -63,8 +64,6 @@ export const {
   LIBRARY,
   QUIZ,
 } = PATH;
-
-export const port = `http://localhost:8000`;
 
 export const highlights = [
   {
@@ -102,10 +101,8 @@ export default function App() {
     firstName: auth.firstName,
     lastName: auth.lastName,
     email: auth.email,
-    avatar: auth.avatarURL,
   };
   const [searchTerm, setSearchTerm] = useState('');
-
   const profileSettings = [
     {
       title: 'Account',
@@ -121,10 +118,12 @@ export default function App() {
   ];
 
   useEffect(() => {
-    async function fetchData() {
-      await authenticateUser(backendApiCall, setAuth, setLoading);
-    }
+    const fetchData = async () => {
+      return await authenticateUser(backendApiCall, setAuth, setLoading);
+    };
+
     fetchData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
 
@@ -160,7 +159,7 @@ export default function App() {
       };
     }
 
-    const url = `${port}/api/v1/updateuser`;
+    const url = `${BASE_URL}/updateuser`;
     const options = {
       method: 'PUT',
       headers: {

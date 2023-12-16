@@ -5,21 +5,21 @@ const QuizContext = createContext();
 export const QuizContextProvider = ({ children }) => {
   const [quizzes, setQuizzes] = useState([
     {
-      id: '', //
-      title: '', // React Basic, JS Advanced etc.
-      category: '', // react, javascript, html, css, data structures etc.
-      level: 'basic', // basic, intermediate, advanced
-      labels: [''], // frontend, backend
+      id: '',
+      title: '',
+      category: '',
+      level: 'basic',
+      labels: [''],
       image: null,
       questions: [
         {
           questionText: '',
-          options: ['', '', '', ''], // all answers
-          correctOption: '', // correct answer
-          type: 'radio', //radio or checkbox
+          options: ['', '', '', ''],
+          correctOption: '',
+          type: 'radio',
           _id: '',
-          code: '', //
-          resources: '', //here we can add some info about the question after the user chose wrong/correct question
+          code: '',
+          resources: '',
         },
       ],
       quizProgress: {
@@ -27,7 +27,7 @@ export const QuizContextProvider = ({ children }) => {
         bestScore: 0,
         lastScore: 0,
       },
-      createdDate: '', // createdAt
+      createdDate: '',
     },
   ]);
 

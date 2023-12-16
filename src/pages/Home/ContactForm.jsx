@@ -9,7 +9,7 @@ export default function ContactForm({ snackbar }) {
     e.preventDefault();
     emailjs
       .sendForm('js_quiz', 'contact_form_jsquiz', e.target, 'cCsGOz-hDdPkNz6dF')
-      .then((res) => {
+      .then(() => {
         snackbar({
           isOpened: true,
           severity: 'success',

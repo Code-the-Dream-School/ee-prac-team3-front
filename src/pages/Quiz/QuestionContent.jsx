@@ -37,7 +37,7 @@ export default function QuestionContent({
       ? Array.isArray(selectedOption)
         ? selectedOption
         : []
-      : selectedOption || ''
+      : selectedOption || null
   );
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
   const [showWarningModal, setShowWarningModal] = useState(false);
@@ -104,7 +104,7 @@ export default function QuestionContent({
         </FormGroup>
       ) : (
         <RadioGroup
-          value={selected}
+          value={selected || ''}
           onChange={(e) => setSelected(e.target.value)}
           disabled={isCurrentQuestionAnswered}
           style={{ paddingLeft: '10px' }}
