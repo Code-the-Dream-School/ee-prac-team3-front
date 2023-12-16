@@ -1,5 +1,5 @@
 import useAuth from '../../auth/useAuth';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   backendApiCall,
@@ -100,19 +100,30 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
     userQuizzesUpdated,
   ]);
 
-  return (
-    <QuizzesContainer
-      title="Your favorite quizzes"
-      quizzesForFiltering={favoriteQuizzes}
-      loading={loading}
-      error={error}
-      favoritesIds={favoritesIds}
-      quizzesLength={favoriteQuizzes.length}
-      activeFilters={activeFilters}
-      removeFavoriteHandler={removeFavoriteHandler}
-      changeFilter={changeFilter}
-      searchValue={searchValue}
-      message="Save your favorite quizzes so they are here."
-    />
+  return useMemo(
+    () => (
+      <QuizzesContainer
+        title="Your favorite quizzes"
+        quizzesForFiltering={favoriteQuizzes}
+        loading={loading}
+        favoritesIds={favoritesIds}
+        quizzesLength={favoriteQuizzes.length}
+        activeFilters={activeFilters}
+        error={error}
+        removeFavoriteHandler={removeFavoriteHandler}
+        changeFilter={changeFilter}
+        searchValue={searchValue}
+        message="Save your favorite quizzes so they are here."
+      />
+    ),
+    [
+      activeFilters,
+      changeFilter,
+      searchValue,
+      loading,
+      favoriteQuizzes,
+      favoritesIds,
+      removeFavoriteHandler,
+    ]
   );
 };

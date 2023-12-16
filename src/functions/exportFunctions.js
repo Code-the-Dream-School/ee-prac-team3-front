@@ -11,6 +11,38 @@ const imageMapping = {
   datastructures: dataStructureLogo,
 };
 
+const createQuizObject = (quiz) => {
+  const image = imageMapping[quiz.category] || jsLogo;
+  return {
+    id: quiz._id,
+    title: quiz.title,
+    category: quiz.category,
+    level: quiz.level,
+    labels: quiz.label,
+    image: image,
+    questions: quiz.questions.map((q) => ({
+      questionText: q.questionText,
+      type: q.type,
+      code: '',
+      resources: '',
+      options: q.options,
+      correctOption: q.correctOption,
+      id: q._id,
+    })),
+    quizProgress: {
+      attemptsCount: 0,
+      bestScore: 0,
+      lastScore: 0,
+    },
+    createdDate: quiz.createdAt,
+  };
+};
+
+const handleApiError = (error, setError) => {
+  console.error('API Error:', error);
+  setError(error);
+};
+
 export const backendApiCall = async (method, url, body) => {
   const options = {
     method: method,
@@ -85,45 +117,21 @@ export const fetchAndTransformQuizzes = async (
   backendApiCall,
   setQuizzes,
   setError,
-  auth
+  auth,
+  setLoading
 ) => {
-  if (!auth.loggedIn) return;
-
   try {
-    const apiQuizData = await backendApiCall('GET', '/quiz');
-    console.log('apiQuizData === ', apiQuizData);
-    const transformedQuizzes = apiQuizData.map((quiz) => {
-      const image = imageMapping[quiz.category] || jsLogo;
+    setLoading(true);
 
-      return {
-        id: quiz._id,
-        title: quiz.title,
-        category: quiz.category,
-        level: quiz.level,
-        labels: quiz.label,
-        image: image,
-        questions: quiz.questions.map((q) => ({
-          questionText: q.questionText,
-          type: q.type,
-          code: '',
-          resources: '',
-          options: q.options,
-          correctOption: q.correctOption,
-          id: q._id,
-        })),
-        quizProgress: {
-          attemptsCount: 0,
-          bestScore: 0,
-          lastScore: 0,
-        },
-        createdDate: quiz.createdAt,
-      };
-    });
-    console.log('transformedQuizzes === ', transformedQuizzes);
+    if (!auth.loggedIn) return;
+
+    const apiQuizData = await backendApiCall('GET', '/quiz');
+    const transformedQuizzes = apiQuizData.map(createQuizObject);
     setQuizzes(transformedQuizzes);
   } catch (err) {
-    console.error('Error fetching and transforming quizzes:', err);
-    setError(err);
+    handleApiError(err, setError);
+  } finally {
+    setLoading(false);
   }
 };
 
@@ -141,7 +149,6 @@ export const fetchAndAddUserQuizzes = async (
       'GET',
       `/progress/user?userId=${auth.userId}`
     );
-    console.log('userQuizDataArray === ', userQuizDataArray.data);
     const updatedQuizzes = quizzes.map((quiz) => {
       const userQuizData = userQuizDataArray.data.find(
         (uqd) => uqd.quiz === quiz.id
@@ -174,7 +181,13 @@ export async function fetchQuizData(
   setLoading
 ) {
   try {
-    await fetchAndTransformQuizzes(backendApiCall, setQuizzes, setError, auth);
+    await fetchAndTransformQuizzes(
+      backendApiCall,
+      setQuizzes,
+      setError,
+      auth,
+      setLoading
+    );
   } catch (err) {
     setError(err);
   } finally {
@@ -206,11 +219,10 @@ export const getFavorites = async () => {
 export const fetchAndTransformFavoriteQuizzes = async (
   backendApiCall,
   setFavoriteQuizzes,
-  onError,
+  setError,
   auth
 ) => {
   if (!auth.loggedIn) return;
-  console.log('fetchAndTransformFavoriteQuizzes');
 
   try {
     const apiQuizData = await backendApiCall('GET', '/quiz');
@@ -218,38 +230,11 @@ export const fetchAndTransformFavoriteQuizzes = async (
 
     const favoriteQuizzes = apiQuizData
       .filter((quiz) => favoriteQuizIds.includes(quiz._id))
-      .map((quiz) => {
-        const image = imageMapping[quiz.category] || jsLogo;
-
-        return {
-          id: quiz._id,
-          title: quiz.title,
-          category: quiz.category,
-          level: quiz.level,
-          labels: quiz.label,
-          image: image,
-          questions: quiz.questions.map((q) => ({
-            questionText: q.questionText,
-            type: q.type,
-            code: '',
-            resources: '',
-            options: q.options,
-            correctOption: q.correctOption,
-            id: q._id,
-          })),
-          quizProgress: {
-            attemptsCount: 0,
-            bestScore: 0,
-            lastScore: 0,
-          },
-          createdDate: quiz.createdAt,
-        };
-      });
+      .map(createQuizObject);
 
     setFavoriteQuizzes(favoriteQuizzes);
   } catch (err) {
-    console.error('Error fetching and transforming favorite quizzes:', err);
-    onError(err);
+    handleApiError(err, setError);
   }
 };
 
@@ -260,7 +245,6 @@ export async function fetchFavorites(
   auth,
   setLoading
 ) {
-  console.log('fetchFavorites');
   try {
     await fetchAndTransformFavoriteQuizzes(
       backendApiCall,
@@ -269,7 +253,7 @@ export async function fetchFavorites(
       auth
     );
   } catch (err) {
-    setError(err);
+    handleApiError(err, setError);
   } finally {
     setLoading(false);
   }
@@ -289,7 +273,6 @@ export const fetchFavoritesAndAddUserQuizzes = async (
       'GET',
       `/progress/user?userId=${auth.userId}`
     );
-    //console.log('userQuizDataArray === ', userQuizDataArray.data)
     const updatedQuizzes = favoriteQuizzes.map((quiz) => {
       const userQuizData = userQuizDataArray.data.find(
         (uqd) => uqd.quiz === quiz.id

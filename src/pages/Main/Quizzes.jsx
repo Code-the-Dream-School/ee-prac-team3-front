@@ -1,6 +1,6 @@
 import useAuth from '../../auth/useAuth';
 import useQuiz from '../../quiz/useQuiz';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   addFavorite,
@@ -24,28 +24,34 @@ export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
 
   const navigate = useNavigate();
 
-  const addToFavoritesHandler = async (quizId) => {
-    try {
-      await addFavorite(quizId);
-      setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
-    } catch (error) {
-      console.error('Error adding to favorites:', error);
-    }
-  };
+  const addToFavoritesHandler = useCallback(
+    async (quizId) => {
+      try {
+        await addFavorite(quizId);
+        setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
+      } catch (error) {
+        console.error('Error adding to favorites:', error);
+      }
+    },
+    [setFavoritesIds]
+  );
 
-  const removeFavoriteHandler = async (quizId) => {
-    try {
-      await removeFavorite(quizId);
-      setFavoritesIds((prevFavoriteQuizzesIds) =>
-        prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
-      );
-    } catch (error) {
-      console.error('Error removing favorite:', error);
-    }
-  };
+  const removeFavoriteHandler = useCallback(
+    async (quizId) => {
+      try {
+        await removeFavorite(quizId);
+        setFavoritesIds((prevFavoriteQuizzesIds) =>
+          prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
+        );
+      } catch (error) {
+        console.error('Error removing favorite:', error);
+      }
+    },
+    [setFavoritesIds]
+  );
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
+    const fetchAllQuizzes = async () => {
       try {
         if (auth.loggedIn && quizzes.length === 1 && !initialDataLoaded) {
           await fetchQuizData(
@@ -63,22 +69,33 @@ export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
         }
       } catch (error) {
         setError(error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchQuizzes();
-  }, [auth.loggedIn, quizzes.length, initialDataLoaded]);
+    fetchAllQuizzes();
+  }, [
+    auth.loggedIn,
+    quizzes.length,
+    initialDataLoaded,
+    setQuizzes,
+    setError,
+    setLoading,
+    navigate,
+  ]);
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
+    const fetchUserQuizzes = async () => {
       try {
-        const quizzesIds = await getFavorites();
-        setFavoritesIds(quizzesIds);
         if (
           auth.loggedIn &&
           initialDataLoaded &&
           quizzes.length > 0 &&
           !userQuizzesUpdated
         ) {
+          setLoading(true);
+          const quizzesIds = await getFavorites();
+          setFavoritesIds(quizzesIds);
           await fetchAndAddUserQuizzes(
             backendApiCall,
             quizzes,
@@ -89,30 +106,51 @@ export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
           );
         } else if (!auth.loggedIn) {
           navigate(LOGIN);
-        } else {
-          setLoading(false);
         }
       } catch (error) {
         setError(error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchQuizzes();
-  }, [auth.loggedIn, initialDataLoaded, quizzes.length, userQuizzesUpdated]);
+    fetchUserQuizzes();
+  }, [
+    auth.loggedIn,
+    initialDataLoaded,
+    quizzes.length,
+    userQuizzesUpdated,
+    setQuizzes,
+    setError,
+    setLoading,
+    navigate,
+  ]);
 
-  return (
-    <QuizzesContainer
-      title="Choose a quiz"
-      activeFilters={activeFilters}
-      changeFilter={changeFilter}
-      message="No quizzes were found."
-      quizzesForFiltering={quizzes}
-      favoritesIds={favoritesIds}
-      addToFavoritesHandler={addToFavoritesHandler}
-      removeFavoriteHandler={removeFavoriteHandler}
-      searchValue={searchValue}
-      loading={loading}
-      error={error}
-      quizzesLength={quizzes.length}
-    />
+  return useMemo(
+    () => (
+      <QuizzesContainer
+        title="Choose a quiz"
+        activeFilters={activeFilters}
+        changeFilter={changeFilter}
+        message="No quizzes were found."
+        quizzesForFiltering={quizzes}
+        favoritesIds={favoritesIds}
+        addToFavoritesHandler={addToFavoritesHandler}
+        removeFavoriteHandler={removeFavoriteHandler}
+        error={error}
+        searchValue={searchValue}
+        loading={loading}
+        quizzesLength={quizzes.length}
+      />
+    ),
+    [
+      activeFilters,
+      changeFilter,
+      searchValue,
+      loading,
+      quizzes,
+      favoritesIds,
+      addToFavoritesHandler,
+      removeFavoriteHandler,
+    ]
   );
 };

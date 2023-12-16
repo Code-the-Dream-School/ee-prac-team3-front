@@ -56,7 +56,6 @@ export const QuizzesContainer = ({
   itemsPerPage = 9,
   loadMoreThreshold = 100,
 }) => {
-  console.log('quizzesForFiltering === ', quizzesForFiltering);
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [displayedQuizzes, setDisplayedQuizzes] = useState([]);
@@ -160,7 +159,7 @@ export const QuizzesContainer = ({
                           spacing={4}
                           sx={{ display: 'flex', justifyContent: 'start' }}
                         >
-                          {displayedQuizzes.map((q) => {
+                          {filteredQuizzes.map((q) => {
                             return (
                               <QuizCard
                                 key={q.id}

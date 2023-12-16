@@ -37,8 +37,6 @@ const QuizCard = ({
   const [cardClickable, setCardClickable] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  //console.log('quizProgress ==== ', quizProgress)
-
   useEffect(() => {
     favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
   }, [favoritesIds, quiz.id]);
