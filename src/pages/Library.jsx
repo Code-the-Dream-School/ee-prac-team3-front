@@ -6,7 +6,7 @@ const Library = () => {
   return (
     <Container
       sx={{
-        minHeight: '85vh',
+        minHeight: '95vh',
         backgroundColor: customColors.backgroundLight,
         maxWidth: 'none !important',
         pt: 6,

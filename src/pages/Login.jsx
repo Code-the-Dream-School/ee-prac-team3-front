@@ -63,7 +63,7 @@ export default function Login() {
     };
 
     try {
-      const apiStatus = await backendApiCall('POST', '/api/v1/login', bodyData);
+      const apiStatus = await backendApiCall('POST', '/login', bodyData);
       if (apiStatus.success === true) {
         setIsLoading(false);
         setLoginData({
@@ -144,7 +144,7 @@ export default function Login() {
             <Typography component="h1" variant="h5" mb={3}>
               Sign in
             </Typography>
-            {isLoading && <Loading />}
+            {isLoading && <Loading type="linear" />}
             <Box
               component="form"
               noValidate

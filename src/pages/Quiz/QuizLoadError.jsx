@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { HOME } from '../App';
+import { HOME } from '../../App';
 
 export default function QuizLoadError() {
   const navigate = useNavigate();

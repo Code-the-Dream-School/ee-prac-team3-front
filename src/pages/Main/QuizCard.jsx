@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Card,
@@ -13,19 +13,33 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Labels from '../components/Labels';
-import Progress from '../components/Progress';
-import customColors from '../assets/styles';
+import Labels from '../../components/Labels';
+import Progress from '../../components/Progress';
+import customColors from '../../assets/styles';
 import { QUIZ } from 'App';
 
-const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
+const QuizCard = ({
+  quiz,
+  activeFilters,
+  quizProgress,
+  favoritesIds,
+  addToFavoritesHandler,
+  removeFavoriteHandler,
+  searchValue,
+}) => {
+  const { bestScore, attemptsCount } = quizProgress;
   const isFilterActive = (filterType, value) =>
     activeFilters[filterType].length > 0 &&
     activeFilters[filterType].includes(value);
-  const progress = getProgressForQuiz(quiz.id);
+
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const [anchorEl, setAnchorEl] = useState(null);
   const [cardClickable, setCardClickable] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
+  }, [favoritesIds, quiz.id]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,12 +51,44 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
     setCardClickable(true);
   };
 
-  const handleAddToFavorites = () => {
-    console.log('Quiz was added to favorites!');
+  const highlightSearchTerm = (title, searchValue) => {
+    if (!searchValue) {
+      return [<span key="title">{title}</span>];
+    }
+
+    const regex = new RegExp(`(${searchValue})`, 'gi');
+    const parts = title.split(regex);
+
+    return parts.map((part, index) =>
+      regex.test(part) ? (
+        <span
+          key={index}
+          style={{
+            fontWeight: 'bold',
+            backgroundColor: `rgb(173, 216, 230, 0.5)`,
+          }}
+        >
+          {part}
+        </span>
+      ) : (
+        <span key={index}>{part}</span>
+      )
+    );
+  };
+
+  const handleAddFavorite = (quizId) => {
+    addToFavoritesHandler(quizId);
+    setIsFavorite(true);
     handleClose();
   };
+
+  const handleRemoveFavorite = (quizId) => {
+    removeFavoriteHandler(quizId);
+    setIsFavorite(false);
+  };
+
   const handleResetProgress = () => {
-    console.log('Quiz progress was reset!');
+    console.log('QuizCard progress was reset!');
     handleClose();
   };
 
@@ -140,15 +186,25 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
               </Box>
               <Box>
                 <Typography
-                  sx={{ marginTop: '10px', color: customColors.greyMedium }}
+                  sx={{
+                    marginTop: '10px',
+                    color: customColors.greyDark,
+                    fontWeight: 'bold',
+                  }}
                 >
-                  {progress.attemptsCount
-                    ? `Attempts: ${progress.attemptsCount}`
-                    : 'Not Passed'}
+                  {bestScore && `Best Score: ${bestScore}%`}
+                </Typography>
+                <Typography
+                  sx={{
+                    marginTop: '10px',
+                    color: customColors.greyDark,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {attemptsCount ? `Attempts: ${attemptsCount}` : 'Not Passed'}
                 </Typography>
               </Box>
             </Box>
-
             {/* this is the content of the right side inside each card */}
             <Box
               sx={{
@@ -175,7 +231,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
                   }}
                   image={quiz.image}
                 />
-                <Progress progress={progress.progress} />
+                <Progress progress={bestScore} />
               </Box>
               <Box sx={{ textAlign: 'center' }}>
                 <Typography
@@ -185,7 +241,7 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
                   fontWeight="bold"
                   lineHeight="22px"
                 >
-                  {quiz.title}
+                  {highlightSearchTerm(quiz.title, searchValue)}
                 </Typography>
               </Box>
             </Box>
@@ -208,11 +264,15 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
                 <MenuItem
                   onClick={(event) => {
                     event.stopPropagation();
-                    handleAddToFavorites();
+                    if (isFavorite) {
+                      handleRemoveFavorite(quiz.id);
+                    } else {
+                      handleAddFavorite(quiz.id);
+                    }
                     handleClose();
                   }}
                 >
-                  Add to Favorites
+                  {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
                 </MenuItem>
                 <MenuItem
                   onClick={(event) => {
@@ -232,4 +292,4 @@ const Quiz = ({ quiz, activeFilters, getProgressForQuiz }) => {
   );
 };
 
-export default Quiz;
+export default QuizCard;

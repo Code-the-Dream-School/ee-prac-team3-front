@@ -6,18 +6,25 @@ import { useParams } from 'react-router-dom';
 import { Button, Container, Typography, Grid } from '@mui/material';
 import QuestionContent from './QuestionContent';
 import Loading from 'components/Loading';
-import QuizLoadError from '../QuizLoadError';
+import QuizLoadError from './QuizLoadError';
 import { QUIZZES, ERROR } from '../../App';
-import { containerStyles, titleStyles } from '../Main';
-import { backendApiCall, fetchData } from '../../functions/exportFunctions';
+import { containerStyles, titleStyles } from '../Main/Main';
+import {
+  backendApiCall,
+  fetchQuizData,
+  updateUserProgress,
+  fetchAndAddUserQuizzes,
+} from '../../functions/exportFunctions';
 
 export default function QuizContent() {
+  //context variables
   const { quizId } = useParams();
   const { quizzes, setQuizzes } = useQuiz();
   const { auth } = useAuth();
+
+  //state variables
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [answersCorrectness, setAnswersCorrectness] = useState([]);
@@ -25,67 +32,119 @@ export default function QuizContent() {
     correctCount: 0,
     totalCount: 0,
   });
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
 
   const navigate = useNavigate();
 
+  //quiz content variables
   const quiz = quizzes.find((q) => q.id === quizId);
   const questions = quiz?.questions || [];
   const quizTitle = quiz?.title || '';
 
+  //state array tracking user selections for all questions
+  const [selectedOptions, setSelectedOptions] = useState(
+    Array(questions.length).fill('')
+  );
+
+  //fetches quiz data if context quiz data is reset
   useEffect(() => {
     if (quizzes.length === 1 && auth.loggedIn) {
-      fetchData(backendApiCall, setQuizzes, setError, auth, setLoading);
+      fetchQuizData(backendApiCall, setQuizzes, setError, auth, setLoading);
     } else {
       setLoading(false);
     }
   }, [auth, quizzes.length, setQuizzes]);
 
+  //navigates to error page if quiz can't be found
   useEffect(() => {
     if (!loading && !quiz) {
       navigate(ERROR);
     }
   }, [loading, quiz, navigate]);
 
+  //updates user performance if user finishes quiz
   useEffect(() => {
-    if (quizFinished) {
+    if (quizFinished && !userQuizzesUpdated) {
       const correctCount = answersCorrectness.filter(
         (answer) => answer && answer.isCorrect
       ).length;
       const totalCount = questions.length;
       setUserPerformance({ correctCount, totalCount });
-    }
-  }, [quizFinished, answersCorrectness, questions.length]);
+      const finalScore = Math.round((correctCount / totalCount) * 100);
 
-  const handleAnswerSelected = (answer, resetCallback) => {
-    const isCorrect = answer === questions[currentQuestionIndex].correctOption;
+      updateUserProgress(quiz.id, finalScore.toString(), auth.userId, setError)
+        .then((response) => {
+          if (response && response.message === 'Attempt added successfully') {
+            fetchAndAddUserQuizzes(
+              backendApiCall,
+              quizzes,
+              setQuizzes,
+              setError,
+              auth,
+              setUserQuizzesUpdated
+            ).then(() => {
+              setUserQuizzesUpdated(true);
+            });
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    }
+  }, [
+    quizFinished,
+    answersCorrectness,
+    questions.length,
+    quiz,
+    auth,
+    quizzes,
+    setQuizzes,
+    setError,
+    userQuizzesUpdated,
+  ]);
+
+  //reset userQuizUpdated state variable when starting a new quiz
+  useEffect(() => {
+    setUserQuizzesUpdated(false);
+  }, [quizId]);
+
+  const handleSetSelectedOption = (option) => {
+    const newSelectedOptions = [...selectedOptions];
+    newSelectedOptions[currentQuestionIndex] = option;
+    setSelectedOptions(newSelectedOptions);
+  };
+
+  const handleAnswerSelected = (answer, questionIndex) => {
+    //updates answerCorrectness array used to conditionally render correct answer components and styles
+    const isCorrect = answer === questions[questionIndex].correctOption;
     setAnswersCorrectness((prev) => {
       const newAnswers = [...prev];
-      newAnswers[currentQuestionIndex] = { isCorrect };
+      newAnswers[questionIndex] = { isCorrect };
       return newAnswers;
     });
+    // Also update the selectedOptions state
+    const newSelectedOptions = [...selectedOptions];
+    newSelectedOptions[questionIndex] = answer;
+    setSelectedOptions(newSelectedOptions);
+  };
 
-    //changes to the next question if more questions exist
+  const handleSkipQuestion = (resetCallback, answeredStatus) => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
     }
-
-    resetCallback();
-  };
-
-  const handleSkipQuestion = (resetCallback) => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    if (!answeredStatus) {
+      resetCallback();
     }
-
-    resetCallback();
   };
 
-  const handleBackQuestion = (resetCallback) => {
+  const handleBackQuestion = (resetCallback, answeredStatus) => {
     if (currentQuestionIndex < questions.length && currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
     }
 
-    resetCallback();
+    if (!answeredStatus) {
+      resetCallback();
+    }
   };
 
   return (
@@ -130,7 +189,7 @@ export default function QuizContent() {
                             : '#d32f2f'
                           : 'rgb(211, 209, 209)',
                         border: isCurrentQuestion
-                          ? '2px solid #1976d2'
+                          ? '2px solid #1976d2'.toString()
                           : 'none',
                         borderRadius: '50%',
                         width: 9,
@@ -152,6 +211,9 @@ export default function QuizContent() {
                     answer={questions[currentQuestionIndex].correctOption}
                     options={questions[currentQuestionIndex].options}
                     code={questions[currentQuestionIndex].code}
+                    resources={questions[currentQuestionIndex].resources}
+                    selectedOption={selectedOptions[currentQuestionIndex]}
+                    setSelectedOption={handleSetSelectedOption}
                     onAnswerSelected={handleAnswerSelected}
                     onSkipQuestion={handleSkipQuestion}
                     onBackQuestion={handleBackQuestion}

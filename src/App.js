@@ -9,7 +9,7 @@ import ResetPassword from 'pages/ResetPassword';
 import Footer from 'components/Footer';
 import Error from 'pages/Error';
 import Home from 'pages/Home/Home';
-import QuizContent from 'pages/QuizUi/QuizContent';
+import QuizContent from 'pages/Quiz/QuizContent';
 import LogoutModal from 'components/LogoutModal';
 import highlight_1 from './assets/images/highlight_effective_knowledge_testing.svg';
 import highlight_2 from './assets/images/highlight_preparing_for_a_job_interview.svg';
@@ -19,16 +19,13 @@ import CustomizedSnackbars from 'components/Snackbar';
 import Header from './components/Header/Header';
 import SettingsRoundedIcon from '@mui/icons-material/Settings';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { Quizzes } from './pages/Main';
-import { Favorites } from './pages/Main';
+import { Quizzes } from './pages/Main/Quizzes';
+import { Favorites } from './pages/Main/Favorites';
 import About from './pages/About/About';
 import NavBar from './components/NavBar';
-// import Notes from './pages/Notes';
 import Library from './pages/Library';
 import AccountSettings from './pages/AccountSettings';
 import useFilterState from './components/filterState';
-import reactJsLogo from './assets/images/react-logo-svgrepo-com.svg';
-import jsLogo from './assets/images/js.svg';
 import Box from '@mui/material/Box';
 import {
   backendApiCall,
@@ -36,6 +33,7 @@ import {
   handleLogout,
 } from './functions/exportFunctions';
 import Notes from 'pages/Notes/notesPage';
+import { BASE_URL } from './config';
 
 const PATH = {
   HOME: '/home',
@@ -67,8 +65,6 @@ export const {
   QUIZ,
 } = PATH;
 
-export const port = `http://localhost:8000`;
-
 export const highlights = [
   {
     id: 'highlight 1',
@@ -92,65 +88,6 @@ export const highlights = [
   },
 ];
 
-const quizProgress = [
-  {
-    quizId: 'react-basic',
-    attemptsCount: 1,
-    bestScore: 80,
-    lastScore: 50,
-    progress: 50,
-  },
-  {
-    quizId: 'react-intermediate',
-    attemptsCount: 4,
-    bestScore: 50,
-    lastScore: 50,
-    progress: 10,
-  },
-  {
-    quizId: 'js-basic',
-    attemptsCount: 3,
-    bestScore: 90,
-    lastScore: 30,
-    progress: 80,
-  },
-  {
-    quizId: 'js-functions',
-    attemptsCount: 1,
-    bestScore: 20,
-    lastScore: 20,
-    progress: 100,
-  },
-  {
-    quizId: 'react-basic',
-    attemptsCount: 1,
-    bestScore: 80,
-    lastScore: 50,
-    progress: 50,
-  },
-  {
-    quizId: 'react-intermediate',
-    attemptsCount: 4,
-    bestScore: 50,
-    lastScore: 50,
-    progress: 10,
-  },
-  {
-    quizId: 'js-basic',
-    attemptsCount: 3,
-    bestScore: 90,
-    lastScore: 30,
-    progress: 80,
-  },
-  {
-    quizId: 'js-functions',
-    attemptsCount: 1,
-    bestScore: 20,
-    lastScore: 20,
-    progress: 100,
-  },
-];
-
 export default function App() {
   const { auth, setAuth } = useAuth();
   const [snackbar, setSnackbar] = useState({
@@ -164,10 +101,8 @@ export default function App() {
     firstName: auth.firstName,
     lastName: auth.lastName,
     email: auth.email,
-    avatar: auth.avatarURL,
   };
   const [searchTerm, setSearchTerm] = useState('');
-
   const profileSettings = [
     {
       title: 'Account',
@@ -183,31 +118,14 @@ export default function App() {
   ];
 
   useEffect(() => {
-    async function fetchData() {
-      await authenticateUser(backendApiCall, setAuth, setLoading);
-    }
+    const fetchData = async () => {
+      return await authenticateUser(backendApiCall, setAuth, setLoading);
+    };
+
     fetchData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);
-
-  const [favoriteQuizzes] = useState([
-    {
-      id: 'react-intermediate',
-      title: 'React Intermediate',
-      category: 'react',
-      level: 'intermediate',
-      labels: ['frontend'],
-      image: reactJsLogo,
-    },
-    {
-      id: 'js-arrays',
-      title: 'JS Arrays',
-      category: 'javascript',
-      level: 'basic',
-      labels: ['frontend', 'backend'],
-      image: jsLogo,
-    },
-  ]);
 
   const { activeFilters, setActiveFilter } = useFilterState();
 
@@ -241,7 +159,7 @@ export default function App() {
       };
     }
 
-    const url = `${port}/api/v1/updateuser`;
+    const url = `${BASE_URL}/updateuser`;
     const options = {
       method: 'PUT',
       headers: {
@@ -323,7 +241,6 @@ export default function App() {
                     <Quizzes
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
-                      quizProgress={quizProgress}
                       searchValue={searchTerm}
                     />
                   ) : (
@@ -362,10 +279,8 @@ export default function App() {
                 element={
                   auth.loggedIn ? (
                     <Favorites
-                      favoriteQuizzes={favoriteQuizzes}
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
-                      quizProgress={quizProgress}
                       searchValue={searchTerm}
                     />
                   ) : (
