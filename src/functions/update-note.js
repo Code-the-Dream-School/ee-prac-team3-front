@@ -1,4 +1,3 @@
-import { port } from 'App';
 import { BASE_URL } from 'config';
 import { useState } from 'react';
 
