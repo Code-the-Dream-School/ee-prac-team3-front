@@ -107,6 +107,7 @@ export const Quizzes = ({
     setError,
     setLoading,
     navigate,
+    auth,
   ]);
 
   useEffect(() => {
@@ -148,6 +149,8 @@ export const Quizzes = ({
     setError,
     setLoading,
     navigate,
+    auth,
+    quizzes,
   ]);
 
   return useMemo(
@@ -176,6 +179,7 @@ export const Quizzes = ({
       favoritesIds,
       addToFavoritesHandler,
       removeFavoriteHandler,
+      error,
     ]
   );
 };

@@ -1,5 +1,5 @@
 import useAuth from '../../auth/useAuth';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   backendApiCall,
@@ -28,32 +28,35 @@ export const Favorites = ({
   const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
   const navigate = useNavigate();
 
-  const removeFavoriteHandler = async (quizId) => {
-    try {
-      await removeFavorite(quizId);
-      setFavoritesData((prevData) => ({
-        ...prevData,
-        favoritesIds: prevData.favoritesIds.filter(
-          (favorite) => favorite !== quizId
-        ),
-        favoriteQuizzes: prevData.favoriteQuizzes.filter(
-          (quiz) => quiz.id !== quizId
-        ),
-      }));
-      setSnackbar({
-        isOpened: true,
-        severity: 'success',
-        message: 'Quiz removed from favorites.',
-      });
-    } catch (error) {
-      setSnackbar({
-        isOpened: true,
-        severity: 'error',
-        message: 'An error occurred when removing a quiz from favorites.',
-      });
-      throw error;
-    }
-  };
+  const removeFavoriteHandler = useCallback(
+    async (quizId) => {
+      try {
+        await removeFavorite(quizId);
+        setFavoritesData((prevData) => ({
+          ...prevData,
+          favoritesIds: prevData.favoritesIds.filter(
+            (favorite) => favorite !== quizId
+          ),
+          favoriteQuizzes: prevData.favoriteQuizzes.filter(
+            (quiz) => quiz.id !== quizId
+          ),
+        }));
+        setSnackbar({
+          isOpened: true,
+          severity: 'success',
+          message: 'Quiz removed from favorites.',
+        });
+      } catch (error) {
+        setSnackbar({
+          isOpened: true,
+          severity: 'error',
+          message: 'An error occurred when removing a quiz from favorites.',
+        });
+        throw error;
+      }
+    },
+    [favoritesData.favoritesIds, favoritesData.favoriteQuizzes]
+  );
 
   useEffect(() => {
     const fetchAllFavoriteQuizzes = async () => {
@@ -125,6 +128,8 @@ export const Favorites = ({
     initialDataLoaded,
     favoritesData.favoriteQuizzes.length,
     userQuizzesUpdated,
+    auth,
+    favoritesData.favoriteQuizzes,
     navigate,
   ]);
 
@@ -152,6 +157,7 @@ export const Favorites = ({
       favoritesData.favoriteQuizzes,
       favoritesData.favoritesIds,
       removeFavoriteHandler,
+      error,
     ]
   );
 };
