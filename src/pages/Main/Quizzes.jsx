@@ -48,7 +48,7 @@ export const Quizzes = ({
         throw error;
       }
     },
-    [setFavoritesIds]
+    [setFavoritesIds, setSnackbar]
   );
 
   const removeFavoriteHandler = useCallback(
@@ -72,7 +72,7 @@ export const Quizzes = ({
         throw error;
       }
     },
-    [setFavoritesIds]
+    [setFavoritesIds, setSnackbar]
   );
 
   useEffect(() => {

@@ -55,7 +55,7 @@ export const Favorites = ({
         throw error;
       }
     },
-    [favoritesData.favoritesIds, favoritesData.favoriteQuizzes]
+    [favoritesData.favoritesIds, favoritesData.favoriteQuizzes, setSnackbar]
   );
 
   useEffect(() => {
