@@ -1,5 +1,5 @@
+import { BASE_URL } from 'config';
 import { useState } from 'react';
-import { port } from 'App';
 
 const useDelete = (ids) => {
   const [isLoading, setLoading] = useState(false);
@@ -8,7 +8,7 @@ const useDelete = (ids) => {
   const deleteNotes = async (ids) => {
     setLoading(true);
     try {
-      await fetch(`${port}/api/v1/notes?ids=${ids}`, {
+      await fetch(`${BASE_URL}/notes?ids=${ids}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

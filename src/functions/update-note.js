@@ -1,4 +1,5 @@
 import { port } from 'App';
+import { BASE_URL } from 'config';
 import { useState } from 'react';
 
 const useUpdate = (id, newNote) => {
@@ -8,7 +9,7 @@ const useUpdate = (id, newNote) => {
   const updateNote = async (id, newNote) => {
     setLoadingEdit(true);
     try {
-      await fetch(`${port}/api/v1/note/${id}`, {
+      await fetch(`${BASE_URL}/note/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

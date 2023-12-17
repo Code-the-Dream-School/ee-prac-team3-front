@@ -1,4 +1,4 @@
-import { port } from 'App';
+import { BASE_URL } from 'config';
 import { useState } from 'react';
 
 const useSubmit = (note) => {
@@ -9,7 +9,7 @@ const useSubmit = (note) => {
   const postNote = async (note) => {
     setLoading(true);
     try {
-      await fetch(`${port}/api/v1/note`, {
+      await fetch(`${BASE_URL}/note`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

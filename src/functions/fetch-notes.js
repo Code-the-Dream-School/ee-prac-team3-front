@@ -1,4 +1,4 @@
-import { port } from 'App';
+import { BASE_URL } from 'config';
 
 const fetchNotes = async () => {
   const options = {
@@ -10,7 +10,7 @@ const fetchNotes = async () => {
   };
 
   try {
-    const FetchResponse = await fetch(`${port}/api/v1/notes`, options);
+    const FetchResponse = await fetch(`${BASE_URL}/notes`, options);
     const result = await FetchResponse.json();
     return result.notes;
   } catch (error) {
