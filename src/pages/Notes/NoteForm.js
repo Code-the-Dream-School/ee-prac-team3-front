@@ -13,11 +13,11 @@ import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
-import fetchNotes from 'functions/fetch-notes';
-import useSubmit from 'functions/post-note';
+import fetchNotes from 'functions/fetchNotes';
+import useSubmit from 'functions/postNote';
 
 import { message } from 'antd';
-import useUpdate from 'functions/update-note';
+import useUpdate from 'functions/updateNote';
 
 export default function NewNoteForm({
   openPopup,
@@ -81,7 +81,7 @@ export default function NewNoteForm({
   }, [response]);
 
   useEffect(() => {
-    if (responseEdit) {
+    if (response) {
       if (responseEdit.success) {
         message.success(responseEdit.message);
         setOpenPopup(false);
@@ -103,7 +103,7 @@ export default function NewNoteForm({
     <>
       <Dialog open={openPopup} onClose={handleClose}>
         <DialogTitle>
-          <div>New Note</div>
+          <p>New Note</p>
         </DialogTitle>
         <DialogContent dividers>
           <Box

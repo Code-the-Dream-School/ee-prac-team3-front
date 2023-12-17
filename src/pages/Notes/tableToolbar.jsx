@@ -7,9 +7,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect } from 'react';
-import fetchNotes from 'functions/fetch-notes';
+import fetchNotes from 'functions/fetchNotes';
 import { message } from 'antd';
-import useDelete from 'functions/delete-notes';
+import useDelete from 'functions/deleteNotes';
 import { CircularProgress } from '@mui/material';
 
 export default function NotesTableToolbar({
