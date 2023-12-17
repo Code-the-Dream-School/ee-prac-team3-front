@@ -242,6 +242,7 @@ export default function App() {
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       searchValue={searchTerm}
+                      setSnackbar={setSnackbar}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
@@ -261,7 +262,7 @@ export default function App() {
               <Route
                 path={SIGNUP}
                 element={
-                  auth.loggedIn ? <Navigate to="/"></Navigate> : <SignUp />
+                  auth.loggedIn ? <Navigate to="/"></Navigate> : <SignUp setSnackbar={setSnackbar}/>
                 }
               />
               <Route
@@ -282,6 +283,7 @@ export default function App() {
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       searchValue={searchTerm}
+                      setSnackbar={setSnackbar}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>

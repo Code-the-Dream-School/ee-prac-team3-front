@@ -11,9 +11,9 @@ import {
   removeFavorite,
 } from '../../functions/exportFunctions';
 import { LOGIN } from '../../App';
-import { QuizzesContainer } from './Main';
+import { QuizzesContainer } from './QuizzesContainer';
 
-export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
+export const Quizzes = ({ changeFilter, activeFilters, searchValue, setSnackbar }) => {
   const { auth } = useAuth();
   const { quizzes, setQuizzes } = useQuiz();
   const [loading, setLoading] = useState(true);
@@ -29,8 +29,18 @@ export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
       try {
         await addFavorite(quizId);
         setFavoritesIds((prevFavoritesIds) => [...prevFavoritesIds, quizId]);
+        setSnackbar({
+          isOpened: true,
+          severity: 'success',
+          message: 'Quiz added to favorites.',
+        });
       } catch (error) {
-        console.error('Error adding to favorites:', error);
+        setSnackbar({
+          isOpened: true,
+          severity: 'error',
+          message: 'An error occurred when adding a quiz to favorites.',
+        });
+        throw error;
       }
     },
     [setFavoritesIds]
@@ -43,8 +53,18 @@ export const Quizzes = ({ changeFilter, activeFilters, searchValue }) => {
         setFavoritesIds((prevFavoriteQuizzesIds) =>
           prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
         );
+        setSnackbar({
+          isOpened: true,
+          severity: 'success',
+          message: 'Quiz removed from favorites.',
+        });
       } catch (error) {
-        console.error('Error removing favorite:', error);
+        setSnackbar({
+          isOpened: true,
+          severity: 'error',
+          message: 'An error occurred when removing a quiz from favorites.',
+        });
+        throw error;
       }
     },
     [setFavoritesIds]

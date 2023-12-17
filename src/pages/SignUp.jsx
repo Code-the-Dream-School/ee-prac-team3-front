@@ -29,7 +29,7 @@ import Loading from '../components/Loading';
 import { backendApiCall } from '../functions/exportFunctions';
 import { useState } from 'react';
 
-export default function SignUp() {
+export default function SignUp({setSnackbar}) {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
   const location = useLocation();
   const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
@@ -71,8 +71,18 @@ export default function SignUp() {
         email: '',
       });
       navigate(LOGIN);
+      setSnackbar({
+        isOpened: true,
+        severity: 'success',
+        message: 'You have successfully registered!',
+      });
     } catch (error) {
       setIsLoading(false);
+      setSnackbar({
+        isOpened: true,
+        severity: 'error',
+        message: `An error occurred during registration.`,
+      });
       throw new Error(error.message);
     }
   };

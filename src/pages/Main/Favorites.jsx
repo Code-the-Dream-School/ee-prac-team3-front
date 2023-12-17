@@ -9,14 +9,16 @@ import {
   removeFavorite,
 } from '../../functions/exportFunctions';
 import { LOGIN } from '../../App';
-import { QuizzesContainer } from './Main';
+import { QuizzesContainer } from './QuizzesContainer';
 
-export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
+export const Favorites = ({ changeFilter, activeFilters, searchValue, setSnackbar}) => {
   const { auth } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
-  const [favoritesIds, setFavoritesIds] = useState([]);
+  const [favoritesData, setFavoritesData] = useState({
+    favoriteQuizzes: [],
+    favoritesIds: [],
+  });
   const [initialDataLoaded, setInitialDataLoaded] = useState(false);
   const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
   const navigate = useNavigate();
@@ -24,14 +26,27 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
   const removeFavoriteHandler = async (quizId) => {
     try {
       await removeFavorite(quizId);
-      setFavoritesIds((prevFavoriteQuizzesIds) =>
-        prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
-      );
-      setFavoriteQuizzes((prevFavoriteQuizzes) =>
-        prevFavoriteQuizzes.filter((quiz) => quiz.id !== quizId)
-      );
+      setFavoritesData((prevData) => ({
+        ...prevData,
+        favoritesIds: prevData.favoritesIds.filter(
+          (favorite) => favorite !== quizId
+        ),
+        favoriteQuizzes: prevData.favoriteQuizzes.filter(
+          (quiz) => quiz.id !== quizId
+        ),
+      }));
+      setSnackbar({
+        isOpened: true,
+        severity: 'success',
+        message: 'Quiz removed from favorites.',
+      });
     } catch (error) {
-      console.error('Error removing favorite:', error);
+      setSnackbar({
+        isOpened: true,
+        severity: 'error',
+        message: 'An error occurred when removing a quiz from favorites.',
+      });
+      throw error;
     }
   };
 
@@ -40,15 +55,18 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
       try {
         setLoading(true);
         const quizzesIds = await getFavorites();
-        setFavoritesIds(quizzesIds);
-        if (
-          auth.loggedIn &&
-          favoriteQuizzes.length === 0 &&
-          !initialDataLoaded
-        ) {
+        setFavoritesData((prevData) => ({
+          ...prevData,
+          favoritesIds: quizzesIds,
+        }));
+        if (auth.loggedIn && !initialDataLoaded) {
           await fetchFavorites(
             backendApiCall,
-            setFavoriteQuizzes,
+            (quizzes) =>
+              setFavoritesData((prevData) => ({
+                ...prevData,
+                favoriteQuizzes: quizzes,
+              })),
             setError,
             auth,
             setLoading
@@ -64,7 +82,7 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
       }
     };
     fetchAllFavoriteQuizzes();
-  }, [auth.loggedIn, setFavoritesIds, auth, favoriteQuizzes.length, navigate]);
+  }, [auth.loggedIn, auth, initialDataLoaded, navigate]);
 
   useEffect(() => {
     const fetchUserFavoriteQuizzes = async () => {
@@ -72,13 +90,17 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
         if (
           auth.loggedIn &&
           initialDataLoaded &&
-          favoriteQuizzes.length > 0 &&
+          favoritesData.favoriteQuizzes.length > 0 &&
           !userQuizzesUpdated
         ) {
           await fetchFavoritesAndAddUserQuizzes(
             backendApiCall,
-            favoriteQuizzes,
-            setFavoriteQuizzes,
+            favoritesData.favoriteQuizzes,
+            (quizzes) =>
+              setFavoritesData((prevData) => ({
+                ...prevData,
+                favoriteQuizzes: quizzes,
+              })),
             setError,
             auth,
             setUserQuizzesUpdated
@@ -96,18 +118,19 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
   }, [
     auth.loggedIn,
     initialDataLoaded,
-    favoriteQuizzes.length,
+    favoritesData.favoriteQuizzes.length,
     userQuizzesUpdated,
+    navigate,
   ]);
 
   return useMemo(
     () => (
       <QuizzesContainer
         title="Your favorite quizzes"
-        quizzesForFiltering={favoriteQuizzes}
+        quizzesForFiltering={favoritesData.favoriteQuizzes}
         loading={loading}
-        favoritesIds={favoritesIds}
-        quizzesLength={favoriteQuizzes.length}
+        favoritesIds={favoritesData.favoritesIds}
+        quizzesLength={favoritesData.favoriteQuizzes.length}
         activeFilters={activeFilters}
         error={error}
         removeFavoriteHandler={removeFavoriteHandler}
@@ -121,8 +144,8 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
       changeFilter,
       searchValue,
       loading,
-      favoriteQuizzes,
-      favoritesIds,
+      favoritesData.favoriteQuizzes,
+      favoritesData.favoritesIds,
       removeFavoriteHandler,
     ]
   );

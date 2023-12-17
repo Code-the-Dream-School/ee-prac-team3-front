@@ -227,8 +227,8 @@ const QuizCard = ({
                   width="100%"
                   component="div"
                   sx={{
-                    width: '63px',
-                    height: '62px',
+                    width: '54px',
+                    height: '60px',
                   }}
                   image={quiz.image}
                 />

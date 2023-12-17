@@ -22,7 +22,7 @@ export const titleStyles = {
     fontSize: '20px',
   },
 };
-const boxStyles = {
+export const boxStyles = {
   width: '100%',
   maxWidth: '1200px',
 };
@@ -146,7 +146,7 @@ export const QuizzesContainer = ({
                           spacing={4}
                           sx={{ display: 'flex', justifyContent: 'start' }}
                         >
-                          {filteredQuizzes.map((q) => {
+                          {displayedQuizzes.map((q) => {
                             return (
                               <QuizCard
                                 key={q.id}
