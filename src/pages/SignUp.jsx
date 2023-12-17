@@ -29,7 +29,7 @@ import Loading from '../components/Loading';
 import { backendApiCall } from '../functions/exportFunctions';
 import { useState } from 'react';
 
-export default function SignUp({setSnackbar}) {
+export default function SignUp({ setSnackbar }) {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
   const location = useLocation();
   const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(

@@ -231,7 +231,11 @@ export default function App() {
               <Route
                 path={LOGIN}
                 element={
-                  auth.loggedIn ? <Navigate to="/"></Navigate> : <Login />
+                  auth.loggedIn ? (
+                    <Navigate to="/"></Navigate>
+                  ) : (
+                    <Login setSnackbar={setSnackbar} />
+                  )
                 }
               />
               <Route
@@ -262,7 +266,11 @@ export default function App() {
               <Route
                 path={SIGNUP}
                 element={
-                  auth.loggedIn ? <Navigate to="/"></Navigate> : <SignUp setSnackbar={setSnackbar}/>
+                  auth.loggedIn ? (
+                    <Navigate to="/"></Navigate>
+                  ) : (
+                    <SignUp setSnackbar={setSnackbar} />
+                  )
                 }
               />
               <Route

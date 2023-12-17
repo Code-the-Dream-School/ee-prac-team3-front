@@ -30,7 +30,7 @@ import { useLocation } from 'react-router-dom';
 import Loading from '../components/Loading';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-export default function Login() {
+export default function Login({ setSnackbar }) {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
   const location = useLocation();
   const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
@@ -76,10 +76,20 @@ export default function Login() {
           loggedIn: true,
         });
         navigate(HOME);
+        setSnackbar({
+          isOpened: true,
+          severity: 'success',
+          message: 'Welcome to the JSQuiz Educational Platform!',
+        });
       }
     } catch (error) {
       setIsLoading(false); // Ensure loading state is reset even on error.
       setErrorMessage(error.message); // Set error message to display
+      setSnackbar({
+        isOpened: true,
+        severity: 'error',
+        message: `An error occurred during login.`,
+      });
     }
   };
 

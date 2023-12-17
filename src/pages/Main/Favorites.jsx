@@ -11,7 +11,12 @@ import {
 import { LOGIN } from '../../App';
 import { QuizzesContainer } from './QuizzesContainer';
 
-export const Favorites = ({ changeFilter, activeFilters, searchValue, setSnackbar}) => {
+export const Favorites = ({
+  changeFilter,
+  activeFilters,
+  searchValue,
+  setSnackbar,
+}) => {
   const { auth } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

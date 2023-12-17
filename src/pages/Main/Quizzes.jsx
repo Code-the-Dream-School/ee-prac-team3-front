@@ -13,7 +13,12 @@ import {
 import { LOGIN } from '../../App';
 import { QuizzesContainer } from './QuizzesContainer';
 
-export const Quizzes = ({ changeFilter, activeFilters, searchValue, setSnackbar }) => {
+export const Quizzes = ({
+  changeFilter,
+  activeFilters,
+  searchValue,
+  setSnackbar,
+}) => {
   const { auth } = useAuth();
   const { quizzes, setQuizzes } = useQuiz();
   const [loading, setLoading] = useState(true);
