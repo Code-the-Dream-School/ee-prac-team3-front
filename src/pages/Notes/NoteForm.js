@@ -50,8 +50,26 @@ export default function NewNoteForm({
     onSubmit: async (values) => {
       if (!editNote._id) {
         await postNote(values);
+        setOpenPopup(false);
+        resetForm();
+        fetchNotes()
+          .then((data) => {
+            setNotes(data);
+          })
+          .catch((err) => {
+            message.error(response.message);
+          });
       } else {
         await updateNote(editNote._id, values);
+        setOpenPopup(false);
+        resetForm();
+        fetchNotes()
+          .then((data) => {
+            setNotes(data);
+          })
+          .catch((err) => {
+            message.error(responseEdit.message);
+          });
       }
     },
     validationSchema: Yup.object({
@@ -65,15 +83,6 @@ export default function NewNoteForm({
     if (response) {
       if (response.success) {
         message.success(response.message);
-        setOpenPopup(false);
-        resetForm();
-        fetchNotes()
-          .then((data) => {
-            setNotes(data);
-          })
-          .catch((err) => {
-            message.error(response.message);
-          });
       } else {
         message.error(response.message);
       }
@@ -81,18 +90,9 @@ export default function NewNoteForm({
   }, [response]);
 
   useEffect(() => {
-    if (response) {
+    if (responseEdit) {
       if (responseEdit.success) {
         message.success(responseEdit.message);
-        setOpenPopup(false);
-        resetForm();
-        fetchNotes()
-          .then((data) => {
-            setNotes(data);
-          })
-          .catch((err) => {
-            message.error(responseEdit.message);
-          });
       } else {
         message.error(responseEdit.message);
       }

@@ -22,22 +22,22 @@ export default function NotesTableToolbar({
   setSelected,
 }) {
   const { isLoading, response, deleteNotes } = useDelete();
-  const handleDeleteNotes = () => {
-    deleteNotes(selected);
+  const handleDeleteNotes = async () => {
+    await deleteNotes(selected);
     selected.length = 0;
+    fetchNotes()
+      .then((data) => {
+        setNotes(data);
+      })
+      .catch((err) => {
+        message.error(response.message);
+      });
   };
 
   useEffect(() => {
     if (response) {
       if (response.success) {
         message.success(response.message);
-        fetchNotes()
-          .then((data) => {
-            setNotes(data);
-          })
-          .catch((err) => {
-            message.error(response.message);
-          });
       } else {
         message.error(response.message);
       }
