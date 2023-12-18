@@ -1,21 +1,27 @@
 import useAuth from '../../auth/useAuth';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  removeFavorite,
   useFetchFavoriteQuizzes,
+  removeFavorite,
 } from '../../functions/exportFunctions';
 import { LOGIN } from '../../App';
-import { QuizzesContainer } from './Main';
+import { QuizzesContainer } from './QuizzesContainer';
 
-export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
+export const Favorites = ({
+  changeFilter,
+  activeFilters,
+  searchValue,
+  setSnackbar,
+}) => {
   const { auth } = useAuth();
-  const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
-  const [favoritesIds, setFavoritesIds] = useState([]);
+  const [favoritesData, setFavoritesData] = useState({
+    favoriteQuizzes: [],
+    favoritesIds: [],
+  });
   const { loading, error } = useFetchFavoriteQuizzes(
     auth,
-    favoriteQuizzes,
-    setFavoriteQuizzes,
-    setFavoritesIds,
+    setFavoritesData,
+    favoritesData,
     LOGIN
   );
 
@@ -23,27 +29,40 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
     async (quizId) => {
       try {
         await removeFavorite(quizId);
-        setFavoritesIds((prevFavoriteQuizzesIds) =>
-          prevFavoriteQuizzesIds.filter((favorite) => favorite !== quizId)
-        );
-        setFavoriteQuizzes((prevFavoriteQuizzes) =>
-          prevFavoriteQuizzes.filter((quiz) => quiz.id !== quizId)
-        );
+        setFavoritesData((prevData) => ({
+          ...prevData,
+          favoritesIds: prevData.favoritesIds.filter(
+            (favorite) => favorite !== quizId
+          ),
+          favoriteQuizzes: prevData.favoriteQuizzes.filter(
+            (quiz) => quiz.id !== quizId
+          ),
+        }));
+        setSnackbar({
+          isOpened: true,
+          severity: 'success',
+          message: 'Quiz removed from favorites.',
+        });
       } catch (error) {
-        console.error('Error removing favorite:', error);
+        setSnackbar({
+          isOpened: true,
+          severity: 'error',
+          message: 'An error occurred when removing a quiz from favorites.',
+        });
+        throw error;
       }
     },
-    [setFavoritesIds, setFavoriteQuizzes]
+    [setSnackbar]
   );
 
   return useMemo(
     () => (
       <QuizzesContainer
         title="Your favorite quizzes"
-        quizzesForFiltering={favoriteQuizzes}
+        quizzesForFiltering={favoritesData.favoriteQuizzes}
         loading={loading}
-        favoritesIds={favoritesIds}
-        quizzesLength={favoriteQuizzes.length}
+        favoritesIds={favoritesData.favoritesIds}
+        quizzesLength={favoritesData.favoriteQuizzes.length}
         activeFilters={activeFilters}
         error={error}
         removeFavoriteHandler={removeFavoriteHandler}
@@ -57,8 +76,8 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
       changeFilter,
       searchValue,
       loading,
-      favoriteQuizzes,
-      favoritesIds,
+      favoritesData.favoriteQuizzes,
+      favoritesData.favoritesIds,
       removeFavoriteHandler,
       error,
     ]

@@ -205,8 +205,7 @@ export async function updateUserProgress(quizId, score, userId, setError) {
   const body = { quiz: quizId, score: score.toString(), user: userId };
   const url = '/progress/user';
   try {
-    const api = await backendApiCall('POST', `${url}`, body);
-    return api;
+    return await backendApiCall('POST', `${url}`, body);
   } catch (err) {
     setError(err);
   }
@@ -342,12 +341,12 @@ export const useFetchQuizzes = (
     const fetchAllQuizzes = async () => {
       try {
         if (auth.loggedIn && quizzes.length === 1 && !initialDataLoaded) {
-          await safeFetchQuizData(
+          await fetchQuizData(
             backendApiCall,
             setQuizzes,
             setError,
             auth,
-            setLoading
+            () => {}
           );
           setInitialDataLoaded(true);
         } else if (!auth.loggedIn) {
@@ -442,9 +441,8 @@ export const removeFavorite = async (quizId) => {
 
 export const useFetchFavoriteQuizzes = (
   auth,
-  favoriteQuizzes,
-  setFavoriteQuizzes,
-  setFavoritesIds,
+  setFavoritesData,
+  favoritesData,
   LOGIN
 ) => {
   const [loading, setLoading] = useState(true);
@@ -455,42 +453,40 @@ export const useFetchFavoriteQuizzes = (
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchAndSetFavoriteQuizzes = async () => {
+    const fetchAllFavoriteQuizzes = async () => {
       try {
+        setLoading(true);
         const quizzesIds = await getFavorites();
-        setFavoritesIds(quizzesIds);
-        if (
-          auth.loggedIn &&
-          favoriteQuizzes.length === 0 &&
-          !initialDataLoaded
-        ) {
-          await safeFetchFavorites(
+        if (!quizzesIds) {
+          setLoading(true);
+          return;
+        }
+        setFavoritesData((prevData) => ({
+          ...prevData,
+          favoritesIds: quizzesIds,
+        }));
+        if (auth.loggedIn && !initialDataLoaded) {
+          await fetchFavorites(
             backendApiCall,
-            setFavoriteQuizzes,
+            (quizzes) =>
+              setFavoritesData((prevData) => ({
+                ...prevData,
+                favoriteQuizzes: quizzes,
+              })),
             setError,
-            auth
+            auth,
+            () => {}
           );
           setInitialDataLoaded(true);
         } else if (!auth.loggedIn) {
           navigate(LOGIN);
-        } else if (auth.loggedIn && favoriteQuizzes.length > 0) {
-          setInitialDataLoaded(true);
         }
       } catch (error) {
         setError(error);
       }
     };
-    fetchAndSetFavoriteQuizzes();
-  }, [
-    auth.loggedIn,
-    setFavoritesIds,
-    auth,
-    favoriteQuizzes.length,
-    navigate,
-    initialDataLoaded,
-    setFavoriteQuizzes,
-    LOGIN,
-  ]);
+    fetchAllFavoriteQuizzes();
+  }, [auth.loggedIn, auth, initialDataLoaded, navigate]);
 
   useEffect(() => {
     const fetchUserFavoriteQuizzes = async () => {
@@ -498,8 +494,12 @@ export const useFetchFavoriteQuizzes = (
         if (initialDataLoaded && !userQuizzesUpdated) {
           await fetchFavoritesAndAddUserQuizzes(
             backendApiCall,
-            favoriteQuizzes,
-            setFavoriteQuizzes,
+            favoritesData.favoriteQuizzes,
+            (quizzes) =>
+              setFavoritesData((prevData) => ({
+                ...prevData,
+                favoriteQuizzes: quizzes,
+              })),
             setError,
             auth,
             setUserQuizzesUpdated
@@ -515,13 +515,10 @@ export const useFetchFavoriteQuizzes = (
   }, [
     auth.loggedIn,
     initialDataLoaded,
-    favoriteQuizzes.length,
     userQuizzesUpdated,
-    setFavoriteQuizzes,
     auth,
-    favoriteQuizzes,
+    favoritesData,
     navigate,
-    LOGIN,
   ]);
 
   useEffect(() => {
@@ -572,29 +569,6 @@ export const deleteUser = async (snackbar, setAuth) => {
     throw new Error(`Error deleting account: ${error.message}`);
   }
 };
-
-/*export const handleResetUserProgress = async (
-  backendApiCall,
-  quizId,
-  quizzes,
-  setQuizzes,
-  setError,
-  auth,
-) => {
-  try {
-    await backendApiCall('DELETE', `/progress/${quizId}`);
-
-    await safeFetchAndAddUserQuizzes(
-      backendApiCall,
-      quizzes,
-      setQuizzes,
-      setError,
-      auth,
-    );
-  } catch (error) {
-    throw new Error(error);
-  }
-};*/
 
 export const deleteAttemptsForUserAndQuiz = async (
   quiz,

@@ -37,7 +37,7 @@ const projectTeam = [
     gitHub: 'https://github.com/katsiarynalashcheuskaya',
     description:
       'As a junior developer, her goal is to continue growing, collaborating, and making impactful contributions to the world of web development. ' +
-      'Her strengths include strong analytical skills and a sense of responsibility.',
+      'Her strengths include strong analytical skills and a sense of responsibility. ',
   },
   {
     id: '4',

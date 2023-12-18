@@ -23,7 +23,6 @@ import { Quizzes } from './pages/Main/Quizzes';
 import { Favorites } from './pages/Main/Favorites';
 import About from './pages/About/About';
 import NavBar from './components/NavBar';
-import Notes from './pages/Notes';
 import Library from './pages/Library';
 import AccountSettings from './pages/AccountSettings';
 import useFilterState from './components/filterState';
@@ -33,6 +32,7 @@ import {
   authenticateUser,
   handleLogout,
 } from './functions/exportFunctions';
+import Notes from 'pages/Notes/notesPage';
 import { BASE_URL } from './config';
 
 const PATH = {
@@ -231,7 +231,11 @@ export default function App() {
               <Route
                 path={LOGIN}
                 element={
-                  auth.loggedIn ? <Navigate to="/"></Navigate> : <Login />
+                  auth.loggedIn ? (
+                    <Navigate to="/"></Navigate>
+                  ) : (
+                    <Login setSnackbar={setSnackbar} />
+                  )
                 }
               />
               <Route
@@ -242,6 +246,7 @@ export default function App() {
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       searchValue={searchTerm}
+                      setSnackbar={setSnackbar}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
@@ -261,7 +266,11 @@ export default function App() {
               <Route
                 path={SIGNUP}
                 element={
-                  auth.loggedIn ? <Navigate to="/"></Navigate> : <SignUp />
+                  auth.loggedIn ? (
+                    <Navigate to="/"></Navigate>
+                  ) : (
+                    <SignUp setSnackbar={setSnackbar} />
+                  )
                 }
               />
               <Route
@@ -282,6 +291,7 @@ export default function App() {
                       changeFilter={changeFilter}
                       activeFilters={activeFilters}
                       searchValue={searchTerm}
+                      setSnackbar={setSnackbar}
                     />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>

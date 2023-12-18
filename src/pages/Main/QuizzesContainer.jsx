@@ -22,7 +22,7 @@ export const titleStyles = {
     fontSize: '20px',
   },
 };
-const boxStyles = {
+export const boxStyles = {
   width: '100%',
   maxWidth: '1200px',
 };

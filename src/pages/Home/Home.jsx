@@ -162,6 +162,8 @@ export default function Home({ highlights, snackbar }) {
                 variant={'h6'}
                 sx={{
                   fontWeight: 'bold',
+                  textAlign: 'justify',
+                  textIndent: '2em',
                   textTransform: 'uppercase',
                   mb: 3,
                   [defaultTheme.breakpoints.down('sm')]: {
@@ -170,7 +172,7 @@ export default function Home({ highlights, snackbar }) {
                   },
                 }}
               >
-                Test your knowledge with our quizzes
+                Test your knowledge with our interactive quizzes
               </Typography>
               <Box>
                 <Box>
@@ -178,27 +180,17 @@ export default function Home({ highlights, snackbar }) {
                     variant={'body1'}
                     sx={{
                       textAlign: 'justify',
+                      textIndent: '2em',
                       [defaultTheme.breakpoints.down('sm')]: {
                         fontSize: '14px',
                       },
                     }}
                   >
                     Whether you're a novice or an experienced developer, our
-                    interactive quizzes will challenge and expand your
-                    knowledge.{' '}
-                  </Typography>
-                  <Typography
-                    variant={'body1'}
-                    sx={{
-                      textAlign: 'justify',
-                      [defaultTheme.breakpoints.down('sm')]: {
-                        fontSize: '14px',
-                      },
-                    }}
-                  >
-                    Sharpen your coding skills, solidify your understanding, and
-                    embark on a learning journey that's both fun and
-                    educational.{' '}
+                    quizzes are designed to challenge and expand your
+                    understanding of javascript. Sharpen your coding skills,
+                    solidify your knowledge, and embark on a learning journey
+                    that's both enjoyable and educational.{' '}
                   </Typography>
                   <Button
                     href={QUIZZES}
@@ -297,6 +289,8 @@ export default function Home({ highlights, snackbar }) {
                   fontWeight: 'bold',
                   textTransform: 'uppercase',
                   mb: 3,
+                  textAlign: 'justify',
+                  textIndent: '2em',
                   [defaultTheme.breakpoints.down('sm')]: {
                     textAlign: 'justify',
                     fontSize: '18px',
@@ -312,14 +306,16 @@ export default function Home({ highlights, snackbar }) {
                     variant={'body1'}
                     sx={{
                       textAlign: 'justify',
+                      textIndent: '2em',
                       [defaultTheme.breakpoints.down('sm')]: {
                         fontSize: '14px',
                       },
                     }}
                   >
-                    The educational platform offer programmers an easy and
-                    effective way to take notes for online courses with the help
-                    of AI assistant for free.
+                    For better retention of material, the educational platform
+                    offers programmers an easy and effective way to take notes.
+                    Intuitive interface and a blend of simplicity and
+                    functionality makes creating notes fast and effortless.
                   </Typography>
                   <Button
                     href={NOTES}

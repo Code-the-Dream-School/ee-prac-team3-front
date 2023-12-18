@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
-  Container,
   Typography,
   RadioGroup,
   Button,
@@ -12,8 +11,12 @@ import {
   DialogContentText,
   DialogTitle,
   FormGroup,
+  Box,
 } from '@mui/material';
 import checkRadioRender from './CheckRadioRender';
+import { defaultTheme } from '../../assets/styles';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 export default function QuestionContent({
   question,
@@ -81,8 +84,8 @@ export default function QuestionContent({
   const checkbox = 'check-box';
 
   return (
-    <Container>
-      <Typography variant="h5" align="left" sx={{ pl: 2, pb: 2 }}>
+    <Box>
+      <Typography variant="h6" align="left" sx={{ pb: 2 }}>
         {question}
       </Typography>
       {code && (
@@ -107,7 +110,7 @@ export default function QuestionContent({
           value={selected || ''}
           onChange={(e) => setSelected(e.target.value)}
           disabled={isCurrentQuestionAnswered}
-          style={{ paddingLeft: '10px' }}
+          sx={{ gap: 1 }}
           id="answer-choices"
         >
           {checkRadioRender(
@@ -121,68 +124,89 @@ export default function QuestionContent({
           )}
         </RadioGroup>
       )}
-      {isCurrentQuestionAnswered &&
-        correctnessInfo &&
-        (correctnessInfo.isCorrect ? (
-          <Typography> Nice work! </Typography>
-        ) : (
-          <>
-            <Typography> Sorry, that is incorrect. </Typography>
-            {resources && (
-              <Typography>
-                You can learn more about this topic at the following links:
-                {resources}
-              </Typography>
-            )}
-          </>
-        ))}
-      <div
-        style={{
+      <Box
+        sx={{
           display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          mt: 5,
+          [defaultTheme.breakpoints.down('sm')]: {
+            flexDirection: 'column',
+            mt: 4,
+            gap: 2,
+          },
         }}
       >
-        <div>
+        <Box
+          sx={{
+            [defaultTheme.breakpoints.down('sm')]: {
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              gap: 2,
+            },
+          }}
+        >
           {index > 0 && (
             <Button
               variant="outlined"
+              sx={{
+                mr: 1,
+                [defaultTheme.breakpoints.down('sm')]: {
+                  mr: 0,
+                },
+              }}
               onClick={() =>
                 onBackQuestion(resetSelection, isCurrentQuestionAnswered)
               }
-              sx={{ mt: 5, ml: 1 }}
+              startIcon={<ArrowBackIosIcon />}
             >
               Previous Question
             </Button>
           )}
+          <Button
+            variant="contained"
+            disabled={isCurrentQuestionAnswered || !selected}
+            onClick={handleSubmitAnswer}
+          >
+            Submit Answer
+          </Button>
           {index < length - 1 && (
             <Button
               variant="outlined"
               onClick={handleNextQuestion}
-              sx={{ mt: 5, ml: 1 }}
+              sx={{
+                ml: 1,
+                [defaultTheme.breakpoints.down('sm')]: {
+                  mr: 0,
+                },
+              }}
+              endIcon={<ArrowForwardIosIcon />}
             >
               Next Question
             </Button>
           )}
-        </div>
-        <Button
-          variant="contained"
-          disabled={isCurrentQuestionAnswered || !selected}
-          onClick={handleSubmitAnswer}
-          sx={{ m: 0, mt: 5 }}
-        >
-          Submit Answer
-        </Button>
+        </Box>
         {(index === length - 1 || userAnswers.length === length) && (
           <Button
             variant="contained"
             onClick={handleSubmitTest}
-            sx={{ m: 0, mt: 5 }}
+            sx={{
+              ml: 1,
+              [defaultTheme.breakpoints.down('sm')]: {
+                ml: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                gap: 2,
+              },
+            }}
           >
             Submit Test
           </Button>
         )}
-      </div>
+      </Box>
       {showWarningModal && (
         <Dialog
           open={showWarningModal}
@@ -231,6 +255,6 @@ export default function QuestionContent({
           </DialogActions>
         </Dialog>
       )}
-    </Container>
+    </Box>
   );
 }
