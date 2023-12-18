@@ -39,6 +39,9 @@ export default function SignUp({ setSnackbar }) {
   });
   const navigate = useNavigate();
 
+  const handleUserDataChange = (field) => (e) => {
+    setUserData((prevData) => ({ ...prevData, [field]: e.target.value }));
+  };
   const handleSubmitData = async (event, userData) => {
     const registrationData = {
       firstname: userData.firstName,
