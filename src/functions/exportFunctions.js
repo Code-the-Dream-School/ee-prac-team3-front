@@ -197,10 +197,6 @@ export async function fetchQuizData(
   }
 }
 
-const safeFetchQuizData = (backendApiCall, setQuizzes, setError, auth) => {
-  return fetchQuizData(backendApiCall, setQuizzes, setError, auth, () => {});
-};
-
 export async function updateUserProgress(quizId, score, userId, setError) {
   const body = { quiz: quizId, score: score.toString(), user: userId };
   const url = '/progress/user';
@@ -263,10 +259,6 @@ export async function fetchFavorites(
     setLoading(false);
   }
 }
-
-const safeFetchFavorites = (backendApiCall, setQuizzes, setError, auth) => {
-  return fetchFavorites(backendApiCall, setQuizzes, setError, auth, () => {});
-};
 
 export const fetchFavoritesAndAddUserQuizzes = async (
   backendApiCall,
@@ -486,7 +478,14 @@ export const useFetchFavoriteQuizzes = (
       }
     };
     fetchAllFavoriteQuizzes();
-  }, [auth.loggedIn, auth, initialDataLoaded, navigate]);
+  }, [
+    auth.loggedIn,
+    auth,
+    initialDataLoaded,
+    navigate,
+    LOGIN,
+    setFavoritesData,
+  ]);
 
   useEffect(() => {
     const fetchUserFavoriteQuizzes = async () => {
@@ -519,6 +518,8 @@ export const useFetchFavoriteQuizzes = (
     auth,
     favoritesData,
     navigate,
+    setFavoritesData,
+    LOGIN,
   ]);
 
   useEffect(() => {

@@ -31,7 +31,6 @@ export default function QuestionContent({
   setSelectedOption,
   type,
   userAnswers,
-  resources,
   questionId,
   setFinishQuiz,
 }) {
