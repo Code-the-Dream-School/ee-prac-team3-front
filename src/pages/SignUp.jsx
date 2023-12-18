@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import customColors, { defaultTheme } from 'assets/styles';
-import { LOGIN, RESET_PASSWORD, SIGNUP } from 'App';
+import { LOGIN, RESET_PASSWORD, severities, SIGNUP } from 'App';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Copyright from '../components/Copyright';
 import { useLocation } from 'react-router-dom';
@@ -28,6 +28,7 @@ import jsQuizLogo from '../assets/images/logo.svg';
 import Loading from '../components/Loading';
 import { backendApiCall } from '../functions/exportFunctions';
 import { useState } from 'react';
+import { FormControlComponent } from './Login';
 
 export default function SignUp({ setSnackbar }) {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -73,14 +74,14 @@ export default function SignUp({ setSnackbar }) {
       navigate(LOGIN);
       setSnackbar({
         isOpened: true,
-        severity: 'success',
+        severity: severities.SUCCESS,
         message: 'You have successfully registered!',
       });
     } catch (error) {
       setIsLoading(false);
       setSnackbar({
         isOpened: true,
-        severity: 'error',
+        severity: severities.ERROR,
         message: `An error occurred during registration.`,
       });
       throw new Error(error.message);
@@ -199,38 +200,9 @@ export default function SignUp({ setSnackbar }) {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined" margin="normal">
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <OutlinedInput
-                      id="password"
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type={showPassword ? 'text' : 'password'}
-                      onChange={handleUserDataChange('password')}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <Visibility
-                                sx={{ color: customColors.greyMedium }}
-                              />
-                            ) : (
-                              <VisibilityOff
-                                sx={{ color: customColors.greyMedium }}
-                              />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
+                  <FormControlComponent
+                    handleDataChange={handleUserDataChange}
+                  />
                 </Grid>
               </Grid>
               <Button

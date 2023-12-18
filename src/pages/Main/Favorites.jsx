@@ -8,7 +8,7 @@ import {
   getFavorites,
   removeFavorite,
 } from '../../functions/exportFunctions';
-import { LOGIN } from '../../App';
+import { LOGIN, severities } from '../../App';
 import { QuizzesContainer } from './QuizzesContainer';
 
 export const Favorites = ({
@@ -43,13 +43,13 @@ export const Favorites = ({
         }));
         setSnackbar({
           isOpened: true,
-          severity: 'success',
+          severity: severities.SUCCESS,
           message: 'Quiz removed from favorites.',
         });
       } catch (error) {
         setSnackbar({
           isOpened: true,
-          severity: 'error',
+          severity: severities.ERROR,
           message: 'An error occurred when removing a quiz from favorites.',
         });
         throw error;

@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import customColors, { defaultTheme } from '../assets/styles';
-import { LOGIN } from '../App';
+import { LOGIN, severities } from '../App';
 import { deleteUser } from '../functions/exportFunctions';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
@@ -26,7 +26,7 @@ const UserInfoSection = ({
     if (!formValues.firstName.trim() || !formValues.lastName.trim()) {
       setSnackbar({
         isOpened: true,
-        severity: 'error',
+        severity: severities.ERROR,
         message: 'First name and last name are required.',
       });
       return false;
@@ -35,7 +35,7 @@ const UserInfoSection = ({
     if (!emailRegex.test(formValues.email)) {
       setSnackbar({
         isOpened: true,
-        severity: 'error',
+        severity: severities.ERROR,
         message: 'Invalid email address.',
       });
       return false;
@@ -190,7 +190,7 @@ const PasswordSection = ({
   );
 };
 
-const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
+const AccountSettings = ({ userData, setSnackbar, updateUserInfo }) => {
   const [formValues, setFormValues] = useState({
     firstName: userData.firstName,
     lastName: userData.lastName,
@@ -218,13 +218,13 @@ const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
   const handleDeleteAccount = useCallback(async () => {
     if (confirmAccountDelete) {
       try {
-        await deleteUser(snackbar, setAuth);
+        await deleteUser(setSnackbar, setAuth);
         navigate(LOGIN);
       } catch (error) {
         console.error(error);
       }
     }
-  }, [confirmAccountDelete, navigate, snackbar, setAuth]);
+  }, [confirmAccountDelete, navigate, setSnackbar, setAuth]);
 
   return (
     <Container
@@ -270,13 +270,12 @@ const AccountSettings = ({ userData, snackbar, updateUserInfo }) => {
               formValues={formValues}
               setFormValues={setFormValues}
               changeProfileInfoHandler={updateUserInfoHandler}
-              setSnackbar={snackbar}
+              setSnackbar={setSnackbar}
             />
             <PasswordSection
               passwordFormValues={passwordFormValues}
               setPasswordFormValues={setPasswordFormValues}
               changePasswordHandler={updateUserInfoHandler}
-              setSnackbar={snackbar}
             />
           </Box>
           <Grid textAlign={'justify'}>

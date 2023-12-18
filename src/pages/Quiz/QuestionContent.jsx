@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { coyWithoutShadows } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
   Typography,
   RadioGroup,
@@ -12,12 +12,16 @@ import {
   DialogTitle,
   FormGroup,
   Box,
+  Link,
 } from '@mui/material';
 import checkRadioRender from './CheckRadioRender';
 import { defaultTheme } from '../../assets/styles';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import AddCommentIcon from '@mui/icons-material/AddComment';
+
 import { BASE_URL } from 'config';
+import { severities } from '../../App';
 
 export default function QuestionContent({
   question,
@@ -35,7 +39,8 @@ export default function QuestionContent({
   resources,
   questionId,
   setFinishQuiz,
-  setLoading
+  setLoading,
+  setSnackbar,
 }) {
   const [selected, setSelected] = useState(
     type === 'check-box'
@@ -66,20 +71,22 @@ export default function QuestionContent({
     }
   };
 
-  const handleAddNote = () => {
-    console.log("234234");
-    addNote();
-  }
+  const handleAddNote = async () => {
+    try {
+      await addNote();
+    } catch (error) {
+      throw error;
+    }
+  };
 
   const addNote = async () => {
     setLoading(true);
     let payload = {
       title: question,
-      note: "Add your notes here"
-    }
-    console.log("payload ===> ", payload);
+      note: 'Add your note here',
+    };
     try {
-      let response = await fetch(`${BASE_URL}/note`, {
+      await fetch(`${BASE_URL}/note`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,27 +94,22 @@ export default function QuestionContent({
         credentials: 'include',
         body: JSON.stringify(payload),
       });
-      if (response.ok) {
-        console.log("Note added");
-      }
-      let data = await response.json();
-      console.log("data ===> ", data);
-
-      // setResponse({
-      //   success: true,
-      //   message: `The note is added`,
-      // });
+      setSnackbar({
+        isOpened: true,
+        severity: severities.SUCCESS,
+        message: 'Question added to notes.',
+      });
     } catch (error) {
-      console.log('error', error)
-      // setResponse({
-      //   success: false,
-      //   message: 'Something went wrong, please try again later!',
-      // });
+      setSnackbar({
+        isOpened: true,
+        severity: severities.ERROR,
+        message: 'An error occurred while adding a question to notes.',
+      });
+      throw error;
+    } finally {
+      setLoading(false);
     }
-     finally {
-       setLoading(false);
-     }
-  }
+  };
 
   const handleSubmitAnswer = () => {
     //if user submits an answer questionId is add to Set used for tracking answered questions
@@ -130,14 +132,26 @@ export default function QuestionContent({
 
   return (
     <Box>
-      <Box sx={{display:'flex'}}>
-      <Typography variant="h6" align="left" sx={{ pb: 2 }}>
-        {question}
-      </Typography>
-      <Button onClick={() => handleAddNote()}>Add to notes</Button>
+      <Box>
+        <Typography variant="h6" align="left">
+          {question}
+        </Typography>
+        <Link
+          sx={{
+            mb: 3,
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+          }}
+          onClick={() => handleAddNote()}
+        >
+          <AddCommentIcon sx={{ mr: 1 }} />
+          Add question to notes
+        </Link>
       </Box>
       {code && (
-        <SyntaxHighlighter language="javascript" style={atomDark}>
+        <SyntaxHighlighter language="javascript" style={coyWithoutShadows}>
           {code}
         </SyntaxHighlighter>
       )}

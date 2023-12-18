@@ -10,7 +10,7 @@ import ContactForm from './ContactForm';
 import HighlightsSection from './Highlights';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-export default function Home({ highlights, snackbar }) {
+export default function Home({ highlights, setSnackbar }) {
   const [scrollToTopVisible, setScrollToTopVisible] = useState(false);
   const handleScroll = () => {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -485,7 +485,7 @@ export default function Home({ highlights, snackbar }) {
           },
         }}
       >
-        <ContactForm snackbar={snackbar} />
+        <ContactForm setSnackbar={setSnackbar} />
       </Box>
     </>
   );

@@ -65,6 +65,11 @@ export const {
   QUIZ,
 } = PATH;
 
+export const severities = {
+  ERROR: 'error',
+  SUCCESS: 'success',
+};
+
 export const highlights = [
   {
     id: 'highlight 1',
@@ -185,16 +190,15 @@ export default function App() {
           email: formValues.email,
         }));
       }
-
       setSnackbar({
         isOpened: true,
-        severity: 'success',
+        severity: severities.SUCCESS,
         message: 'Your data was successfully updated.',
       });
     } catch (error) {
       setSnackbar({
         isOpened: true,
-        severity: 'error',
+        severity: severities.ERROR,
         message: 'Failed to update account information.',
       });
     }
@@ -257,7 +261,7 @@ export default function App() {
                 path={`${QUIZ}/:quizId`}
                 element={
                   auth.loggedIn ? (
-                    <QuizContent />
+                    <QuizContent setSnackbar={setSnackbar} />
                   ) : (
                     <Navigate to={LOGIN}></Navigate>
                   )
@@ -316,7 +320,7 @@ export default function App() {
                   auth.loggedIn ? (
                     <AccountSettings
                       userData={userData}
-                      snackbar={setSnackbar}
+                      setSnackbar={setSnackbar}
                       updateUserInfo={updateUserInfo}
                     />
                   ) : (
@@ -329,7 +333,7 @@ export default function App() {
               <Route
                 path={HOME}
                 element={
-                  <Home snackbar={setSnackbar} highlights={highlights} />
+                  <Home setSnackbar={setSnackbar} highlights={highlights} />
                 }
               />
               <Route path={ABOUT} element={<About />} />

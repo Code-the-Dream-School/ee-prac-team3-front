@@ -16,7 +16,7 @@ import {
 } from '../../functions/exportFunctions';
 import customColors, { defaultTheme } from '../../assets/styles';
 
-export default function QuizContent() {
+export default function QuizContent({ setSnackbar }) {
   //context variables
   const { quizId } = useParams();
   const { quizzes, setQuizzes } = useQuiz();
@@ -288,6 +288,7 @@ export default function QuizContent() {
                     type={questions[currentQuestionIndex].type}
                     setFinishQuiz={setQuizFinished}
                     setLoading={setLoading}
+                    setSnackbar={setSnackbar}
                   />
                 ) : (
                   <>

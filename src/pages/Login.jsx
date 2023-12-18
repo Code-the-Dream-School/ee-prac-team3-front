@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import useAuth from 'auth/useAuth';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { LOGIN, RESET_PASSWORD, SIGNUP, HOME } from 'App';
+import { LOGIN, RESET_PASSWORD, SIGNUP, HOME, severities } from 'App';
 import { backendApiCall } from '../functions/exportFunctions';
 import customColors from 'assets/styles';
 import Copyright from '../components/Copyright';
@@ -30,13 +30,52 @@ import { useLocation } from 'react-router-dom';
 import Loading from '../components/Loading';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
+export const FormControlComponent = ({ handleDataChange }) => {
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  return (
+    <FormControl fullWidth variant="outlined" margin="normal">
+      <InputLabel htmlFor="password">Password</InputLabel>
+      <OutlinedInput
+        id="password"
+        required
+        fullWidth
+        name="password"
+        autoComplete="current-password"
+        label="Password"
+        type={showPassword ? 'text' : 'password'}
+        onChange={handleDataChange('password')}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={handleClickShowPassword}
+              onMouseDown={handleMouseDownPassword}
+              edge="end"
+            >
+              {showPassword ? (
+                <Visibility sx={{ color: customColors.greyMedium }} />
+              ) : (
+                <VisibilityOff sx={{ color: customColors.greyMedium }} />
+              )}
+            </IconButton>
+          </InputAdornment>
+        }
+      />
+    </FormControl>
+  );
+};
+
 export default function Login({ setSnackbar }) {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
   const location = useLocation();
   const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
     location.pathname
   );
-  const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
   const { setAuth } = useAuth();
@@ -45,12 +84,6 @@ export default function Login({ setSnackbar }) {
     password: '',
   });
   const navigate = useNavigate();
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
 
   const handleLoginDataChange = (field) => (e) => {
     setLoginData((prevData) => ({ ...prevData, [field]: e.target.value }));
@@ -78,7 +111,7 @@ export default function Login({ setSnackbar }) {
         navigate(HOME);
         setSnackbar({
           isOpened: true,
-          severity: 'success',
+          severity: severities.SUCCESS,
           message: 'Welcome to the JSQuiz Educational Platform!',
         });
       }
@@ -87,7 +120,7 @@ export default function Login({ setSnackbar }) {
       setErrorMessage(error.message); // Set error message to display
       setSnackbar({
         isOpened: true,
-        severity: 'error',
+        severity: severities.ERROR,
         message: `An error occurred during login.`,
       });
     }
@@ -174,37 +207,7 @@ export default function Login({ setSnackbar }) {
                 autoFocus
                 onChange={handleLoginDataChange('email')}
               />
-              <FormControl fullWidth variant="outlined" margin="normal">
-                <InputLabel htmlFor="password">Password</InputLabel>
-                <OutlinedInput
-                  id="password"
-                  required
-                  fullWidth
-                  name="password"
-                  autoComplete="current-password"
-                  label="Password"
-                  type={showPassword ? 'text' : 'password'}
-                  onChange={handleLoginDataChange('password')}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? (
-                          <Visibility sx={{ color: customColors.greyMedium }} />
-                        ) : (
-                          <VisibilityOff
-                            sx={{ color: customColors.greyMedium }}
-                          />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
+              <FormControlComponent handleDataChange={handleLoginDataChange} />
               {errorMessage && (
                 <Alert severity="error" sx={{ mb: 2 }}>
                   {errorMessage}

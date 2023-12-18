@@ -3,6 +3,7 @@ import jsLogo from '../assets/images/js.svg';
 import nodeJsLogo from '../assets/images/nodejs.svg';
 import dataStructureLogo from '../assets/images/hierarchical-structure-svgrepo-com.svg';
 import { BASE_URL } from '../config';
+import { severities } from '../App';
 
 const imageMapping = {
   react: reactJsLogo,
@@ -23,7 +24,7 @@ const createQuizObject = (quiz) => {
     questions: quiz.questions.map((q) => ({
       questionText: q.questionText,
       type: q.type,
-      code: '',
+      code: q.code,
       resources: '',
       options: q.options,
       correctOption: q.correctOption,
@@ -318,7 +319,7 @@ export const removeFavorite = async (quizId) => {
   }
 };
 
-export const deleteUser = async (snackbar, setAuth) => {
+export const deleteUser = async (setSnackbar, setAuth) => {
   const url = `${BASE_URL}/deleteuser`;
   const options = {
     method: 'DELETE',
@@ -333,9 +334,9 @@ export const deleteUser = async (snackbar, setAuth) => {
     const data = await response.json();
 
     if (!response.ok) {
-      snackbar({
+      setSnackbar({
         isOpened: true,
-        severity: 'error',
+        severity: severities.ERROR,
         message: 'An error occurred while deleting your account.',
       });
       throw new Error(data.message || 'Failed to delete account');
@@ -346,9 +347,9 @@ export const deleteUser = async (snackbar, setAuth) => {
     });
     localStorage.clear();
 
-    snackbar({
+    setSnackbar({
       isOpened: true,
-      severity: 'success',
+      severity: severities.SUCCESS,
       message:
         'The account was successfully deleted. We hope to see you again!',
     });
