@@ -10,14 +10,14 @@ import NotesTableHead from './tableHead';
 import TableEmptyRows from './tableEmptyRows';
 import NotesTableToolbar from './tableToolbar';
 import { emptyRows, applyFilter, getComparator } from './utils';
-import {Box, Button, Typography} from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import AddIcon from '@mui/icons-material/Add';
 import NewNoteForm from './NoteForm';
 import fetchNotes from 'functions/fetchNotes';
 import { message } from 'antd';
 import Loading from 'components/Loading';
-import customColors, {defaultTheme} from "../../assets/styles";
+import customColors, { defaultTheme } from '../../assets/styles';
 
 export default function Notes() {
   const [loadingNotes, setLoadingNotes] = useState(false);
@@ -116,25 +116,25 @@ export default function Notes() {
   }, []);
 
   return (
-      <Container
+    <Container
+      sx={{
+        minHeight: '100vh',
+        backgroundColor: customColors.greyLight,
+        maxWidth: 'none !important',
+        pt: 6,
+        pb: 2,
+      }}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box
           sx={{
-            minHeight: '100vh',
-            backgroundColor: customColors.greyLight,
-            maxWidth: 'none !important',
-            pt: 6,
-            pb: 2,
+            maxWidth: '1200px',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
           }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box
-              sx={{
-                maxWidth: '1200px',
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%',
-              }}
-          >
-        <Typography
+        >
+          <Typography
             variant={'h5'}
             sx={{
               textTransform: 'uppercase',
@@ -145,28 +145,29 @@ export default function Notes() {
                 fontSize: '20px',
               },
             }}
-        >
-          Your notes
-        </Typography>
-          {loadingNotes && <Loading />}
-            <Box>
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: customColors.blueMedium,
-              [defaultTheme.breakpoints.down('sm')]: {
-                width: '100%'
-              },
-            }}
-            startIcon={<AddIcon />}
-            onClick={() => {
-              setOpenPopup(true);
-              setEditNote([{ title: '', note: '' }]);
-              setIsEditMode(false);
-            }}
           >
-            New Note
-          </Button>
-            </Box>
+            Your notes
+          </Typography>
+          {loadingNotes && <Loading />}
+          <Box>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: customColors.blueMedium,
+                [defaultTheme.breakpoints.down('sm')]: {
+                  width: '100%',
+                },
+              }}
+              startIcon={<AddIcon />}
+              onClick={() => {
+                setOpenPopup(true);
+                setEditNote([{ title: '', note: '' }]);
+                setIsEditMode(false);
+              }}
+            >
+              New Note
+            </Button>
+          </Box>
           <NewNoteForm
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
@@ -235,8 +236,8 @@ export default function Notes() {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </TableContainer>
-          </Box>
         </Box>
-      </Container>
+      </Box>
+    </Container>
   );
 }

@@ -22,9 +22,9 @@ export default function NotesTableHead({
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox" >
+        <TableCell padding="checkbox">
           <Checkbox
-              sx={{ml:1}}
+            sx={{ ml: 1 }}
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}

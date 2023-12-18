@@ -1,7 +1,8 @@
 import {
   Box,
   Button,
-  CircularProgress, Container,
+  CircularProgress,
+  Container,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -9,7 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
@@ -25,7 +26,7 @@ export default function NewNoteForm({
   editNote,
   notes,
   setNotes,
-    isEditMode
+  isEditMode,
 }) {
   const { isLoadingEdit, responseEdit, updateNote } = useUpdate();
   const { postNote, isLoading, response } = useSubmit();
@@ -92,7 +93,7 @@ export default function NewNoteForm({
 
   useEffect(() => {
     if (responseEdit) {
-      console.log(responseEdit)
+      console.log(responseEdit);
       if (responseEdit.success) {
         message.success(responseEdit.message);
       } else {
@@ -103,14 +104,8 @@ export default function NewNoteForm({
 
   return (
     <>
-      <Dialog open={openPopup}
-              onClose={handleClose}
-              fullWidth
-              maxWidth="md"
-              >
-        <DialogTitle>
-          {isEditMode ? 'Edit Note' : 'New Note'}
-        </DialogTitle>
+      <Dialog open={openPopup} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle>{isEditMode ? 'Edit Note' : 'New Note'}</DialogTitle>
         <DialogContent dividers>
           <Box
             sx={{

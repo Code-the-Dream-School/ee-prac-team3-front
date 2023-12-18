@@ -46,14 +46,14 @@ export default function NotesTableToolbar({
 
   return (
     <Toolbar
-        disableGutters
+      disableGutters
       sx={{
         height: 96,
         display: 'flex',
         justifyContent: 'space-between',
-          m: 0,
-       pl: 3,
-          pr: 3,
+        m: 0,
+        pl: 3,
+        pr: 3,
         ...(numSelected > 0 && {
           color: 'primary.main',
           bgcolor: 'primary.lighter',
@@ -66,11 +66,11 @@ export default function NotesTableToolbar({
         </Typography>
       ) : (
         <OutlinedInput
-            size={'small'}
+          size={'small'}
           value={filterQuestion}
           onChange={onFilterQuestion}
           placeholder="Type to search..."
-          sx={{pl: 2}}
+          sx={{ pl: 2 }}
           startAdornment={
             <InputAdornment position="start">
               <SearchIcon
