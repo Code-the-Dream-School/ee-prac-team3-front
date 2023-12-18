@@ -13,7 +13,7 @@ const CustomizedSnackbars = ({ open, onClose, severity, message }) => {
         open={open}
         autoHideDuration={5000}
         onClose={onClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
         <Alert onClose={onClose} severity={severity} sx={{ width: '100%' }}>
           {message}

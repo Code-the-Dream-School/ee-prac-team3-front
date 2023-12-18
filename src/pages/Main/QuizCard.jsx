@@ -112,7 +112,7 @@ const QuizCard = ({
           cursor: 'pointer',
           '&:hover': {
             transform: 'scale(1.05)',
-            backgroundColor: customColors.hover,
+            /*backgroundColor: customColors.hover,*/
           },
         }}
       >
@@ -189,19 +189,20 @@ const QuizCard = ({
                   sx={{
                     marginTop: '10px',
                     color: customColors.greyDark,
-                    fontWeight: 'bold',
                   }}
                 >
-                  {bestScore && `Best Score: ${bestScore}%`}
+                  {bestScore ? `Score: ${bestScore}%` : ''}
                 </Typography>
                 <Typography
                   sx={{
-                    marginTop: '10px',
                     color: customColors.greyDark,
-                    fontWeight: 'bold',
                   }}
                 >
-                  {attemptsCount ? `Attempts: ${attemptsCount}` : 'Not Passed'}
+                  {bestScore === 100
+                    ? 'Passed'
+                    : attemptsCount
+                      ? `Attempts: ${attemptsCount}`
+                      : 'Not Passed'}
                 </Typography>
               </Box>
             </Box>
@@ -226,8 +227,8 @@ const QuizCard = ({
                   width="100%"
                   component="div"
                   sx={{
-                    width: '63px',
-                    height: '62px',
+                    width: '54px',
+                    height: '60px',
                   }}
                   image={quiz.image}
                 />

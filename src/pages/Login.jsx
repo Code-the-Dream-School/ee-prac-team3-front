@@ -9,16 +9,16 @@ import {
   Box,
   Grid,
   Typography,
-  Checkbox,
-  FormControlLabel,
   Container,
   useMediaQuery,
   InputAdornment,
   IconButton,
   Alert,
+  OutlinedInput,
+  InputLabel,
+  FormControl,
 } from '@mui/material';
 import useAuth from 'auth/useAuth';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { LOGIN, RESET_PASSWORD, SIGNUP, HOME } from 'App';
 import { backendApiCall } from '../functions/exportFunctions';
@@ -28,8 +28,9 @@ import backgroundAuth from '../assets/images/background-auth.svg';
 import jsQuizLogo from '../assets/images/logo.svg';
 import { useLocation } from 'react-router-dom';
 import Loading from '../components/Loading';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-export default function Login() {
+export default function Login({ setSnackbar }) {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
   const location = useLocation();
   const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
@@ -54,6 +55,7 @@ export default function Login() {
   const handleLoginDataChange = (field) => (e) => {
     setLoginData((prevData) => ({ ...prevData, [field]: e.target.value }));
   };
+
   const handleSubmit = async (event, loginData) => {
     event.preventDefault();
     setIsLoading(true);
@@ -74,10 +76,20 @@ export default function Login() {
           loggedIn: true,
         });
         navigate(HOME);
+        setSnackbar({
+          isOpened: true,
+          severity: 'success',
+          message: 'Welcome to the JSQuiz Educational Platform!',
+        });
       }
     } catch (error) {
       setIsLoading(false); // Ensure loading state is reset even on error.
       setErrorMessage(error.message); // Set error message to display
+      setSnackbar({
+        isOpened: true,
+        severity: 'error',
+        message: `An error occurred during login.`,
+      });
     }
   };
 
@@ -162,32 +174,37 @@ export default function Login() {
                 autoFocus
                 onChange={handleLoginDataChange('email')}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                id="password"
-                autoComplete="current-password"
-                type={showPassword ? 'text' : 'password'}
-                onChange={handleLoginDataChange('password')}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+              <FormControl fullWidth variant="outlined" margin="normal">
+                <InputLabel htmlFor="password">Password</InputLabel>
+                <OutlinedInput
+                  id="password"
+                  required
+                  fullWidth
+                  name="password"
+                  autoComplete="current-password"
+                  label="Password"
+                  type={showPassword ? 'text' : 'password'}
+                  onChange={handleLoginDataChange('password')}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <Visibility sx={{ color: customColors.greyMedium }} />
+                        ) : (
+                          <VisibilityOff
+                            sx={{ color: customColors.greyMedium }}
+                          />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
               {errorMessage && (
                 <Alert severity="error" sx={{ mb: 2 }}>
                   {errorMessage}

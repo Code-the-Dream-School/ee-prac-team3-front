@@ -13,7 +13,7 @@ const customColors = {
   blueMedium: '#1976D2',
   orangeDark: '#F1662A',
   greenMedium: '#3BB98A',
-  hover: '#f4faff',
+  redMedium: '#CF6256',
 };
 
 export const defaultTheme = createTheme({

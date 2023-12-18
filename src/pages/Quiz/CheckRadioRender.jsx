@@ -35,13 +35,6 @@ export default function checkRadioRender(
         ? selected.includes(option)
         : selected === option;
 
-    const borderStyle =
-      correctnessInfo && isOptionSelected
-        ? correctnessInfo.isCorrect
-          ? '2px solid green'
-          : '2px solid red'
-        : '2px solid rgb(223, 221, 221)';
-
     return (
       <Grid xs={12} key={index}>
         <Box
@@ -49,7 +42,7 @@ export default function checkRadioRender(
           onClick={() => handleOptionClick(option)}
           sx={{
             pl: 2,
-            border: borderStyle,
+            border: '2px solid rgb(223, 221, 221)',
             width: '100%',
             borderRadius: 1,
             boxSizing: 'border-box',
@@ -57,8 +50,8 @@ export default function checkRadioRender(
             backgroundColor:
               correctnessInfo && isOptionSelected
                 ? correctnessInfo.isCorrect
-                  ? 'lightgreen'
-                  : 'pink'
+                  ? '#dbefdc'
+                  : '#fcd9d6'
                 : 'none',
           }}
         >
