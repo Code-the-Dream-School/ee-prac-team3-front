@@ -1,11 +1,7 @@
 import useAuth from '../../auth/useAuth';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
-  backendApiCall,
-  fetchFavorites,
-  fetchFavoritesAndAddUserQuizzes,
-  getFavorites,
+  useFetchFavoriteQuizzes,
   removeFavorite,
 } from '../../functions/exportFunctions';
 import { LOGIN } from '../../App';
@@ -18,15 +14,16 @@ export const Favorites = ({
   setSnackbar,
 }) => {
   const { auth } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [favoritesData, setFavoritesData] = useState({
     favoriteQuizzes: [],
     favoritesIds: [],
   });
-  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
-  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
-  const navigate = useNavigate();
+  const { loading, error } = useFetchFavoriteQuizzes(
+    auth,
+    setFavoritesData,
+    favoritesData,
+    LOGIN
+  );
 
   const removeFavoriteHandler = useCallback(
     async (quizId) => {
@@ -57,81 +54,6 @@ export const Favorites = ({
     },
     [setSnackbar]
   );
-
-  useEffect(() => {
-    const fetchAllFavoriteQuizzes = async () => {
-      try {
-        setLoading(true);
-        const quizzesIds = await getFavorites();
-        setFavoritesData((prevData) => ({
-          ...prevData,
-          favoritesIds: quizzesIds,
-        }));
-        if (auth.loggedIn && !initialDataLoaded) {
-          await fetchFavorites(
-            backendApiCall,
-            (quizzes) =>
-              setFavoritesData((prevData) => ({
-                ...prevData,
-                favoriteQuizzes: quizzes,
-              })),
-            setError,
-            auth,
-            setLoading
-          );
-          setInitialDataLoaded(true);
-        } else if (!auth.loggedIn) {
-          navigate(LOGIN);
-        } else {
-          setLoading(false);
-        }
-      } catch (error) {
-        setError(error);
-      }
-    };
-    fetchAllFavoriteQuizzes();
-  }, [auth.loggedIn, auth, initialDataLoaded, navigate]);
-
-  useEffect(() => {
-    const fetchUserFavoriteQuizzes = async () => {
-      try {
-        if (
-          auth.loggedIn &&
-          initialDataLoaded &&
-          favoritesData.favoriteQuizzes.length > 0 &&
-          !userQuizzesUpdated
-        ) {
-          await fetchFavoritesAndAddUserQuizzes(
-            backendApiCall,
-            favoritesData.favoriteQuizzes,
-            (quizzes) =>
-              setFavoritesData((prevData) => ({
-                ...prevData,
-                favoriteQuizzes: quizzes,
-              })),
-            setError,
-            auth,
-            setUserQuizzesUpdated
-          );
-        } else if (!auth.loggedIn) {
-          navigate(LOGIN);
-        } else {
-          setLoading(false);
-        }
-      } catch (error) {
-        setError(error);
-      }
-    };
-    fetchUserFavoriteQuizzes();
-  }, [
-    auth.loggedIn,
-    initialDataLoaded,
-    favoritesData.favoriteQuizzes.length,
-    userQuizzesUpdated,
-    auth,
-    favoritesData.favoriteQuizzes,
-    navigate,
-  ]);
 
   return useMemo(
     () => (
