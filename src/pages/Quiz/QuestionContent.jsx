@@ -47,8 +47,6 @@ export default function QuestionContent({
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showFinalQModal, setShowFinalQModal] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  // const [response, setResponse] = useState(null);
 
   useEffect(() => {
     setSelected(selectedOption);
