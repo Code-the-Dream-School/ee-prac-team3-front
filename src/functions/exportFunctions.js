@@ -571,16 +571,9 @@ export const deleteUser = async (snackbar, setAuth) => {
   }
 };
 
-export const deleteAttemptsForUserAndQuiz = async (
-  quiz,
-  auth,
-  quizzes,
-  setQuizzes,
-  setLoading
-) => {
+export const deleteAttemptsForUserAndQuiz = async (quiz, auth, setQuizzes) => {
   try {
     // Step 1: Set loading to true and get all attempts
-    setLoading(true);
     const allAttempts = await backendApiCall('GET', '/progress');
 
     // Step 2: Filter attempts for specific user and quiz
@@ -609,10 +602,7 @@ export const deleteAttemptsForUserAndQuiz = async (
         return q;
       })
     );
-
-    setLoading(false);
   } catch (error) {
-    setLoading(false);
     throw new Error(error);
   }
 };
