@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from '../assets/images/js.svg';
 import nodeJsLogo from '../assets/images/nodejs.svg';
@@ -157,7 +159,7 @@ export const fetchAndAddUserQuizzes = async (
         return {
           ...quiz,
           quizProgress: {
-            attemptsCount: userQuizData.attemptNumber.toString(),
+            attemptsCount: userQuizData.attemptNumber,
             bestScore: userQuizData.maxScore,
             lastScore: userQuizData.score,
           },
@@ -194,6 +196,10 @@ export async function fetchQuizData(
     setLoading(false);
   }
 }
+
+const safeFetchQuizData = (backendApiCall, setQuizzes, setError, auth) => {
+  return fetchQuizData(backendApiCall, setQuizzes, setError, auth, () => {});
+};
 
 export async function updateUserProgress(quizId, score, userId, setError) {
   const body = { quiz: quizId, score: score.toString(), user: userId };
@@ -259,6 +265,10 @@ export async function fetchFavorites(
   }
 }
 
+const safeFetchFavorites = (backendApiCall, setQuizzes, setError, auth) => {
+  return fetchFavorites(backendApiCall, setQuizzes, setError, auth, () => {});
+};
+
 export const fetchFavoritesAndAddUserQuizzes = async (
   backendApiCall,
   favoriteQuizzes,
@@ -297,6 +307,117 @@ export const fetchFavoritesAndAddUserQuizzes = async (
   }
 };
 
+export const safeFetchFavoritesAndAddUserQuizzes = (
+  backendApiCall,
+  favoriteQuizzes,
+  setFavoriteQuizzes,
+  setError,
+  auth
+) => {
+  return fetchFavoritesAndAddUserQuizzes(
+    backendApiCall,
+    favoriteQuizzes,
+    setFavoriteQuizzes,
+    setError,
+    auth,
+    () => {}
+  );
+};
+
+export const useFetchQuizzes = (
+  auth,
+  quizzes,
+  setQuizzes,
+  setFavoritesIds,
+  LOGIN
+) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAllQuizzes = async () => {
+      try {
+        if (auth.loggedIn && quizzes.length === 1 && !initialDataLoaded) {
+          await safeFetchQuizData(
+            backendApiCall,
+            setQuizzes,
+            setError,
+            auth,
+            setLoading
+          );
+          setInitialDataLoaded(true);
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        } else if (auth.loggedIn && quizzes.length > 1) {
+          setInitialDataLoaded(true);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+    fetchAllQuizzes();
+  }, [
+    auth.loggedIn,
+    quizzes.length,
+    initialDataLoaded,
+    setQuizzes,
+    setError,
+    setLoading,
+    navigate,
+    auth,
+    LOGIN,
+  ]);
+
+  useEffect(() => {
+    const fetchUserQuizData = async () => {
+      try {
+        if (initialDataLoaded && !userQuizzesUpdated) {
+          const quizzesIds = await getFavorites();
+          setFavoritesIds(quizzesIds);
+          await fetchAndAddUserQuizzes(
+            backendApiCall,
+            quizzes,
+            setQuizzes,
+            setError,
+            auth,
+            setUserQuizzesUpdated
+          );
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+    fetchUserQuizData();
+  }, [
+    auth.loggedIn,
+    initialDataLoaded,
+    userQuizzesUpdated,
+    setQuizzes,
+    setError,
+    setLoading,
+    setFavoritesIds,
+    navigate,
+    auth,
+    quizzes,
+    LOGIN,
+  ]);
+
+  useEffect(() => {
+    // Check if both data sets are fetched
+    if (initialDataLoaded && userQuizzesUpdated) {
+      setLoading(false);
+    }
+  }, [initialDataLoaded, userQuizzesUpdated]);
+
+  return { loading, error };
+};
+
 export const addFavorite = async (quizId) => {
   try {
     await backendApiCall('POST', '/favorites/add', {
@@ -317,6 +438,100 @@ export const removeFavorite = async (quizId) => {
     console.error('Error removing favorite:', error);
     throw error;
   }
+};
+
+export const useFetchFavoriteQuizzes = (
+  auth,
+  favoriteQuizzes,
+  setFavoriteQuizzes,
+  setFavoritesIds,
+  LOGIN
+) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAndSetFavoriteQuizzes = async () => {
+      try {
+        const quizzesIds = await getFavorites();
+        setFavoritesIds(quizzesIds);
+        if (
+          auth.loggedIn &&
+          favoriteQuizzes.length === 0 &&
+          !initialDataLoaded
+        ) {
+          await safeFetchFavorites(
+            backendApiCall,
+            setFavoriteQuizzes,
+            setError,
+            auth
+          );
+          setInitialDataLoaded(true);
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        } else if (auth.loggedIn && favoriteQuizzes.length > 0) {
+          setInitialDataLoaded(true);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+    fetchAndSetFavoriteQuizzes();
+  }, [
+    auth.loggedIn,
+    setFavoritesIds,
+    auth,
+    favoriteQuizzes.length,
+    navigate,
+    initialDataLoaded,
+    setFavoriteQuizzes,
+    LOGIN,
+  ]);
+
+  useEffect(() => {
+    const fetchUserFavoriteQuizzes = async () => {
+      try {
+        if (initialDataLoaded && !userQuizzesUpdated) {
+          await fetchFavoritesAndAddUserQuizzes(
+            backendApiCall,
+            favoriteQuizzes,
+            setFavoriteQuizzes,
+            setError,
+            auth,
+            setUserQuizzesUpdated
+          );
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+    fetchUserFavoriteQuizzes();
+  }, [
+    auth.loggedIn,
+    initialDataLoaded,
+    favoriteQuizzes.length,
+    userQuizzesUpdated,
+    setFavoriteQuizzes,
+    auth,
+    favoriteQuizzes,
+    navigate,
+    LOGIN,
+  ]);
+
+  useEffect(() => {
+    // Check if both data sets are fetched
+    if (initialDataLoaded && userQuizzesUpdated) {
+      setLoading(false);
+    }
+  }, [initialDataLoaded, userQuizzesUpdated]);
+
+  return { loading, error };
 };
 
 export const deleteUser = async (snackbar, setAuth) => {
@@ -355,5 +570,74 @@ export const deleteUser = async (snackbar, setAuth) => {
     });
   } catch (error) {
     throw new Error(`Error deleting account: ${error.message}`);
+  }
+};
+
+/*export const handleResetUserProgress = async (
+  backendApiCall,
+  quizId,
+  quizzes,
+  setQuizzes,
+  setError,
+  auth,
+) => {
+  try {
+    await backendApiCall('DELETE', `/progress/${quizId}`);
+
+    await safeFetchAndAddUserQuizzes(
+      backendApiCall,
+      quizzes,
+      setQuizzes,
+      setError,
+      auth,
+    );
+  } catch (error) {
+    throw new Error(error);
+  }
+};*/
+
+export const deleteAttemptsForUserAndQuiz = async (
+  quiz,
+  auth,
+  quizzes,
+  setQuizzes,
+  setLoading
+) => {
+  try {
+    // Step 1: Set loading to true and get all attempts
+    setLoading(true);
+    const allAttempts = await backendApiCall('GET', '/progress');
+
+    // Step 2: Filter attempts for specific user and quiz
+    const userQuizAttempts = allAttempts.attempts.filter(
+      (attempt) => attempt.user === auth.userId && attempt.quiz === quiz.id
+    );
+
+    // Step 3: Map through and delete each attempt and setLoading false
+    for (const attempt of userQuizAttempts) {
+      await backendApiCall('DELETE', `/progress/${attempt._id}`);
+    }
+
+    // Update the state for each quiz
+    setQuizzes((prevQuizzes) =>
+      prevQuizzes.map((q) => {
+        if (q.id === quiz.id) {
+          return {
+            ...q,
+            quizProgress: {
+              attemptsCount: 0,
+              bestScore: 0,
+              lastScore: 0,
+            },
+          };
+        }
+        return q;
+      })
+    );
+
+    setLoading(false);
+  } catch (error) {
+    setLoading(false);
+    throw new Error(error);
   }
 };

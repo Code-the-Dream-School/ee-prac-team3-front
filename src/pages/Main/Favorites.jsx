@@ -1,25 +1,23 @@
 import useAuth from '../../auth/useAuth';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
-  backendApiCall,
-  fetchFavorites,
-  fetchFavoritesAndAddUserQuizzes,
-  getFavorites,
   removeFavorite,
+  useFetchFavoriteQuizzes,
 } from '../../functions/exportFunctions';
 import { LOGIN } from '../../App';
 import { QuizzesContainer } from './Main';
 
 export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
   const { auth } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [favoriteQuizzes, setFavoriteQuizzes] = useState([]);
   const [favoritesIds, setFavoritesIds] = useState([]);
-  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
-  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
-  const navigate = useNavigate();
+  const { loading, error } = useFetchFavoriteQuizzes(
+    auth,
+    favoriteQuizzes,
+    setFavoriteQuizzes,
+    setFavoritesIds,
+    LOGIN
+  );
 
   const removeFavoriteHandler = useCallback(
     async (quizId) => {
@@ -37,81 +35,6 @@ export const Favorites = ({ changeFilter, activeFilters, searchValue }) => {
     },
     [setFavoritesIds, setFavoriteQuizzes]
   );
-
-  useEffect(() => {
-    const fetchAndSetFavoriteQuizzes = async () => {
-      try {
-        setLoading(true);
-        const quizzesIds = await getFavorites();
-        setFavoritesIds(quizzesIds);
-        if (
-          auth.loggedIn &&
-          favoriteQuizzes.length === 0 &&
-          !initialDataLoaded
-        ) {
-          await fetchFavorites(
-            backendApiCall,
-            setFavoriteQuizzes,
-            setError,
-            auth,
-            setLoading
-          );
-          setInitialDataLoaded(true);
-        } else if (!auth.loggedIn) {
-          navigate(LOGIN);
-        } else {
-          setLoading(false);
-        }
-      } catch (error) {
-        setError(error);
-      }
-    };
-    fetchAndSetFavoriteQuizzes();
-  }, [
-    auth.loggedIn,
-    setFavoritesIds,
-    auth,
-    favoriteQuizzes.length,
-    navigate,
-    initialDataLoaded,
-  ]);
-
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      try {
-        if (
-          auth.loggedIn &&
-          initialDataLoaded &&
-          favoriteQuizzes.length > 0 &&
-          !userQuizzesUpdated
-        ) {
-          await fetchFavoritesAndAddUserQuizzes(
-            backendApiCall,
-            favoriteQuizzes,
-            setFavoriteQuizzes,
-            setError,
-            auth,
-            setUserQuizzesUpdated
-          );
-        } else if (!auth.loggedIn) {
-          navigate(LOGIN);
-        } else {
-          setLoading(false);
-        }
-      } catch (error) {
-        setError(error);
-      }
-    };
-    fetchQuizzes();
-  }, [
-    auth.loggedIn,
-    initialDataLoaded,
-    favoriteQuizzes.length,
-    userQuizzesUpdated,
-    auth,
-    favoriteQuizzes,
-    navigate,
-  ]);
 
   return useMemo(
     () => (

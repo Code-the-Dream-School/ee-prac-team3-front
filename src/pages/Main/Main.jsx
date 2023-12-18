@@ -117,59 +117,54 @@ export const QuizzesContainer = ({
 
   return (
     <>
-      <Container sx={containerStyles}>
-        {error ? (
-          <QuizLoadError />
-        ) : (
-          <>
-            <Typography variant="h5" sx={titleStyles}>
-              {title}
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Box sx={boxStyles}>
-                {quizzesLength > 0 && (
-                  <FilterButtonGroup changeFilter={changeFilter} />
-                )}
-                {loading ? (
-                  <Loading type="circular" />
-                ) : (
-                  <>
-                    {filteredQuizzes.length === 0 && (
-                      <Alert sx={{ mt: 3 }} severity="info">
-                        {message}
-                      </Alert>
-                    )}
-                    {filteredQuizzes.length > 0 && (
-                      <Box sx={{ py: 3 }} maxWidth="lg" width="100%">
-                        <Grid
-                          container
-                          spacing={4}
-                          sx={{ display: 'flex', justifyContent: 'start' }}
-                        >
-                          {filteredQuizzes.map((q) => {
-                            return (
-                              <QuizCard
-                                key={q.id}
-                                quiz={q}
-                                activeFilters={activeFilters}
-                                searchValue={searchValue}
-                                quizProgress={q.quizProgress}
-                                favoritesIds={favoritesIds}
-                                addToFavoritesHandler={addToFavoritesHandler}
-                                removeFavoriteHandler={removeFavoriteHandler}
-                              />
-                            );
-                          })}
-                        </Grid>
-                      </Box>
-                    )}
-                  </>
-                )}
+      {loading ? (
+        <Loading type="circular" />
+      ) : (
+        <Container sx={containerStyles}>
+          {error ? (
+            <QuizLoadError />
+          ) : (
+            <>
+              <Typography variant="h5" sx={titleStyles}>
+                {title}
+              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Box sx={boxStyles}>
+                  {quizzesLength > 0 && (
+                    <FilterButtonGroup changeFilter={changeFilter} />
+                  )}
+                  {filteredQuizzes.length === 0 ? (
+                    <Alert sx={{ mt: 3 }} severity="info">
+                      {message}
+                    </Alert>
+                  ) : (
+                    <Box sx={{ py: 3 }} maxWidth="lg" width="100%">
+                      <Grid
+                        container
+                        spacing={4}
+                        sx={{ display: 'flex', justifyContent: 'start' }}
+                      >
+                        {filteredQuizzes.map((q) => (
+                          <QuizCard
+                            key={q.id}
+                            quiz={q}
+                            activeFilters={activeFilters}
+                            searchValue={searchValue}
+                            quizProgress={q.quizProgress}
+                            favoritesIds={favoritesIds}
+                            addToFavoritesHandler={addToFavoritesHandler}
+                            removeFavoriteHandler={removeFavoriteHandler}
+                          />
+                        ))}
+                      </Grid>
+                    </Box>
+                  )}
+                </Box>
               </Box>
-            </Box>
-          </>
-        )}
-      </Container>
+            </>
+          )}
+        </Container>
+      )}
     </>
   );
 };
