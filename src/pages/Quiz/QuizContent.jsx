@@ -33,6 +33,7 @@ export default function QuizContent() {
     totalCount: 0,
   });
   const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
+
   const navigate = useNavigate();
 
   //quiz content variables
@@ -286,6 +287,7 @@ export default function QuizContent() {
                     userAnswers={answersCorrectness}
                     type={questions[currentQuestionIndex].type}
                     setFinishQuiz={setQuizFinished}
+                    setLoading={setLoading}
                   />
                 ) : (
                   <>

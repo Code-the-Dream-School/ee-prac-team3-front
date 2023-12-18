@@ -17,6 +17,7 @@ import checkRadioRender from './CheckRadioRender';
 import { defaultTheme } from '../../assets/styles';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { BASE_URL } from 'config';
 
 export default function QuestionContent({
   question,
@@ -34,6 +35,7 @@ export default function QuestionContent({
   resources,
   questionId,
   setFinishQuiz,
+  setLoading
 }) {
   const [selected, setSelected] = useState(
     type === 'check-box'
@@ -45,6 +47,8 @@ export default function QuestionContent({
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showFinalQModal, setShowFinalQModal] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  // const [response, setResponse] = useState(null);
 
   useEffect(() => {
     setSelected(selectedOption);
@@ -63,6 +67,49 @@ export default function QuestionContent({
       onSkipQuestion(resetSelection, isCurrentQuestionAnswered);
     }
   };
+
+  const handleAddNote = () => {
+    console.log("234234");
+    addNote();
+  }
+
+  const addNote = async () => {
+    setLoading(true);
+    let payload = {
+      title: question,
+      note: "Add your notes here"
+    }
+    console.log("payload ===> ", payload);
+    try {
+      let response = await fetch(`${BASE_URL}/note`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        console.log("Note added");
+      }
+      let data = await response.json();
+      console.log("data ===> ", data);
+
+      // setResponse({
+      //   success: true,
+      //   message: `The note is added`,
+      // });
+    } catch (error) {
+      console.log('error', error)
+      // setResponse({
+      //   success: false,
+      //   message: 'Something went wrong, please try again later!',
+      // });
+    }
+     finally {
+       setLoading(false);
+     }
+  }
 
   const handleSubmitAnswer = () => {
     //if user submits an answer questionId is add to Set used for tracking answered questions
@@ -85,9 +132,12 @@ export default function QuestionContent({
 
   return (
     <Box>
+      <Box sx={{display:'flex'}}>
       <Typography variant="h6" align="left" sx={{ pb: 2 }}>
         {question}
       </Typography>
+      <Button onClick={() => handleAddNote()}>Add to notes</Button>
+      </Box>
       {code && (
         <SyntaxHighlighter language="javascript" style={atomDark}>
           {code}
