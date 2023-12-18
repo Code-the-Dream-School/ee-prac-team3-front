@@ -8,19 +8,13 @@ import {
   Paper,
   Box,
   Grid,
-  InputAdornment,
-  IconButton,
   Typography,
   useMediaQuery,
   Container,
-  InputLabel,
-  OutlinedInput,
-  FormControl,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import customColors, { defaultTheme } from 'assets/styles';
 import { LOGIN, RESET_PASSWORD, severities, SIGNUP } from 'App';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Copyright from '../components/Copyright';
 import { useLocation } from 'react-router-dom';
 import backgroundAuth from '../assets/images/background-auth.svg';
@@ -36,7 +30,6 @@ export default function SignUp({ setSnackbar }) {
   const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
     location.pathname
   );
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({
     firstName: '',
@@ -46,13 +39,6 @@ export default function SignUp({ setSnackbar }) {
   });
   const navigate = useNavigate();
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-  const handleUserDataChange = (field) => (e) => {
-    setUserData((prevData) => ({ ...prevData, [field]: e.target.value }));
-  };
   const handleSubmitData = async (event, userData) => {
     const registrationData = {
       firstname: userData.firstName,
