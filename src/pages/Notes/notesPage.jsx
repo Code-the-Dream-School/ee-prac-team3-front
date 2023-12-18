@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
@@ -10,13 +10,14 @@ import NotesTableHead from './tableHead';
 import TableEmptyRows from './tableEmptyRows';
 import NotesTableToolbar from './tableToolbar';
 import { emptyRows, applyFilter, getComparator } from './utils';
-import { Box, Button } from '@mui/material';
+import {Box, Button, Typography} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import AddIcon from '@mui/icons-material/Add';
 import NewNoteForm from './NoteForm';
 import fetchNotes from 'functions/fetchNotes';
 import { message } from 'antd';
 import Loading from 'components/Loading';
+import customColors, {defaultTheme} from "../../assets/styles";
 
 export default function Notes() {
   const [loadingNotes, setLoadingNotes] = useState(false);
@@ -34,6 +35,8 @@ export default function Notes() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openPopup, setOpenPopup] = useState(false);
   const [editNote, setEditNote] = useState('');
+
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -56,6 +59,7 @@ export default function Notes() {
     const selectedNote = notes.filter((note) => note._id === noteId);
     setEditNote(selectedNote[0]);
     setOpenPopup(true);
+    setIsEditMode(true);
   };
 
   const handleClick = (event, notesid) => {
@@ -112,30 +116,66 @@ export default function Notes() {
   }, []);
 
   return (
-    <div style={{ background: '#F5F5F5' }}>
-      <Container>
-        <Box minHeight="100vh">
+      <Container
+          sx={{
+            minHeight: '100vh',
+            backgroundColor: customColors.greyLight,
+            maxWidth: 'none !important',
+            pt: 6,
+            pb: 2,
+          }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+              sx={{
+                maxWidth: '1200px',
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+              }}
+          >
+        <Typography
+            variant={'h5'}
+            sx={{
+              textTransform: 'uppercase',
+              mb: 6,
+              textAlign: 'center',
+              fontWeight: 'bold',
+              [defaultTheme.breakpoints.down('md')]: {
+                fontSize: '20px',
+              },
+            }}
+        >
+          Your notes
+        </Typography>
           {loadingNotes && <Loading />}
+            <Box>
           <Button
             variant="contained"
-            style={{ background: '#243153', textTransform: 'none' }}
+            sx={{ backgroundColor: customColors.blueMedium,
+              [defaultTheme.breakpoints.down('sm')]: {
+                width: '100%'
+              },
+            }}
             startIcon={<AddIcon />}
             onClick={() => {
               setOpenPopup(true);
               setEditNote([{ title: '', note: '' }]);
+              setIsEditMode(false);
             }}
-            sx={{ mt: 4, borderRadius: 35 }}
           >
             New Note
           </Button>
+            </Box>
           <NewNoteForm
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
             editNote={editNote}
             notes={notes}
+            isEditMode={isEditMode}
             setNotes={setNotes}
           />
-          <TableContainer component={Paper} sx={{ mt: 4 }}>
+          <TableContainer component={Paper} sx={{ mt: 2, overflowX: 'auto' }}>
             <NotesTableToolbar
               selected={selected}
               numSelected={selected.length}
@@ -145,7 +185,7 @@ export default function Notes() {
               setNotes={setNotes}
             />
 
-            <Table sx={{ minWidth: 800 }}>
+            <Table sx={{ minWidth: 500 }}>
               <NotesTableHead
                 order={order}
                 orderBy={orderBy}
@@ -195,8 +235,8 @@ export default function Notes() {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </TableContainer>
+          </Box>
         </Box>
       </Container>
-    </div>
   );
 }
