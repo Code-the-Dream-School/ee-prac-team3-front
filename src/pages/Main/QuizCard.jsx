@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import useQuiz from '../../quiz/useQuiz';
+import useAuth from '../../auth/useAuth';
 import {
   Box,
   Card,
@@ -14,8 +16,10 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Labels from '../../components/Labels';
+import CustomizedSnackbars from 'components/Snackbar';
 import Progress from '../../components/Progress';
 import customColors from '../../assets/styles';
+import { deleteAttemptsForUserAndQuiz } from '../../functions/exportFunctions';
 import { QUIZ } from 'App';
 
 const QuizCard = ({
@@ -36,6 +40,13 @@ const QuizCard = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [cardClickable, setCardClickable] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
+  const { setQuizzes } = useQuiz();
+  const { auth } = useAuth();
+  const [snackbar, setSnackbar] = useState({
+    isOpened: false,
+    severity: '',
+    message: '',
+  });
 
   useEffect(() => {
     favoritesIds && setIsFavorite(favoritesIds.includes(quiz.id));
@@ -87,13 +98,40 @@ const QuizCard = ({
     setIsFavorite(false);
   };
 
-  const handleResetProgress = () => {
-    console.log('QuizCard progress was reset!');
-    handleClose();
+  const handleResetProgress = async (quiz, auth, setQuizzes) => {
+    try {
+      await deleteAttemptsForUserAndQuiz(quiz, auth, setQuizzes);
+      setSnackbar({
+        isOpened: true,
+        severity: 'success',
+        message: 'Your progress was successfully reset',
+      });
+      handleClose();
+    } catch (error) {
+      setSnackbar({
+        isOpened: true,
+        severity: 'error',
+        message: 'Failed to update progress information. ' + error.message,
+      });
+      handleClose();
+    }
   };
 
   return (
     <Grid item key={quiz.id} xs={12} sm={6} md={4}>
+      <CustomizedSnackbars
+        open={snackbar.isOpened}
+        severity={snackbar.severity}
+        variant="filled"
+        onClose={() =>
+          setSnackbar((prevSnackbar) => ({
+            ...prevSnackbar,
+            isOpened: false,
+          }))
+        }
+        dismissible
+        message={snackbar.message}
+      ></CustomizedSnackbars>
       <Card
         elevation={1}
         onClick={(event) => {
@@ -112,7 +150,6 @@ const QuizCard = ({
           cursor: 'pointer',
           '&:hover': {
             transform: 'scale(1.05)',
-            /*backgroundColor: customColors.hover,*/
           },
         }}
       >
@@ -278,8 +315,7 @@ const QuizCard = ({
                 <MenuItem
                   onClick={(event) => {
                     event.stopPropagation();
-                    handleResetProgress();
-                    handleClose();
+                    handleResetProgress(quiz, auth, setQuizzes);
                   }}
                 >
                   Reset progress

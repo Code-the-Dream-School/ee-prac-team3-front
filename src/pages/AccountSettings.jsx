@@ -278,17 +278,6 @@ const AccountSettings = ({ userData, setSnackbar, updateUserInfo }) => {
               changePasswordHandler={updateUserInfoHandler}
             />
           </Box>
-          <Grid textAlign={'justify'}>
-            <FormControlLabel
-              control={
-                <Checkbox value="confirmProgressReset" color="primary" />
-              }
-              label="I want to reset account progress and I understand that it can't be reverted."
-            />
-          </Grid>
-          <Button fullWidth variant="contained" sx={{ mt: 1, mb: 4 }}>
-            Reset account progress
-          </Button>
           <Grid item>
             <FormControlLabel
               control={

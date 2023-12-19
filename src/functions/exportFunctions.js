@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from '../assets/images/js.svg';
 import nodeJsLogo from '../assets/images/nodejs.svg';
@@ -158,7 +160,7 @@ export const fetchAndAddUserQuizzes = async (
         return {
           ...quiz,
           quizProgress: {
-            attemptsCount: userQuizData.attemptNumber.toString(),
+            attemptsCount: userQuizData.attemptNumber,
             bestScore: userQuizData.maxScore,
             lastScore: userQuizData.score,
           },
@@ -297,6 +299,117 @@ export const fetchFavoritesAndAddUserQuizzes = async (
   }
 };
 
+export const safeFetchFavoritesAndAddUserQuizzes = (
+  backendApiCall,
+  favoriteQuizzes,
+  setFavoriteQuizzes,
+  setError,
+  auth
+) => {
+  return fetchFavoritesAndAddUserQuizzes(
+    backendApiCall,
+    favoriteQuizzes,
+    setFavoriteQuizzes,
+    setError,
+    auth,
+    () => {}
+  );
+};
+
+export const useFetchQuizzes = (
+  auth,
+  quizzes,
+  setQuizzes,
+  setFavoritesIds,
+  LOGIN
+) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAllQuizzes = async () => {
+      try {
+        if (auth.loggedIn && quizzes.length === 1 && !initialDataLoaded) {
+          await fetchQuizData(
+            backendApiCall,
+            setQuizzes,
+            setError,
+            auth,
+            () => {}
+          );
+          setInitialDataLoaded(true);
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        } else if (auth.loggedIn && quizzes.length > 1) {
+          setInitialDataLoaded(true);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+    fetchAllQuizzes();
+  }, [
+    auth.loggedIn,
+    quizzes.length,
+    initialDataLoaded,
+    setQuizzes,
+    setError,
+    setLoading,
+    navigate,
+    auth,
+    LOGIN,
+  ]);
+
+  useEffect(() => {
+    const fetchUserQuizData = async () => {
+      try {
+        if (initialDataLoaded && !userQuizzesUpdated) {
+          const quizzesIds = await getFavorites();
+          setFavoritesIds(quizzesIds);
+          await fetchAndAddUserQuizzes(
+            backendApiCall,
+            quizzes,
+            setQuizzes,
+            setError,
+            auth,
+            setUserQuizzesUpdated
+          );
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+    fetchUserQuizData();
+  }, [
+    auth.loggedIn,
+    initialDataLoaded,
+    userQuizzesUpdated,
+    setQuizzes,
+    setError,
+    setLoading,
+    setFavoritesIds,
+    navigate,
+    auth,
+    quizzes,
+    LOGIN,
+  ]);
+
+  useEffect(() => {
+    // Check if both data sets are fetched
+    if (initialDataLoaded && userQuizzesUpdated) {
+      setLoading(false);
+    }
+  }, [initialDataLoaded, userQuizzesUpdated]);
+
+  return { loading, error };
+};
+
 export const addFavorite = async (quizId) => {
   try {
     await backendApiCall('POST', '/favorites/add', {
@@ -317,6 +430,107 @@ export const removeFavorite = async (quizId) => {
     console.error('Error removing favorite:', error);
     throw error;
   }
+};
+
+export const useFetchFavoriteQuizzes = (
+  auth,
+  setFavoritesData,
+  favoritesData,
+  LOGIN
+) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [userQuizzesUpdated, setUserQuizzesUpdated] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAllFavoriteQuizzes = async () => {
+      try {
+        setLoading(true);
+        const quizzesIds = await getFavorites();
+        if (!quizzesIds) {
+          setLoading(true);
+          return;
+        }
+        setFavoritesData((prevData) => ({
+          ...prevData,
+          favoritesIds: quizzesIds,
+        }));
+        if (auth.loggedIn && !initialDataLoaded) {
+          await fetchFavorites(
+            backendApiCall,
+            (quizzes) =>
+              setFavoritesData((prevData) => ({
+                ...prevData,
+                favoriteQuizzes: quizzes,
+              })),
+            setError,
+            auth,
+            () => {}
+          );
+          setInitialDataLoaded(true);
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+    fetchAllFavoriteQuizzes();
+  }, [
+    auth.loggedIn,
+    auth,
+    initialDataLoaded,
+    navigate,
+    LOGIN,
+    setFavoritesData,
+  ]);
+
+  useEffect(() => {
+    const fetchUserFavoriteQuizzes = async () => {
+      try {
+        if (initialDataLoaded && !userQuizzesUpdated) {
+          await fetchFavoritesAndAddUserQuizzes(
+            backendApiCall,
+            favoritesData.favoriteQuizzes,
+            (quizzes) =>
+              setFavoritesData((prevData) => ({
+                ...prevData,
+                favoriteQuizzes: quizzes,
+              })),
+            setError,
+            auth,
+            setUserQuizzesUpdated
+          );
+        } else if (!auth.loggedIn) {
+          navigate(LOGIN);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    };
+    fetchUserFavoriteQuizzes();
+  }, [
+    auth.loggedIn,
+    initialDataLoaded,
+    userQuizzesUpdated,
+    auth,
+    favoritesData,
+    navigate,
+    setFavoritesData,
+    LOGIN,
+  ]);
+
+  useEffect(() => {
+    // Check if both data sets are fetched
+    if (initialDataLoaded && userQuizzesUpdated) {
+      setLoading(false);
+    }
+  }, [initialDataLoaded, userQuizzesUpdated]);
+
+  return { loading, error };
 };
 
 export const deleteUser = async (setSnackbar, setAuth) => {
@@ -355,5 +569,41 @@ export const deleteUser = async (setSnackbar, setAuth) => {
     });
   } catch (error) {
     throw new Error(`Error deleting account: ${error.message}`);
+  }
+};
+
+export const deleteAttemptsForUserAndQuiz = async (quiz, auth, setQuizzes) => {
+  try {
+    // Step 1: Set loading to true and get all attempts
+    const allAttempts = await backendApiCall('GET', '/progress');
+
+    // Step 2: Filter attempts for specific user and quiz
+    const userQuizAttempts = allAttempts.attempts.filter(
+      (attempt) => attempt.user === auth.userId && attempt.quiz === quiz.id
+    );
+
+    // Step 3: Map through and delete each attempt and setLoading false
+    for (const attempt of userQuizAttempts) {
+      await backendApiCall('DELETE', `/progress/${attempt._id}`);
+    }
+
+    // Update the state for each quiz
+    setQuizzes((prevQuizzes) =>
+      prevQuizzes.map((q) => {
+        if (q.id === quiz.id) {
+          return {
+            ...q,
+            quizProgress: {
+              attemptsCount: 0,
+              bestScore: 0,
+              lastScore: 0,
+            },
+          };
+        }
+        return q;
+      })
+    );
+  } catch (error) {
+    throw new Error(error);
   }
 };
