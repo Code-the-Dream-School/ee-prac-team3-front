@@ -97,7 +97,7 @@ export default function QuestionContent({
       setSnackbar({
         isOpened: true,
         severity: severities.SUCCESS,
-        message: 'Question added to notes.',
+        message: 'Question is added to notes.',
       });
     } catch (error) {
       setSnackbar({
@@ -186,6 +186,27 @@ export default function QuestionContent({
           )}
         </RadioGroup>
       )}
+      {isCurrentQuestionAnswered &&
+        correctnessInfo &&
+        (correctnessInfo.isCorrect ? (
+          <Typography variant={'subtitle1'} sx={{ mt: 2 }}>
+            {' '}
+            Nice work!{' '}
+          </Typography>
+        ) : (
+          <>
+            <Typography variant={'subtitle1'} sx={{ mt: 2 }}>
+              {' '}
+              Sorry, that is incorrect.{' '}
+            </Typography>
+            {resources && (
+              <Typography variant={'subtitle1'} sx={{ mt: 2 }}>
+                You can learn more about this topic at the following links:
+                {resources}
+              </Typography>
+            )}
+          </>
+        ))}
       <Box
         sx={{
           display: 'flex',

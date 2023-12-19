@@ -16,8 +16,8 @@ import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import fetchNotes from 'functions/fetchNotes';
 import useSubmit from 'functions/postNote';
 
-import { message } from 'antd';
 import useUpdate from 'functions/updateNote';
+import { severities } from '../../App';
 
 export default function NewNoteForm({
   openPopup,
@@ -26,6 +26,7 @@ export default function NewNoteForm({
   notes,
   setNotes,
   isEditMode,
+  setSnackbar,
 }) {
   const { isLoadingEdit, responseEdit, updateNote } = useUpdate();
   const { postNote, isLoading, response } = useSubmit();
@@ -58,7 +59,11 @@ export default function NewNoteForm({
             setNotes(data);
           })
           .catch((err) => {
-            message.error(response.message);
+            setSnackbar({
+              isOpened: true,
+              severity: severities.ERROR,
+              message: response.message,
+            });
           });
       } else {
         await updateNote(editNote._id, values);
@@ -69,7 +74,11 @@ export default function NewNoteForm({
             setNotes(data);
           })
           .catch((err) => {
-            message.error(responseEdit.message);
+            setSnackbar({
+              isOpened: true,
+              severity: severities.ERROR,
+              message: responseEdit.message,
+            });
           });
       }
     },
@@ -83,20 +92,35 @@ export default function NewNoteForm({
   useEffect(() => {
     if (response) {
       if (response.success) {
-        message.success(response.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.SUCCESS,
+          message: response.message,
+        });
       } else {
-        message.error(response.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.ERROR,
+          message: response.message,
+        });
       }
     }
   }, [response]);
 
   useEffect(() => {
     if (responseEdit) {
-      console.log(responseEdit);
       if (responseEdit.success) {
-        message.success(responseEdit.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.SUCCESS,
+          message: responseEdit.message,
+        });
       } else {
-        message.error(responseEdit.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.ERROR,
+          message: responseEdit.message,
+        });
       }
     }
   }, [responseEdit]);

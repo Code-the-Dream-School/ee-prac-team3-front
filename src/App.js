@@ -305,7 +305,11 @@ export default function App() {
               <Route
                 path={NOTES}
                 element={
-                  auth.loggedIn ? <Notes /> : <Navigate to={LOGIN}></Navigate>
+                  auth.loggedIn ? (
+                    <Notes setSnackbar={setSnackbar} />
+                  ) : (
+                    <Navigate to={LOGIN}></Navigate>
+                  )
                 }
               />
               <Route

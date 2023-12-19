@@ -196,8 +196,12 @@ export default function Home({ highlights, setSnackbar }) {
                     href={QUIZZES}
                     variant="contained"
                     sx={{
+                      backgroundColor: customColors.blackLight,
                       mt: 3,
                       mb: 2,
+                      '&:hover': {
+                        backgroundColor: '#3f3f3f',
+                      },
                     }}
                   >
                     Take a quiz
@@ -220,7 +224,7 @@ export default function Home({ highlights, setSnackbar }) {
       <Box
         className={s.quizSectionImage}
         sx={{
-          height: '150px',
+          height: '300px',
           [defaultTheme.breakpoints.up('md')]: {
             display: 'none',
           },
@@ -263,7 +267,7 @@ export default function Home({ highlights, setSnackbar }) {
         <Box className={c.container}>
           <Box className={s.quizContainer}>
             <Box
-              className={s.quizSectionImage}
+              className={s.notesSectionImage}
               sx={{
                 marginRight: '50px',
                 [defaultTheme.breakpoints.down('md')]: {
@@ -297,8 +301,7 @@ export default function Home({ highlights, setSnackbar }) {
                   },
                 }}
               >
-                Take notes for online courses and generate diagrams with
-                Assistant
+                Take notes while taking a quiz with an advanced notes system
               </Typography>
               <Box>
                 <Box>
@@ -321,8 +324,12 @@ export default function Home({ highlights, setSnackbar }) {
                     href={NOTES}
                     variant="contained"
                     sx={{
+                      backgroundColor: customColors.blackLight,
                       mt: 3,
                       mb: 2,
+                      '&:hover': {
+                        backgroundColor: '#3f3f3f',
+                      },
                     }}
                   >
                     Explore notes
@@ -334,9 +341,9 @@ export default function Home({ highlights, setSnackbar }) {
         </Box>
       </Box>
       <Box
-        className={s.quizSectionImage}
+        className={s.notesSectionImage}
         sx={{
-          height: '150px',
+          height: '300px',
           [defaultTheme.breakpoints.up('md')]: {
             display: 'none',
           },

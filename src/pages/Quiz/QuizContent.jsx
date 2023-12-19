@@ -157,6 +157,26 @@ export default function QuizContent({ setSnackbar }) {
     }
   };
 
+  const ChangedIndicatorColor = ({ correctnessInfo, isCurrentQuestion }) => {
+    return (
+      <div
+        style={{
+          backgroundColor: correctnessInfo
+            ? correctnessInfo.isCorrect
+              ? customColors.greenMedium
+              : customColors.redMedium
+            : 'rgb(211, 209, 209)',
+          border: isCurrentQuestion ? '2px solid #0057B2' : 'none',
+          borderRadius: '50%',
+          width: 12,
+          height: 12,
+          margin: 6,
+          display: 'inline-block',
+        }}
+      ></div>
+    );
+  };
+
   const handleBackQuestion = (resetCallback, answeredStatus) => {
     if (currentQuestionIndex < questions.length && currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
@@ -244,26 +264,12 @@ export default function QuizContent({ setSnackbar }) {
                   {questions.map((q, index) => {
                     const correctnessInfo = answersCorrectness[index];
                     const isCurrentQuestion = index === currentQuestionIndex;
-
                     return (
-                      <div
+                      <ChangedIndicatorColor
                         key={q.id}
-                        style={{
-                          backgroundColor: correctnessInfo
-                            ? correctnessInfo.isCorrect
-                              ? customColors.greenMedium
-                              : customColors.redMedium
-                            : 'rgb(211, 209, 209)',
-                          border: isCurrentQuestion
-                            ? '2px solid #0057B2'
-                            : 'none',
-                          borderRadius: '50%',
-                          width: 12,
-                          height: 12,
-                          margin: 6,
-                          display: 'inline-block',
-                        }}
-                      ></div>
+                        correctnessInfo={correctnessInfo}
+                        isCurrentQuestion={isCurrentQuestion}
+                      />
                     );
                   })}
                 </Box>

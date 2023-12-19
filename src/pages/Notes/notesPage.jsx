@@ -15,11 +15,11 @@ import Paper from '@mui/material/Paper';
 import AddIcon from '@mui/icons-material/Add';
 import NewNoteForm from './NoteForm';
 import fetchNotes from 'functions/fetchNotes';
-import { message } from 'antd';
 import Loading from 'components/Loading';
 import customColors, { defaultTheme } from '../../assets/styles';
+import { severities } from '../../App';
 
-export default function Notes() {
+export default function Notes({ setSnackbar }) {
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [page, setPage] = useState(0);
   const [notes, setNotes] = useState([]);
@@ -111,7 +111,11 @@ export default function Notes() {
       })
       .catch((err) => {
         setLoadingNotes(false);
-        message.error('Something went wrong, please try again later!');
+        setSnackbar({
+          isOpened: true,
+          severity: severities.ERROR,
+          message: 'Something went wrong, please try again later!',
+        });
       });
   }, []);
 
@@ -175,6 +179,7 @@ export default function Notes() {
             notes={notes}
             isEditMode={isEditMode}
             setNotes={setNotes}
+            setSnackbar={setSnackbar}
           />
           <TableContainer component={Paper} sx={{ mt: 2, overflowX: 'auto' }}>
             <NotesTableToolbar
@@ -184,6 +189,7 @@ export default function Notes() {
               onFilterQuestion={handleFilterByQuestion}
               notes={notes}
               setNotes={setNotes}
+              setSnackbar={setSnackbar}
             />
 
             <Table sx={{ minWidth: 500 }}>

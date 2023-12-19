@@ -8,9 +8,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect } from 'react';
 import fetchNotes from 'functions/fetchNotes';
-import { message } from 'antd';
 import useDelete from 'functions/deleteNotes';
 import { CircularProgress } from '@mui/material';
+import { severities } from '../../App';
 
 export default function NotesTableToolbar({
   selected,
@@ -20,6 +20,7 @@ export default function NotesTableToolbar({
   notes,
   setNotes,
   setSelected,
+  setSnackbar,
 }) {
   const { isLoading, response, deleteNotes } = useDelete();
   const handleDeleteNotes = async () => {
@@ -30,16 +31,28 @@ export default function NotesTableToolbar({
         setNotes(data);
       })
       .catch((err) => {
-        message.error(response.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.ERROR,
+          message: response.message,
+        });
       });
   };
 
   useEffect(() => {
     if (response) {
       if (response.success) {
-        message.success(response.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.SUCCESS,
+          message: response.message,
+        });
       } else {
-        message.error(response.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.ERROR,
+          message: response.message,
+        });
       }
     }
   }, [response]);

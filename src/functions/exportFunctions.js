@@ -25,7 +25,7 @@ const createQuizObject = (quiz) => {
       questionText: q.questionText,
       type: q.type,
       code: q.code,
-      resources: '',
+      resources: q.resources,
       options: q.options,
       correctOption: q.correctOption,
       id: q._id,
