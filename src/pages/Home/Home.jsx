@@ -301,7 +301,7 @@ export default function Home({ highlights, setSnackbar }) {
                   },
                 }}
               >
-                Take notes while taking a quiz with an advanced notes system
+                  Take notes while you progress through a quiz
               </Typography>
               <Box>
                 <Box>
@@ -315,10 +315,7 @@ export default function Home({ highlights, setSnackbar }) {
                       },
                     }}
                   >
-                    For better retention of material, the educational platform
-                    offers programmers an easy and effective way to take notes.
-                    Intuitive interface and a blend of simplicity and
-                    functionality makes creating notes fast and effortless.
+                      To encourage active learning, the educational platform offers programmers an easy and effective way to take notes. Intuitive interface and a blend of simplicity and functionality makes creating notes fast and effortless.
                   </Typography>
                   <Button
                     href={NOTES}
