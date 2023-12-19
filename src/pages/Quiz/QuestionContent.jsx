@@ -15,10 +15,11 @@ import {
   Link,
 } from '@mui/material';
 import checkRadioRender from './CheckRadioRender';
-import { defaultTheme } from '../../assets/styles';
+import customColors, { defaultTheme } from '../../assets/styles';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import ReactMarkdown from 'react-markdown';
 
 import { BASE_URL } from 'config';
 import { severities } from '../../App';
@@ -130,6 +131,23 @@ export default function QuestionContent({
   const correctnessInfo = userAnswers[index];
   const checkbox = 'check-box';
 
+  const ResourcesMarkdown = ({ markdownContent }) => {
+    return (
+        <ReactMarkdown
+            components={{
+              a: ({ node, ...props }) => (
+                  <a href={props.href} target="_blank" rel="noopener noreferrer" style={{color: customColors.blueMedium}}>
+                    {props.children}
+                  </a>
+              ),
+            }}
+        >
+          {markdownContent}
+        </ReactMarkdown>
+    );
+  };
+
+
   return (
     <Box>
       <Box>
@@ -202,7 +220,7 @@ export default function QuestionContent({
             {resources && (
               <Typography variant={'subtitle1'} sx={{ mt: 2 }}>
                 You can learn more about this topic at the following links:
-                {resources}
+                <ResourcesMarkdown markdownContent={resources}/>
               </Typography>
             )}
           </>
