@@ -39,7 +39,6 @@ export const QuizzesContainer = ({
   searchValue,
   loading,
   error,
-  quizzesLength,
   itemsPerPage = 9,
   loadMoreThreshold = 100,
 }) => {
@@ -116,23 +115,21 @@ export const QuizzesContainer = ({
   }, [loadMoreQuizzes, loadMoreThreshold]);
 
   return (
-    <>
-      {loading ? (
-        <Loading type="circular" />
+    <Container sx={containerStyles}>
+      {error ? (
+        <QuizLoadError />
       ) : (
-        <Container sx={containerStyles}>
-          {error ? (
-            <QuizLoadError />
-          ) : (
-            <>
-              <Typography variant="h5" sx={titleStyles}>
-                {title}
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Box sx={boxStyles}>
-                  {quizzesLength > 0 && (
-                    <FilterButtonGroup changeFilter={changeFilter} />
-                  )}
+        <>
+          <Typography variant="h5" sx={titleStyles}>
+            {title}
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={boxStyles}>
+              <FilterButtonGroup changeFilter={changeFilter} />
+              {loading ? (
+                <Loading type="circular" />
+              ) : (
+                <>
                   {filteredQuizzes.length === 0 ? (
                     <Alert sx={{ mt: 3 }} severity="info">
                       {message}
@@ -159,12 +156,12 @@ export const QuizzesContainer = ({
                       </Grid>
                     </Box>
                   )}
-                </Box>
-              </Box>
-            </>
-          )}
-        </Container>
+                </>
+              )}
+            </Box>
+          </Box>
+        </>
       )}
-    </>
+    </Container>
   );
 };

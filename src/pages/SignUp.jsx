@@ -8,19 +8,13 @@ import {
   Paper,
   Box,
   Grid,
-  InputAdornment,
-  IconButton,
   Typography,
   useMediaQuery,
   Container,
-  InputLabel,
-  OutlinedInput,
-  FormControl,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import customColors, { defaultTheme } from 'assets/styles';
-import { LOGIN, RESET_PASSWORD, SIGNUP } from 'App';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { LOGIN, RESET_PASSWORD, severities, SIGNUP } from 'App';
 import Copyright from '../components/Copyright';
 import { useLocation } from 'react-router-dom';
 import backgroundAuth from '../assets/images/background-auth.svg';
@@ -28,6 +22,7 @@ import jsQuizLogo from '../assets/images/logo.svg';
 import Loading from '../components/Loading';
 import { backendApiCall } from '../functions/exportFunctions';
 import { useState } from 'react';
+import { FormControlComponent } from './Login';
 
 export default function SignUp({ setSnackbar }) {
   const isMdScreenAndUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -35,7 +30,6 @@ export default function SignUp({ setSnackbar }) {
   const isAuthPages = [LOGIN, SIGNUP, RESET_PASSWORD].includes(
     location.pathname
   );
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({
     firstName: '',
@@ -45,10 +39,6 @@ export default function SignUp({ setSnackbar }) {
   });
   const navigate = useNavigate();
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
   const handleUserDataChange = (field) => (e) => {
     setUserData((prevData) => ({ ...prevData, [field]: e.target.value }));
   };
@@ -73,14 +63,14 @@ export default function SignUp({ setSnackbar }) {
       navigate(LOGIN);
       setSnackbar({
         isOpened: true,
-        severity: 'success',
+        severity: severities.SUCCESS,
         message: 'You have successfully registered!',
       });
     } catch (error) {
       setIsLoading(false);
       setSnackbar({
         isOpened: true,
-        severity: 'error',
+        severity: severities.ERROR,
         message: `An error occurred during registration.`,
       });
       throw new Error(error.message);
@@ -199,38 +189,9 @@ export default function SignUp({ setSnackbar }) {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined" margin="normal">
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <OutlinedInput
-                      id="password"
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type={showPassword ? 'text' : 'password'}
-                      onChange={handleUserDataChange('password')}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <Visibility
-                                sx={{ color: customColors.greyMedium }}
-                              />
-                            ) : (
-                              <VisibilityOff
-                                sx={{ color: customColors.greyMedium }}
-                              />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
+                  <FormControlComponent
+                    handleDataChange={handleUserDataChange}
+                  />
                 </Grid>
               </Grid>
               <Button

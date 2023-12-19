@@ -101,19 +101,18 @@ const QuizCard = ({
   const handleResetProgress = async (quiz, auth, setQuizzes) => {
     try {
       await deleteAttemptsForUserAndQuiz(quiz, auth, setQuizzes);
-
       setSnackbar({
         isOpened: true,
         severity: 'success',
         message: 'Your progress was successfully reset',
       });
+      handleClose();
     } catch (error) {
       setSnackbar({
         isOpened: true,
         severity: 'error',
         message: 'Failed to update progress information. ' + error.message,
       });
-
       handleClose();
     }
   };
@@ -151,7 +150,6 @@ const QuizCard = ({
           cursor: 'pointer',
           '&:hover': {
             transform: 'scale(1.05)',
-            /*backgroundColor: customColors.hover,*/
           },
         }}
       >

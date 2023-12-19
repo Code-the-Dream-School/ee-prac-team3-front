@@ -31,6 +31,14 @@
   width: 100%;
 }
 
+.notesSectionImage {
+  background-image: url('../../assets/images/notes_section.webp');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  width: 100%;
+}
+
 @media screen and (max-width: 900px) {
   .logoImage {
     width: 220px;

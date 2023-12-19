@@ -3,24 +3,25 @@ import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import c from '../../App.module.css';
 import customColors, { defaultTheme } from '../../assets/styles';
 import emailjs from 'emailjs-com';
+import { severities } from '../../App';
 
-export default function ContactForm({ snackbar }) {
+export default function ContactForm({ setSnackbar }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     emailjs
       .sendForm('js_quiz', 'contact_form_jsquiz', e.target, 'cCsGOz-hDdPkNz6dF')
       .then(() => {
-        snackbar({
+        setSnackbar({
           isOpened: true,
-          severity: 'success',
+          severity: severities.SUCCESS,
           message: 'Message successfully sent!',
         });
         e.target.reset();
       })
       .catch((err) => {
-        snackbar({
+        setSnackbar({
           isOpened: true,
-          severity: 'error',
+          severity: severities.ERROR,
           message: 'An error has occurred!',
         });
         throw new Error(`Error during sending email:', ${err}`);

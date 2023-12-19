@@ -16,8 +16,8 @@ import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import fetchNotes from 'functions/fetchNotes';
 import useSubmit from 'functions/postNote';
 
-import { message } from 'antd';
 import useUpdate from 'functions/updateNote';
+import { severities } from '../../App';
 
 export default function NewNoteForm({
   openPopup,
@@ -25,6 +25,8 @@ export default function NewNoteForm({
   editNote,
   notes,
   setNotes,
+  isEditMode,
+  setSnackbar,
 }) {
   const { isLoadingEdit, responseEdit, updateNote } = useUpdate();
   const { postNote, isLoading, response } = useSubmit();
@@ -57,7 +59,11 @@ export default function NewNoteForm({
             setNotes(data);
           })
           .catch((err) => {
-            message.error(response.message);
+            setSnackbar({
+              isOpened: true,
+              severity: severities.ERROR,
+              message: response.message,
+            });
           });
       } else {
         await updateNote(editNote._id, values);
@@ -68,13 +74,17 @@ export default function NewNoteForm({
             setNotes(data);
           })
           .catch((err) => {
-            message.error(responseEdit.message);
+            setSnackbar({
+              isOpened: true,
+              severity: severities.ERROR,
+              message: responseEdit.message,
+            });
           });
       }
     },
     validationSchema: Yup.object({
-      title: Yup.string().required('Required').min(5).max(50),
-      note: Yup.string().required('Required').min(5).max(100),
+      title: Yup.string().required('Required').min(5).max(400),
+      note: Yup.string().required('Required').min(5).max(1000),
     }),
     enableReinitialize: true,
   });
@@ -82,29 +92,43 @@ export default function NewNoteForm({
   useEffect(() => {
     if (response) {
       if (response.success) {
-        message.success(response.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.SUCCESS,
+          message: response.message,
+        });
       } else {
-        message.error(response.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.ERROR,
+          message: response.message,
+        });
       }
     }
-  }, [response]);
+  }, [response, setSnackbar]);
 
   useEffect(() => {
     if (responseEdit) {
       if (responseEdit.success) {
-        message.success(responseEdit.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.SUCCESS,
+          message: responseEdit.message,
+        });
       } else {
-        message.error(responseEdit.message);
+        setSnackbar({
+          isOpened: true,
+          severity: severities.ERROR,
+          message: responseEdit.message,
+        });
       }
     }
-  }, [responseEdit]);
+  }, [responseEdit, setSnackbar]);
 
   return (
     <>
-      <Dialog open={openPopup} onClose={handleClose}>
-        <DialogTitle>
-          <p>New Note</p>
-        </DialogTitle>
+      <Dialog open={openPopup} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle>{isEditMode ? 'Edit Note' : 'New Note'}</DialogTitle>
         <DialogContent dividers>
           <Box
             sx={{

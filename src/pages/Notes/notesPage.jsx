@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
@@ -10,15 +10,16 @@ import NotesTableHead from './tableHead';
 import TableEmptyRows from './tableEmptyRows';
 import NotesTableToolbar from './tableToolbar';
 import { emptyRows, applyFilter, getComparator } from './utils';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import AddIcon from '@mui/icons-material/Add';
 import NewNoteForm from './NoteForm';
 import fetchNotes from 'functions/fetchNotes';
-import { message } from 'antd';
 import Loading from 'components/Loading';
+import customColors, { defaultTheme } from '../../assets/styles';
+import { severities } from '../../App';
 
-export default function Notes() {
+export default function Notes({ setSnackbar }) {
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [page, setPage] = useState(0);
   const [notes, setNotes] = useState([]);
@@ -34,6 +35,8 @@ export default function Notes() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openPopup, setOpenPopup] = useState(false);
   const [editNote, setEditNote] = useState('');
+
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -56,6 +59,7 @@ export default function Notes() {
     const selectedNote = notes.filter((note) => note._id === noteId);
     setEditNote(selectedNote[0]);
     setOpenPopup(true);
+    setIsEditMode(true);
   };
 
   const handleClick = (event, notesid) => {
@@ -107,35 +111,77 @@ export default function Notes() {
       })
       .catch((err) => {
         setLoadingNotes(false);
-        message.error('Something went wrong, please try again later!');
+        setSnackbar({
+          isOpened: true,
+          severity: severities.ERROR,
+          message: 'Something went wrong, please try again later!',
+        });
       });
-  }, []);
+  }, [setSnackbar]);
 
   return (
-    <div style={{ background: '#F5F5F5' }}>
-      <Container>
-        <Box minHeight="100vh">
-          {loadingNotes && <Loading />}
-          <Button
-            variant="contained"
-            style={{ background: '#243153', textTransform: 'none' }}
-            startIcon={<AddIcon />}
-            onClick={() => {
-              setOpenPopup(true);
-              setEditNote([{ title: '', note: '' }]);
+    <Container
+      sx={{
+        minHeight: '100vh',
+        backgroundColor: customColors.greyLight,
+        maxWidth: 'none !important',
+        pt: 6,
+        pb: 2,
+      }}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box
+          sx={{
+            maxWidth: '1200px',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <Typography
+            variant={'h5'}
+            sx={{
+              textTransform: 'uppercase',
+              mb: 6,
+              textAlign: 'center',
+              fontWeight: 'bold',
+              [defaultTheme.breakpoints.down('md')]: {
+                fontSize: '20px',
+              },
             }}
-            sx={{ mt: 4, borderRadius: 35 }}
           >
-            New Note
-          </Button>
+            Your notes
+          </Typography>
+          {loadingNotes && <Loading />}
+          <Box>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: customColors.blueMedium,
+                [defaultTheme.breakpoints.down('sm')]: {
+                  width: '100%',
+                },
+              }}
+              startIcon={<AddIcon />}
+              onClick={() => {
+                setOpenPopup(true);
+                setEditNote([{ title: '', note: '' }]);
+                setIsEditMode(false);
+              }}
+            >
+              New Note
+            </Button>
+          </Box>
           <NewNoteForm
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
             editNote={editNote}
             notes={notes}
+            isEditMode={isEditMode}
             setNotes={setNotes}
+            setSnackbar={setSnackbar}
           />
-          <TableContainer component={Paper} sx={{ mt: 4 }}>
+          <TableContainer component={Paper} sx={{ mt: 2, overflowX: 'auto' }}>
             <NotesTableToolbar
               selected={selected}
               numSelected={selected.length}
@@ -143,9 +189,10 @@ export default function Notes() {
               onFilterQuestion={handleFilterByQuestion}
               notes={notes}
               setNotes={setNotes}
+              setSnackbar={setSnackbar}
             />
 
-            <Table sx={{ minWidth: 800 }}>
+            <Table sx={{ minWidth: 500 }}>
               <NotesTableHead
                 order={order}
                 orderBy={orderBy}
@@ -196,7 +243,7 @@ export default function Notes() {
             />
           </TableContainer>
         </Box>
-      </Container>
-    </div>
+      </Box>
+    </Container>
   );
 }

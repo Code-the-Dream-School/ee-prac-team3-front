@@ -10,7 +10,7 @@ import ContactForm from './ContactForm';
 import HighlightsSection from './Highlights';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-export default function Home({ highlights, snackbar }) {
+export default function Home({ highlights, setSnackbar }) {
   const [scrollToTopVisible, setScrollToTopVisible] = useState(false);
   const handleScroll = () => {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -196,8 +196,12 @@ export default function Home({ highlights, snackbar }) {
                     href={QUIZZES}
                     variant="contained"
                     sx={{
+                      backgroundColor: customColors.blackLight,
                       mt: 3,
                       mb: 2,
+                      '&:hover': {
+                        backgroundColor: '#3f3f3f',
+                      },
                     }}
                   >
                     Take a quiz
@@ -220,7 +224,7 @@ export default function Home({ highlights, snackbar }) {
       <Box
         className={s.quizSectionImage}
         sx={{
-          height: '150px',
+          height: '300px',
           [defaultTheme.breakpoints.up('md')]: {
             display: 'none',
           },
@@ -263,7 +267,7 @@ export default function Home({ highlights, snackbar }) {
         <Box className={c.container}>
           <Box className={s.quizContainer}>
             <Box
-              className={s.quizSectionImage}
+              className={s.notesSectionImage}
               sx={{
                 marginRight: '50px',
                 [defaultTheme.breakpoints.down('md')]: {
@@ -297,8 +301,7 @@ export default function Home({ highlights, snackbar }) {
                   },
                 }}
               >
-                Take notes for online courses and generate diagrams with
-                Assistant
+                Take notes while you progress through a quiz
               </Typography>
               <Box>
                 <Box>
@@ -312,7 +315,7 @@ export default function Home({ highlights, snackbar }) {
                       },
                     }}
                   >
-                    For better retention of material, the educational platform
+                    To encourage active learning, the educational platform
                     offers programmers an easy and effective way to take notes.
                     Intuitive interface and a blend of simplicity and
                     functionality makes creating notes fast and effortless.
@@ -321,8 +324,12 @@ export default function Home({ highlights, snackbar }) {
                     href={NOTES}
                     variant="contained"
                     sx={{
+                      backgroundColor: customColors.blackLight,
                       mt: 3,
                       mb: 2,
+                      '&:hover': {
+                        backgroundColor: '#3f3f3f',
+                      },
                     }}
                   >
                     Explore notes
@@ -334,9 +341,9 @@ export default function Home({ highlights, snackbar }) {
         </Box>
       </Box>
       <Box
-        className={s.quizSectionImage}
+        className={s.notesSectionImage}
         sx={{
-          height: '150px',
+          height: '300px',
           [defaultTheme.breakpoints.up('md')]: {
             display: 'none',
           },
@@ -485,7 +492,7 @@ export default function Home({ highlights, snackbar }) {
           },
         }}
       >
-        <ContactForm snackbar={snackbar} />
+        <ContactForm setSnackbar={setSnackbar} />
       </Box>
     </>
   );
