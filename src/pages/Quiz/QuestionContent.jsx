@@ -133,20 +133,24 @@ export default function QuestionContent({
 
   const ResourcesMarkdown = ({ markdownContent }) => {
     return (
-        <ReactMarkdown
-            components={{
-              a: ({ node, ...props }) => (
-                  <a href={props.href} target="_blank" rel="noopener noreferrer" style={{color: customColors.blueMedium}}>
-                    {props.children}
-                  </a>
-              ),
-            }}
-        >
-          {markdownContent}
-        </ReactMarkdown>
+      <ReactMarkdown
+        components={{
+          a: ({ node, ...props }) => (
+            <a
+              href={props.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: customColors.blueMedium }}
+            >
+              {props.children}
+            </a>
+          ),
+        }}
+      >
+        {markdownContent}
+      </ReactMarkdown>
     );
   };
-
 
   return (
     <Box>
@@ -220,7 +224,7 @@ export default function QuestionContent({
             {resources && (
               <Typography variant={'subtitle1'} sx={{ mt: 2 }}>
                 You can learn more about this topic at the following links:
-                <ResourcesMarkdown markdownContent={resources}/>
+                <ResourcesMarkdown markdownContent={resources} />
               </Typography>
             )}
           </>
