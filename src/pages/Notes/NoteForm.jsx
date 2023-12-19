@@ -105,7 +105,7 @@ export default function NewNoteForm({
         });
       }
     }
-  }, [response]);
+  }, [response, setSnackbar]);
 
   useEffect(() => {
     if (responseEdit) {
@@ -123,7 +123,7 @@ export default function NewNoteForm({
         });
       }
     }
-  }, [responseEdit]);
+  }, [responseEdit, setSnackbar]);
 
   return (
     <>

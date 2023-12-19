@@ -117,7 +117,7 @@ export default function Notes({ setSnackbar }) {
           message: 'Something went wrong, please try again later!',
         });
       });
-  }, []);
+  }, [setSnackbar]);
 
   return (
     <Container

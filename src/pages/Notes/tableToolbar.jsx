@@ -55,7 +55,7 @@ export default function NotesTableToolbar({
         });
       }
     }
-  }, [response]);
+  }, [response, setSnackbar]);
 
   return (
     <Toolbar
