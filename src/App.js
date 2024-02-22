@@ -128,6 +128,7 @@ export default function App() {
     };
 
     fetchData();
+    console.log('fetchData is processing')
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.loggedIn]);

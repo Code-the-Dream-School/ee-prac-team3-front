@@ -96,6 +96,7 @@ export default function Login({ setSnackbar }) {
       email: loginData.email,
       password: loginData.password,
     };
+    console.log('bodyData === ', bodyData);
 
     try {
       const apiStatus = await backendApiCall('POST', '/login', bodyData);
@@ -117,6 +118,8 @@ export default function Login({ setSnackbar }) {
         });
       }
     } catch (error) {
+      console.log('handleSubmit === ', error);
+      console.log('handleSubmit === ', error.message);
       setIsLoading(false); // Ensure loading state is reset even on error.
       setErrorMessage(error.message); // Set error message to display
       setSnackbar({
