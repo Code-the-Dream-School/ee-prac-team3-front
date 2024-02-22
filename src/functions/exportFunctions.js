@@ -47,6 +47,11 @@ const handleApiError = (error, setError) => {
 };
 
 export const backendApiCall = async (method, url, body) => {
+  console.log('backendApiCall is processing');
+  console.log('method === ', method);
+  console.log('url === ', url);
+  console.log('body === ', body);
+
   const options = {
     method: method,
     headers: {
@@ -58,6 +63,9 @@ export const backendApiCall = async (method, url, body) => {
   if (method !== 'GET' && body) {
     options.body = JSON.stringify(body);
   }
+
+  console.log(`BASE_URL === ${BASE_URL}${url}`);
+  console.log('options === ', options);
 
   try {
     const response = await fetch(`${BASE_URL}${url}`, options);
@@ -75,7 +83,6 @@ export const backendApiCall = async (method, url, body) => {
       return await response.text();
     }
   } catch (error) {
-    console.log('error from backendApiCall function === ', error);
     console.log('error from backendApiCall function === ', error.message);
     throw error;
   }
