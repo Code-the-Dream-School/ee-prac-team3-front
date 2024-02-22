@@ -81,6 +81,7 @@ export const backendApiCall = async (method, url, body) => {
 export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
   try {
     const backendUserData = await backendApiCall('GET', '/login');
+    console.log('backendUserData ===', backendUserData);
     setAuth({
       userId: backendUserData.user.userId,
       firstName: backendUserData.user.firstname,

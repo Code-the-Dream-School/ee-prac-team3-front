@@ -99,6 +99,7 @@ export default function Login({ setSnackbar }) {
 
     try {
       const apiStatus = await backendApiCall('POST', '/login', bodyData);
+      console.log('apiStatus ===', apiStatus);
       if (apiStatus.success === true) {
         setIsLoading(false);
         setLoginData({
