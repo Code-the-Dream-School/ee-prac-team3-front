@@ -47,7 +47,6 @@ const handleApiError = (error, setError) => {
 };
 
 export const backendApiCall = async (method, url, body) => {
-
   const options = {
     method: method,
     headers: {
@@ -99,9 +98,8 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
     });
     console.log('accessToken === ', setAuth.accessToken);
     console.log('loggedIn === ', setAuth.loggedIn);
-
   } catch (error) {
-    console.log('error in authenticateUser', error.message)
+    console.log('error in authenticateUser', error.message);
     throw new Error(error);
   } finally {
     setLoading(false);
