@@ -7,3 +7,5 @@ if (process.env.NODE_ENV === 'production') {
   // Set local development API URL
   BASE_URL = 'http://localhost:8000/api/v1';
 }
+
+console.log('BASE_URL === ', BASE_URL);
