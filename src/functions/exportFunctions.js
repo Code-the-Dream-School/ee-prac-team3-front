@@ -47,10 +47,6 @@ const handleApiError = (error, setError) => {
 };
 
 export const backendApiCall = async (method, url, body) => {
-  console.log('backendApiCall is processing');
-  console.log('method === ', method);
-  console.log('url === ', url);
-  console.log('body === ', body);
 
   const options = {
     method: method,
@@ -63,9 +59,6 @@ export const backendApiCall = async (method, url, body) => {
   if (method !== 'GET' && body) {
     options.body = JSON.stringify(body);
   }
-
-  console.log(`BASE_URL === ${BASE_URL}${url}`);
-  console.log('options === ', options);
 
   try {
     const response = await fetch(`${BASE_URL}${url}`, options);
@@ -89,9 +82,10 @@ export const backendApiCall = async (method, url, body) => {
 };
 
 export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
+  console.log('authenticateUser func is processing');
   try {
     const backendUserData = await backendApiCall('GET', '/login');
-    console.log('backendUserData ===', backendUserData);
+    console.log('backendUserData.user ===', backendUserData.user);
     setAuth({
       userId: backendUserData.user.userId,
       firstName: backendUserData.user.firstname,
@@ -103,7 +97,11 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
       avatarURL: backendUserData.user.avatarURL,
       favorites: backendUserData.user.favorites,
     });
+    console.log('accessToken === ', setAuth.accessToken);
+    console.log('loggedIn === ', setAuth.loggedIn);
+
   } catch (error) {
+    console.log('error in authenticateUser', error.message)
     throw new Error(error);
   } finally {
     setLoading(false);
