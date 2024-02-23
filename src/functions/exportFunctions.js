@@ -61,7 +61,7 @@ export const backendApiCall = async (method, url, body) => {
 
   try {
     const response = await fetch(`${BASE_URL}${url}`, options);
-    console.log('response from backendApiCall function === ', response);
+    //console.log('response from backendApiCall function === ', response);
 
     if (!response.ok) {
       const errorMessage = `Error: ${response.status} - ${response.statusText}`;
@@ -81,10 +81,9 @@ export const backendApiCall = async (method, url, body) => {
 };
 
 export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
-  console.log('authenticateUser func is processing');
+  //console.log('authenticateUser func is processing');
   try {
     const backendUserData = await backendApiCall('GET', '/login');
-    console.log('backendUserData.user ===', backendUserData.user);
     setAuth({
       userId: backendUserData.user.userId,
       firstName: backendUserData.user.firstname,
@@ -96,8 +95,7 @@ export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
       avatarURL: backendUserData.user.avatarURL,
       favorites: backendUserData.user.favorites,
     });
-    console.log('accessToken === ', setAuth.accessToken);
-    console.log('loggedIn === ', setAuth.loggedIn);
+    console.log('accessToken === ', backendUserData.user.accessToken);
   } catch (error) {
     console.log('error in authenticateUser', error.message);
     throw new Error(error);
