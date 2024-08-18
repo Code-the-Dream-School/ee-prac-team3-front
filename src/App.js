@@ -234,12 +234,12 @@ export default function App() {
         {!loading && (
           <Box sx={{ height: '100vh' }}>
             <Routes>
-              {/* protected route */}
+              {/* Protected routes */}
               <Route
                 path={LOGIN}
                 element={
                   auth.loggedIn ? (
-                    <Navigate to="/"></Navigate>
+                    <Navigate to={HOME} />
                   ) : (
                     <Login setSnackbar={setSnackbar} />
                   )
@@ -256,7 +256,7 @@ export default function App() {
                       setSnackbar={setSnackbar}
                     />
                   ) : (
-                    <Navigate to={LOGIN}></Navigate>
+                    <Navigate to={LOGIN} />
                   )
                 }
               />
@@ -266,7 +266,7 @@ export default function App() {
                   auth.loggedIn ? (
                     <QuizContent setSnackbar={setSnackbar} />
                   ) : (
-                    <Navigate to={LOGIN}></Navigate>
+                    <Navigate to={LOGIN} />
                   )
                 }
               />
@@ -274,7 +274,7 @@ export default function App() {
                 path={SIGNUP}
                 element={
                   auth.loggedIn ? (
-                    <Navigate to="/"></Navigate>
+                    <Navigate to={HOME} />
                   ) : (
                     <SignUp setSnackbar={setSnackbar} />
                   )
@@ -283,11 +283,7 @@ export default function App() {
               <Route
                 path={RESET_PASSWORD}
                 element={
-                  auth.loggedIn ? (
-                    <Navigate to="/"></Navigate>
-                  ) : (
-                    <ResetPassword />
-                  )
+                  auth.loggedIn ? <Navigate to={HOME} /> : <ResetPassword />
                 }
               />
               <Route
@@ -301,7 +297,7 @@ export default function App() {
                       setSnackbar={setSnackbar}
                     />
                   ) : (
-                    <Navigate to={LOGIN}></Navigate>
+                    <Navigate to={LOGIN} />
                   )
                 }
               />
@@ -311,15 +307,13 @@ export default function App() {
                   auth.loggedIn ? (
                     <Notes setSnackbar={setSnackbar} />
                   ) : (
-                    <Navigate to={LOGIN}></Navigate>
+                    <Navigate to={LOGIN} />
                   )
                 }
               />
               <Route
                 path={LIBRARY}
-                element={
-                  auth.loggedIn ? <Library /> : <Navigate to={LOGIN}></Navigate>
-                }
+                element={auth.loggedIn ? <Library /> : <Navigate to={LOGIN} />}
               />
               <Route
                 path={ACCOUNT_SETTINGS}
@@ -331,12 +325,11 @@ export default function App() {
                       updateUserInfo={updateUserInfo}
                     />
                   ) : (
-                    <Navigate to={LOGIN}></Navigate>
+                    <Navigate to={LOGIN} />
                   )
                 }
               />
-              {/* non-protected routes */}
-              <Route path={'/'} element={<Navigate to={HOME} />} />
+              {/* Non-protected routes */}
               <Route
                 path={HOME}
                 element={
@@ -345,7 +338,7 @@ export default function App() {
               />
               <Route path={ABOUT} element={<About />} />
               <Route path={ERROR} element={<Error />} />
-              <Route path="/*" element={<Navigate to={ERROR}></Navigate>} />
+              <Route path="/*" element={<Navigate to={ERROR} />} />
             </Routes>
             {showLogoutModal && (
               <LogoutModal
