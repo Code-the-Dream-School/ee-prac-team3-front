@@ -1,4 +1,4 @@
-import { BASE_URL } from 'config';
+import { BASE_URL } from '../App';
 import { useState } from 'react';
 
 const useSubmit = (note) => {

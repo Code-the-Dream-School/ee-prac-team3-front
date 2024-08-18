@@ -4,7 +4,7 @@ import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from '../assets/images/js.svg';
 import nodeJsLogo from '../assets/images/nodejs.svg';
 import dataStructureLogo from '../assets/images/hierarchical-structure-svgrepo-com.svg';
-import { BASE_URL } from '../config';
+import { BASE_URL } from '../App';
 import { severities } from '../App';
 
 const imageMapping = {

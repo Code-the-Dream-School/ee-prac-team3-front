@@ -33,7 +33,8 @@ import {
   handleLogout,
 } from './functions/exportFunctions';
 import Notes from 'pages/Notes/notesPage';
-import { BASE_URL } from './config';
+
+export const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000/api/v1/';
 
 const PATH = {
   HOME: '/home',

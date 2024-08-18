@@ -21,7 +21,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import ReactMarkdown from 'react-markdown';
 
-import { BASE_URL } from 'config';
+import { BASE_URL } from '../../App';
 import { severities } from '../../App';
 
 export default function QuestionContent({
