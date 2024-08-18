@@ -64,10 +64,9 @@ export const backendApiCall = async (method, url, body) => {
     console.log('response from backendApiCall function === ', response);
 
     if (!response.ok) {
-      const errorMessage = `Error: ${response.status} - ${response.statusText}`;
-      const errorData = await response.json();
-      const detailedMessage = errorData.message || errorMessage;
-      throw new Error(detailedMessage);
+      const text = await response.text();
+      console.error('API call error:', text);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const contentType = response.headers.get('content-type');
