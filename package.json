@@ -2,6 +2,7 @@
   "name": "ee-practicum-team-3-front",
   "version": "1.0.0",
   "description": "Front-End Repo for Team 3 of Echidna/Emu Practicum",
+  "proxy": "https://ee-prac-team3-back-1.onrender.com",
   "private": true,
   "dependencies": {
     "@fontsource/roboto": "^5.0.8",
