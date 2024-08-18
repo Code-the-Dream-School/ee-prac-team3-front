@@ -4,8 +4,7 @@ import reactJsLogo from '../assets/images/react-logo-svgrepo-com.svg';
 import jsLogo from '../assets/images/js.svg';
 import nodeJsLogo from '../assets/images/nodejs.svg';
 import dataStructureLogo from '../assets/images/hierarchical-structure-svgrepo-com.svg';
-import { BASE_URL } from '../App';
-import { severities } from '../App';
+import { BASE_URL, severities } from '../App';
 
 const imageMapping = {
   react: reactJsLogo,
@@ -61,7 +60,8 @@ export const backendApiCall = async (method, url, body) => {
 
   try {
     const response = await fetch(`${BASE_URL}${url}`, options);
-    console.log('response from backendApiCall function === ', response);
+    console.log('Request Headers:', response.headers);
+    console.log('Cookies Sent:', document.cookie);
 
     if (!response.ok) {
       const errorMessage = `Error: ${response.status} - ${response.statusText}`;
