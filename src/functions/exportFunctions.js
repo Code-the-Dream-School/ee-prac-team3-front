@@ -61,6 +61,7 @@ export const backendApiCall = async (method, url, body) => {
 
   try {
     const response = await fetch(`${BASE_URL}${url}`, options);
+    //console.log('response from backendApiCall function === ', response);
 
     if (!response.ok) {
       const errorMessage = `Error: ${response.status} - ${response.statusText}`;
@@ -80,7 +81,7 @@ export const backendApiCall = async (method, url, body) => {
 };
 
 export const authenticateUser = async (backendApiCall, setAuth, setLoading) => {
-  console.log('authenticateUser func is processing');
+  //console.log('authenticateUser func is processing');
   try {
     const backendUserData = await backendApiCall('GET', '/login');
     setAuth({
