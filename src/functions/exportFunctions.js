@@ -61,7 +61,7 @@ export const backendApiCall = async (method, url, body) => {
 
   try {
     const response = await fetch(`${BASE_URL}${url}`, options);
-    //console.log('response from backendApiCall function === ', response);
+    console.log('response from backendApiCall function === ', response);
 
     if (!response.ok) {
       const errorMessage = `Error: ${response.status} - ${response.statusText}`;
