@@ -48,10 +48,10 @@ const handleApiError = (error, setError) => {
 export const backendApiCall = async (method, url, body) => {
   const options = {
     method: method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
     credentials: 'include',
+    headers: {
+      'Accept': 'application/json'
+    },
   };
 
   if (method !== 'GET' && body) {
