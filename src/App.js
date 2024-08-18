@@ -34,8 +34,7 @@ import {
 } from './functions/exportFunctions';
 import Notes from 'pages/Notes/notesPage';
 
-export const BASE_URL =
-  process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000/api/v1';
+export const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
 console.log('BASE_URL === ', BASE_URL);
 
