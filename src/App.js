@@ -234,6 +234,7 @@ export default function App() {
         {!loading && (
           <Box sx={{ height: '100vh' }}>
             <Routes>
+              <Route path="/" element={<Navigate to={HOME} />} />
               {/* Protected routes */}
               <Route
                 path={LOGIN}
