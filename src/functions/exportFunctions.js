@@ -48,8 +48,10 @@ const handleApiError = (error, setError) => {
 
 export const backendApiCall = async (method, url, body) => {
   const options = {
-    method,
-    headers: { 'Content-Type': 'application/json' },
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
     credentials: 'include',
   };
 
@@ -59,16 +61,20 @@ export const backendApiCall = async (method, url, body) => {
 
   try {
     const response = await fetch(`${BASE_URL}${url}`, options);
-    const data = await response.json();
 
     if (!response.ok) {
-      console.error('API call error:', data);
-      throw new Error(data.message || 'Network response was not ok.');
+      const errorMessage = `Error: ${response.status} - ${response.statusText}`;
+      throw new Error(errorMessage);
     }
 
-    return data;
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    } else {
+      return await response.text();
+    }
   } catch (error) {
-    console.error('Fetch error:', error);
+    console.log('error from backendApiCall function === ', error.message);
     throw error;
   }
 };
